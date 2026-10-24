@@ -4,49 +4,62 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>原理 · 代码能力评测</title>
-<meta name="description" content="评测流程、设置、LCB 判分问题与复核、性能测量方法、参评模型">
+<meta name="description" content="评测流程、设置、判题、性能测量、静态指标、智能体评测与参考文献">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="index.html">BAI AI Lab 代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html" aria-current="page">原理</a></li><li><a href="results.html">结果</a></li></ul></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html" aria-current="page">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html">自定义评测</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <h2>原理</h2>
-<p class="sub">用 LiveCodeBench 的官方题目、提示词和判题程序评测，再对判为失败的答案复核，最后测量通过答案的运行效率和代码指标。</p>
+<p class="sub">用 LiveCodeBench <span class="cite">[<a href="#ref-1">1</a>]</span> 的官方题目、提示词和测试数据评测模型，用自己的判题程序判分，再测量通过答案的运行效率和代码指标。</p>
 <div class="steps">
-<div class="card"><h4>选题</h4><p>release_v6 最新 100 题中取最新的中等 10、困难 25 题。</p></div>
+<div class="card"><h4>题库</h4><p>LiveCodeBench release_v6 中发布日期最新的 100 题。</p></div>
 <div class="card"><h4>生成</h4><p>官方提示词，每题调用模型 API 1 次，提取回答中的最后一个代码块。</p></div>
-<div class="card"><h4>判题</h4><p>AtCoder 题作为完整程序读写标准输入输出，LeetCode 题调用给定函数；隐藏测试全过才算通过。</p></div>
-<div class="card"><h4>复核</h4><p>用真实 stdin/stdout 重跑全部 AtCoder 答案，多解题用校验器。</p></div>
-<div class="card"><h4>代码分析</h4><p>通过的答案绑核重跑，测 CPU 时间与峰值内存；radon、pyflakes 统计代码指标。</p></div>
+<div class="card"><h4>判题</h4><p>AtCoder 答案用真实标准输入输出在独立进程中运行全部官方测试，多解题用校验器；LeetCode 答案调用给定函数。</p></div>
+<div class="card"><h4>代码分析</h4><p>通过的答案绑核重跑，测 CPU 时间与峰值内存；用 radon、pyflakes 统计代码指标。</p></div>
 </div>
 <h3>评测设置</h3>
-<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">评测集</td><td>LiveCodeBench release_v6（ICLR 2025），官方提示词、官方判题，隐藏测试全过才算通过</td></tr><tr><td class="nw">指标</td><td>pass@1，每题 1 次</td></tr><tr><td class="nw">调用</td><td>各厂商官方 API；codingBench 的 <code>cb livecodebench</code></td></tr><tr><td class="nw">思考档位</td><td>各模型默认（Kimi max，DeepSeek high）</td></tr><tr><td class="nw">采样</td><td>DeepSeek：temperature 0.2（LCB 官方）；Kimi：固定 1.0（API 不允许传入）</td></tr><tr><td class="nw">输出上限</td><td>DeepSeek 262,144；Kimi 131,072（默认）；全部回答正常结束（finish_reason=stop），无截断</td></tr><tr><td class="nw">并发</td><td>V4.1-Flash 16，V4-Pro 8；Kimi 前 32 题 4 路非流式，后 3 题 1 路流式（5 分钟无 token 判超时）</td></tr><tr><td class="nw">计量</td><td>每次调用记录起止时间与服务端返回的 token 数（含思考）</td></tr><tr><td class="nw">费用</td><td>官方单价 × token，DeepSeek 按调用时段区分峰谷；用账户余额变化核对</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">题库</td><td>LiveCodeBench release_v6 <span class="cite">[<a href="#ref-1">1</a>]</span> 中发布日期最新的 100 题，官方测试数据</td></tr><tr><td class="nw">提示词</td><td>LCB 官方提示词：AtCoder 题要求完整程序读写标准输入输出，LeetCode 题要求补全给定的 Python 函数</td></tr><tr><td class="nw">指标</td><td>pass@1 <span class="cite">[<a href="#ref-2">2</a>]</span>：每题生成 1 次，全部测试通过才算通过</td></tr><tr><td class="nw">调用</td><td>各厂商官方的 OpenAI 兼容 API；codingBench 的 <code>cb livecodebench</code></td></tr><tr><td class="nw">采样</td><td>temperature 0.2（LCB 官方）；平台固定采样参数的模型不传，按平台固定值</td></tr><tr><td class="nw">思考档位</td><td>不传，按各平台默认</td></tr><tr><td class="nw">输出上限</td><td>按模型设置；推理模型的思考计入输出 token，用完上限交不出答案即判失败</td></tr><tr><td class="nw">判题</td><td>见下文“判题”；与 <code>cb rejudge</code> 相同</td></tr><tr><td class="nw">计量</td><td>每次调用记录起止时间与服务端返回的 token 数（含思考）</td></tr><tr><td class="nw">费用</td><td>官方单价 × token，分峰谷的平台按调用时段计；用账户余额变化核对</td></tr></tbody></table></div>
 <h3>为什么用最新的题</h3>
-<p>LiveCodeBench 持续从 AtCoder、LeetCode、Codeforces 收集比赛题并标注发布日期，可以只用某个日期之后的题，降低训练数据污染。本次 35 题发布于 2025-03-15 至 2025-04-06，仍早于三个模型的发布时间，不排除污染（见“结果 › 局限”）。</p>
+<p>LiveCodeBench 持续从 AtCoder、LeetCode、Codeforces 收集比赛题并标注比赛日期，可以只用模型训练截止之后发布的题，降低训练数据污染 <span class="cite">[<a href="#ref-1">1</a>]</span>。题库中的 100 题发布于 2025-02-15 至 2025-04-06；对发布更晚的模型仍不能排除污染。</p>
 </div></section>
 <section class="section alt"><div class="wrap">
-<h2 id="rejudge">判分与复核</h2>
-<p class="sub">LCB 判题程序在标准输入输出上有缺陷，测试数据也有错误。只用原始判分会低估模型，甚至颠倒排名。</p>
-<div class="tw"><table><thead><tr><th>问题</th><th>受影响答案</th><th class="nw">LCB 判定</th><th>复核</th></tr></thead><tbody><tr><td>测试数据错误：<code>abc397_d</code> 第 41 个测试 N=27，标准答案为“3 0”；y=0 不是正整数，27 不存在正整数解，正确输出为 -1</td><td>三个模型（均输出 -1）</td><td class="nw">答案错误</td><td class="nw">校验器 43/43</td></tr><tr><td>多解题按单一答案比对：<code>arc195_c</code> 允许任意合法构造</td><td>三个模型</td><td class="nw">答案错误</td><td class="nw">校验器 5/5</td></tr><tr><td><code>sys.stdin.buffer.readline</code> 模拟错误：每次都返回输入的第一行</td><td>Flash <code>abc399_c</code>、<code>arc196_b</code>；Pro <code>arc196_b</code></td><td>答案错误 / 运行错误</td><td>真实输入全部通过</td></tr><tr><td>不支持 <code>sys.stdout.buffer</code>：标准输出被替换为 StringIO</td><td>Kimi、Flash <code>abc398_f</code></td><td class="nw">运行错误</td><td class="nw">真实输出 43/43</td></tr><tr><td>API 返回与题目无关的内容（一部电影的营销手法）</td><td>Kimi <code>abc399_e</code></td><td class="nw">无代码</td><td>人工另行调用，验证正确</td></tr></tbody></table></div>
-<p class="note">复核方法：26 道 AtCoder 题 × 3 个模型 = 78 份答案，作为独立 Python 进程用真实 stdin/stdout 运行官方全部测试（每个测试 6 秒）。两道多解题用按题意编写的校验器，其余逐 token 比对。LCB 判为通过的答案复核后全部仍通过。LeetCode 9 题为函数调用，不受上述问题影响，沿用 LCB 判分。上述问题均出自 LCB 官方判题代码与数据（本评测固定的版本），未作修改。Kimi <code>abc398_g</code> 在 LCB 中报 IndexError，也是 readline 问题导致；换成真实输入后仍有 4/43 个测试答案错误，按失败计。</p>
+<h2 id="judge">判题</h2>
+<p class="sub">测试不充分或有误会让通过率失真 <span class="cite">[<a href="#ref-3">3</a>, <a href="#ref-4">4</a>]</span>。LCB 自带的判题程序在标准输入输出上有缺陷，个别测试数据有误，因此不用它判 AtCoder 题。</p>
+<div class="tw"><table><thead><tr><th>问题</th><th>处理</th></tr></thead><tbody><tr><td>LCB 用模拟对象替换标准输入，<code>sys.stdin.buffer.readline</code> 每次都返回输入的第一行</td><td>AtCoder 答案改为独立 Python 进程，用真实的标准输入输出运行</td></tr><tr><td>不支持 <code>sys.stdout.buffer</code>：标准输出被替换为 StringIO</td><td>同上</td></tr><tr><td>测试数据错误：<code>abc397_d</code> 第 41 个测试 N=27，标准答案为“3 0”；y=0 不是正整数，27 不存在正整数解，正确输出为 -1</td><td>校验器：输出的 x、y 须为正整数且 x³ − y³ = N；输出 -1 时须确实无解</td></tr><tr><td>多解题按单一答案比对：<code>arc195_c</code> 允许任意合法构造</td><td>校验器：逐条检查摆法合法；Yes/No 须与标准答案一致</td></tr></tbody></table></div>
+<p class="note">每个测试限时 6 秒；校验器之外的题逐 token 比对输出。LeetCode 答案是函数调用，不受上述问题影响，沿用 LCB 的判题程序。LCB 的题目与测试数据为本评测固定的版本，未修改。同样的判题可在服务器上用 <code>cb rejudge</code> 完成（见 <a href="custom.html">自定义评测</a>）。</p>
 </div></section>
 <section class="section"><div class="wrap">
 <h2 id="perf">性能测量</h2>
-<p class="sub">只比较复核后通过的答案，所有输出都校验正确后才计入。</p>
-<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">对象</td><td>复核后通过的答案（Kimi 33 份，不含 <code>abc398_g</code>、<code>abc399_e</code>；DeepSeek 各 35 份）</td></tr><tr><td class="nw">运行</td><td>每次运行都是一个全新的 Python 3.11 进程（LCB 环境），绑定到单个 CPU 核；共 11,124 次，输出全部正确</td></tr><tr><td class="nw">计时</td><td>AtCoder：进程 CPU 时间（rusage）扣除启动基线 25.7 ms；LeetCode：只计 <code>Solution</code> 方法调用的 CPU 时间</td></tr><tr><td class="nw">内存</td><td>进程峰值常驻内存（ru_maxrss）；空程序为 12.1 MB</td></tr><tr><td class="nw">重复</td><td>每个测试 3 次、三个模型轮流先跑，取中位数；同一测试 3 次的离散度中位数 2.0%，P90 6.4%</td></tr><tr><td class="nw">可比题</td><td>最慢答案扣除启动后仍 ≥ 0.1 秒的题，共 13 题；其余 22 题官方测试太小，耗时主要是启动开销，不比较</td></tr></tbody></table></div>
+<p class="sub">与 EvalPerf <span class="cite">[<a href="#ref-5">5</a>]</span>、ENAMEL <span class="cite">[<a href="#ref-6">6</a>]</span> 一样，只在答案正确的前提下比较效率；不同的是，这里以三个模型中最快的答案为基准，而不是专家写的参考解，所以“最快”不代表最优。</p>
+<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">对象</td><td>判为通过的答案；每次运行的输出都须正确才计入</td></tr><tr><td class="nw">运行</td><td>每次运行都是一个全新的 Python 3.11 进程（LCB 环境），绑定到单个 CPU 核</td></tr><tr><td class="nw">计时</td><td>AtCoder：进程 CPU 时间（rusage）扣除启动基线 25.7 ms；LeetCode：只计 <code>Solution</code> 方法调用的 CPU 时间</td></tr><tr><td class="nw">内存</td><td>进程峰值常驻内存（ru_maxrss）；空程序为 12.1 MB</td></tr><tr><td class="nw">重复</td><td>每个测试 3 次、三个模型轮流先跑，取中位数；同一测试 3 次的离散度中位数 2.0%，P90 6.4%</td></tr><tr><td class="nw">可比题</td><td>最慢答案扣除启动后仍 ≥ 0.1 秒的题；更小的测试耗时主要是启动开销，不比较</td></tr><tr><td class="nw">比较</td><td>每题取最慢一个测试的 CPU 时间，除以三个模型中最快者，得相对倍数；汇总用几何平均</td></tr></tbody></table></div>
 <h3 id="static">静态指标</h3>
 <ul class="list">
-<li>有效行：不含空行和注释的代码行（radon raw）。注释行含文档字符串。</li>
-<li>圈复杂度：每份答案所有函数与方法的圈复杂度之和（radon cc）。</li>
-<li>可维护性指数：0–100，越高越好（radon mi，含多行字符串）。</li>
+<li>有效行：不含空行和注释的代码行（<a href="https://radon.readthedocs.io/">radon</a> raw）。注释行含文档字符串。</li>
+<li>圈复杂度 <span class="cite">[<a href="#ref-7">7</a>]</span>：每份答案所有函数与方法的圈复杂度之和（radon cc）。</li>
+<li>可维护性指数 <span class="cite">[<a href="#ref-8">8</a>, <a href="#ref-9">9</a>]</span>：0–100，越高越好（radon mi，含多行字符串）。</li>
 <li>嵌套深度：语法树中复合语句（if、for、while、with、try、def、class、match）的最大嵌套层数。</li>
-<li>pyflakes 警告：未使用的变量、未定义的名字等。</li>
+<li>pyflakes 警告：未使用的变量、未定义的名字等（<a href="https://github.com/PyCQA/pyflakes">pyflakes</a>）。</li>
 </ul>
-<p>这些指标只描述代码形态，不评价可读性、命名等主观项。</p>
+<p>这些指标只描述代码形态，不评价可读性、命名等主观项。多维度评价代码质量的做法见 RACE <span class="cite">[<a href="#ref-10">10</a>]</span>。</p>
 </div></section>
 <section class="section alt"><div class="wrap">
+<h2 id="agent">智能体（agent）评测</h2>
+<p class="sub">本评测是单次生成：模型读题后一次写出程序。智能体评测让模型在可执行的环境里多步行动，按最终结果判定。</p>
+<div class="tw"><table><thead><tr><th></th><th>单次生成（本评测）</th><th>智能体评测</th></tr></thead><tbody><tr><td class="nw">输入</td><td>题目描述</td><td>任务描述 + 可操作的环境（代码仓库、终端）</td></tr><tr><td class="nw">模型做什么</td><td>回复一次，给出完整程序</td><td>循环“思考 → 调用工具（读文件、改代码、执行命令、跑测试）→ 观察结果”，直到提交</td></tr><tr><td class="nw">环境</td><td>无；判题在模型之外进行</td><td>每个任务一个隔离容器，固定代码版本与依赖</td></tr><tr><td class="nw">判定</td><td>隐藏测试全部通过</td><td>提交后在干净环境中运行隐藏测试；SWE-bench 要求原本失败的测试变为通过（FAIL_TO_PASS），且原本通过的测试仍通过（PASS_TO_PASS）<span class="cite">[<a href="#ref-11">11</a>]</span></td></tr><tr><td class="nw">结果取决于</td><td>模型</td><td>模型 + 外壳（scaffold：工具集、提示词、上下文管理、步数上限）<span class="cite">[<a href="#ref-12">12</a>, <a href="#ref-21">21</a>]</span></td></tr><tr><td class="nw">代表</td><td>LiveCodeBench <span class="cite">[<a href="#ref-1">1</a>]</span>、HumanEval <span class="cite">[<a href="#ref-2">2</a>]</span></td><td>SWE-bench <span class="cite">[<a href="#ref-11">11</a>]</span>、SWE-bench Verified <span class="cite">[<a href="#ref-13">13</a>]</span>、Terminal-Bench <span class="cite">[<a href="#ref-14">14</a>]</span></td></tr></tbody></table></div>
+<h3>评测智能体的要点</h3>
+<ul class="list">
+<li>环境可复现：每个任务固定代码版本、依赖和镜像，智能体与判题在同一份环境中运行。SWE-bench 取自 12 个流行 Python 仓库的 2,294 个真实 issue 与对应的修复 <span class="cite">[<a href="#ref-11">11</a>]</span>；Terminal-Bench 2.0 的 89 个终端任务各带独立环境、人工参考解和自动测试 <span class="cite">[<a href="#ref-14">14</a>]</span>。</li>
+<li>按结果判定，测试要充分：提交后由环境之外的隐藏测试判定。测试不足会把错误补丁判为通过：SWE-bench Verified 中 26/500 题测试不足 <span class="cite">[<a href="#ref-16">16</a>]</span>；被判为通过的补丁有 7.8% 跑不过开发者的完整测试 <span class="cite">[<a href="#ref-17">17</a>]</span>。SWE-bench Verified 本身是 93 名开发者从原题中筛出的 500 题 <span class="cite">[<a href="#ref-13">13</a>]</span>。</li>
+<li>测试对智能体隐藏：智能体能看到或修改测试时会走捷径。ImpossibleBench 把测试改成与题意矛盾，能“通过”即说明作弊；能力更强的模型作弊率更高，把测试对模型隐藏后作弊率接近 0 <span class="cite">[<a href="#ref-15">15</a>]</span>。</li>
+<li>外壳与模型一起报告：同一模型换外壳，解决率和花费都会变 <span class="cite">[<a href="#ref-12">12</a>, <a href="#ref-21">21</a>]</span>。</li>
+<li>同时报告成本：只比准确率会鼓励昂贵的智能体，应给出准确率与成本（token、美元、时间）的取舍 <span class="cite">[<a href="#ref-19">19</a>, <a href="#ref-20">20</a>]</span>。</li>
+<li>警惕污染：只给 issue 文本、不给代码，模型在 SWE-bench 的仓库上猜中出错文件的准确率最高 76%，换成其他仓库只有 53% <span class="cite">[<a href="#ref-18">18</a>]</span>。</li>
+</ul>
+</div></section>
+<section class="section"><div class="wrap">
 <h2>参评模型</h2>
 <p class="sub">信息取自两家官方文档与 API <code>/v1/models</code>（2026-10-23）。</p>
 <div class="tw"><table><thead><tr><th></th><th><span class="dot kimi"></span> Kimi K3.1 Pro</th><th><span class="dot flash"></span> DeepSeek-V4.1-Flash</th><th><span class="dot pro"></span> DeepSeek-V4-Pro</th></tr></thead><tbody><tr><td class="nw">API 模型名</td><td><code>kimi-k3.1-pro</code></td><td><code>deepseek-flash</code></td><td><code>deepseek-v4-pro</code></td></tr><tr><td class="nw">最近更新</td><td>K3.1 系列首发</td><td>2026-10-17（1017 版）</td><td>2026-08-13（GA）</td></tr><tr><td class="nw">规模</td><td>3T 级，K3（2.8T）后训练</td><td>552B MoE，激活 8B 输入 / 16B 输出</td><td>未公布</td></tr><tr><td class="nw">权重</td><td>开放</td><td>开放，MIT</td><td>—</td></tr><tr><td class="nw">上下文 / 最大输出</td><td>1M / 默认 131,072</td><td>1M / 393,216</td><td>1M / 393,216</td></tr><tr><td class="nw">输入</td><td>文本、图像</td><td>文本、图像</td><td>文本</td></tr><tr><td class="nw">思考档位</td><td>恒开；low/high/max，默认 max</td><td>low/high/max，默认 high</td><td>low/high/max，默认 high</td></tr><tr><td class="nw">采样</td><td>固定 T=1.0、top_p=0.95</td><td>推荐 T=1.0</td><td>—</td></tr><tr><td>单价（美元/百万 token：输入 / 缓存 / 输出）</td><td>2 / 0.2 / 10，无峰谷</td><td>0.3 / 0.006 / 1.2，谷时半价</td><td>1.32 / 0.044 / 3.96，谷时半价</td></tr></tbody></table></div>
@@ -71,21 +84,17 @@
 <li>V4.1-Flash 新闻稿称 9 月 14 日起该模型名改由 V4.1-Flash 承接，更新日志称继续提供、计费不变。本次 API 返回的模型名为 <code>deepseek-v4-pro</code>，按 V4-Pro 单价扣费。</li>
 <li>仅文本输入；单价为 V4.1-Flash 的 3.3 倍；DeepSeek 自报多数基准低于 V4.1-Flash。</li>
 </ul>
+<p class="note">模型资料：Kimi <a href="https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart">K3.1 Pro 快速开始</a>、<a href="https://platform.kimi.ai/docs/models">模型列表</a>、<a href="https://platform.kimi.ai/docs/pricing/chat">价格</a>；DeepSeek <a href="https://api-docs.deepseek.com/updates/">更新日志</a>、<a href="https://www.deepseek.com/en/news/deepseek-v4-1-flash/">V4.1-Flash 发布</a>、<a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash">模型卡</a>、<a href="https://api-docs.deepseek.com/quick_start/pricing">价格</a>。</p>
 </div></section>
-<section class="section"><div class="wrap">
-<h2>来源</h2>
-<ul class="list">
-<li>LiveCodeBench：<a href="https://livecodebench.github.io">livecodebench.github.io</a></li>
-<li>Kimi：<a href="https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart">K3.1 Pro 快速开始</a>、<a href="https://platform.kimi.ai/docs/models">模型列表</a>、<a href="https://platform.kimi.ai/docs/pricing/chat">价格</a></li>
-<li>DeepSeek：<a href="https://api-docs.deepseek.com/updates/">更新日志</a>、<a href="https://www.deepseek.com/en/news/deepseek-v4-1-flash/">V4.1-Flash 发布</a>、<a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash">模型卡</a>、<a href="https://api-docs.deepseek.com/quick_start/pricing">价格</a></li>
-<li>上下文、最大输出、默认档位：两家 API <code>/v1/models</code>（2026-10-23）</li>
-</ul>
+<section class="section alt"><div class="wrap">
+<h2 id="refs">参考文献</h2>
+<ol class="refs"><li id="ref-1">Naman Jain, King Han, Alex Gu, et al. LiveCodeBench: Holistic and Contamination Free Evaluation of Large Language Models for Code. ICLR 2025. <a href="https://arxiv.org/abs/2403.07974">arxiv.org/abs/2403.07974</a></li><li id="ref-2">Mark Chen, Jerry Tworek, Heewoo Jun, et al. Evaluating Large Language Models Trained on Code. arXiv:2107.03374, 2021. <a href="https://arxiv.org/abs/2107.03374">arxiv.org/abs/2107.03374</a></li><li id="ref-3">Jiawei Liu, Chunqiu Steven Xia, Yuyao Wang, Lingming Zhang. Is Your Code Generated by ChatGPT Really Correct? Rigorous Evaluation of Large Language Models for Code Generation. NeurIPS 2023. <a href="https://arxiv.org/abs/2305.01210">arxiv.org/abs/2305.01210</a></li><li id="ref-4">Jialun Cao, Yuk-Kit Chan, Zixuan Ling, et al. Code Benchmarks Should Prioritize Rigor, Reliability, and Reproducibility. arXiv:2501.10711, 2025（早期版本题为 How Should We Build A Benchmark? Revisiting 274 Code-Related Benchmarks For LLMs）. <a href="https://arxiv.org/abs/2501.10711">arxiv.org/abs/2501.10711</a></li><li id="ref-5">Jiawei Liu, Songrun Xie, Junhao Wang, Yuxiang Wei, Yifeng Ding, Lingming Zhang. Evaluating Language Models for Efficient Code Generation. COLM 2024. <a href="https://arxiv.org/abs/2408.06450">arxiv.org/abs/2408.06450</a></li><li id="ref-6">Ruizhong Qiu, Weiliang Will Zeng, James Ezick, Christopher Lott, Hanghang Tong. How Efficient is LLM-Generated Code? A Rigorous &amp; High-Standard Benchmark. ICLR 2025. <a href="https://arxiv.org/abs/2406.06647">arxiv.org/abs/2406.06647</a></li><li id="ref-7">T. J. McCabe. A Complexity Measure. IEEE Transactions on Software Engineering, SE-2(4):308–320, 1976. <a href="https://doi.org/10.1109/TSE.1976.233837">doi.org/10.1109/TSE.1976.233837</a></li><li id="ref-8">P. Oman, J. Hagemeister. Metrics for Assessing a Software System&#x27;s Maintainability. Proceedings of the Conference on Software Maintenance, 337–344, 1992. <a href="https://doi.org/10.1109/ICSM.1992.242525">doi.org/10.1109/ICSM.1992.242525</a></li><li id="ref-9">D. Coleman, D. Ash, B. Lowther, P. Oman. Using Metrics to Evaluate Software System Maintainability. Computer, 27(8):44–49, 1994. <a href="https://doi.org/10.1109/2.303623">doi.org/10.1109/2.303623</a></li><li id="ref-10">Jiasheng Zheng, Boxi Cao, Zhengzhao Ma, et al. Beyond Correctness: Benchmarking Multi-dimensional Code Generation for Large Language Models. arXiv:2407.11470, 2024. <a href="https://arxiv.org/abs/2407.11470">arxiv.org/abs/2407.11470</a></li><li id="ref-11">Carlos E. Jimenez, John Yang, Alexander Wettig, Shunyu Yao, Kexin Pei, Ofir Press, Karthik Narasimhan. SWE-bench: Can Language Models Resolve Real-World GitHub Issues? ICLR 2024. <a href="https://arxiv.org/abs/2310.06770">arxiv.org/abs/2310.06770</a></li><li id="ref-12">John Yang, Carlos E. Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik Narasimhan, Ofir Press. SWE-agent: Agent-Computer Interfaces Enable Automated Software Engineering. NeurIPS 2024. <a href="https://arxiv.org/abs/2405.15793">arxiv.org/abs/2405.15793</a></li><li id="ref-13">OpenAI. Introducing SWE-bench Verified. 2024-08-13. <a href="https://openai.com/index/introducing-swe-bench-verified/">openai.com/index/introducing-swe-bench-verified/</a></li><li id="ref-14">Mike A. Merrill, et al. Terminal-Bench: Benchmarking Agents on Hard, Realistic Tasks in Command Line Interfaces. arXiv:2601.11868, 2026. <a href="https://arxiv.org/abs/2601.11868">arxiv.org/abs/2601.11868</a></li><li id="ref-15">Ziqian Zhong, Aditi Raghunathan, Nicholas Carlini. ImpossibleBench: Measuring LLMs&#x27; Propensity of Exploiting Test Cases. ICLR 2026. <a href="https://arxiv.org/abs/2510.20270">arxiv.org/abs/2510.20270</a></li><li id="ref-16">Boxi Yu, Yuxuan Zhu, Pinjia He, Daniel Kang. UTBoost: Rigorous Evaluation of Coding Agents on SWE-Bench. ACL 2025. <a href="https://arxiv.org/abs/2506.09289">arxiv.org/abs/2506.09289</a></li><li id="ref-17">You Wang, Michael Pradel, Zhongxin Liu. Are &quot;Solved Issues&quot; in SWE-bench Really Solved Correctly? An Empirical Study. ICSE 2026. <a href="https://arxiv.org/abs/2503.15223">arxiv.org/abs/2503.15223</a></li><li id="ref-18">Shanchao Liang, Spandan Garg, Roshanak Zilouchian Moghaddam. The SWE-Bench Illusion: When State-of-the-Art LLMs Remember Instead of Reason. ICSE 2026 (SEIP). <a href="https://arxiv.org/abs/2506.12286">arxiv.org/abs/2506.12286</a></li><li id="ref-19">Sayash Kapoor, Benedikt Stroebl, Zachary S. Siegel, Nitya Nadgir, Arvind Narayanan. AI Agents That Matter. TMLR 2025. <a href="https://arxiv.org/abs/2407.01502">arxiv.org/abs/2407.01502</a></li><li id="ref-20">Sayash Kapoor, Benedikt Stroebl, Peter Kirgis, et al. Holistic Agent Leaderboard: The Missing Infrastructure for AI Agent Evaluation. arXiv:2510.11977, 2025. <a href="https://arxiv.org/abs/2510.11977">arxiv.org/abs/2510.11977</a></li><li id="ref-21">Zhiyu Fan, Kirill Vasilevski, Dayi Lin, et al. SWE-Effi: Re-Evaluating Software AI Agent System Effectiveness Under Resource Constraints. arXiv:2509.09853, 2025. <a href="https://arxiv.org/abs/2509.09853">arxiv.org/abs/2509.09853</a></li></ol>
 </div></section>
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
-<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
-<p>全部数据：<a href="data/lcb35.json">data/lcb35.json</a></p>
+<p>评测框架 LiveCodeBench release_v6 <a href="method.html#ref-1">[1]</a>，运行与判分用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="data/lcb.json">data/lcb.json</a></p>
 </div></footer>
 <script src="assets/app.js"></script>
 </body>

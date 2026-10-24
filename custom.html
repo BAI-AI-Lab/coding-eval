@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自定义评测 · 代码能力评测</title>
+<meta name="description" content="在服务器上用 codingBench 评测自己的模型：命令与参数手册">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html" aria-current="page">自定义评测</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<h2>自定义评测</h2>
+<p class="sub">在实验室服务器上用 codingBench 评测任意 OpenAI 兼容接口的模型，判题方式与本站相同。模型写的代码会在服务器上执行，所有评测都以无特权用户 <code>bench</code> 运行。</p>
+<h3>准备</h3>
+<ul class="list">
+<li>服务器账号：地址、端口和账号向实验室管理员索取，本站不公开。需要 root 或有 sudo 权限的账号（<code>cb</code> 会切换到 <code>bench</code> 用户运行）。</li>
+<li>模型接口：OpenAI 兼容的接口地址、模型名和 API key，以及足够的账户余额（费用估算见下文）。</li>
+</ul>
+<h3>1. 登录</h3>
+<div class="cmd"><button class="copy" data-src="c1">复制</button><pre class="code" id="c1"><code>ssh -p &lt;端口&gt; &lt;用户名&gt;@&lt;服务器地址&gt;</code></pre></div>
+<h3>2. 设置模型</h3>
+<div class="cmd"><button class="copy" data-src="c2">复制</button><pre class="code" id="c2"><code>export MODEL=&lt;模型名&gt;                        # 例如 deepseek-flash
+export OPENAI_BASE_URL=https://&lt;平台地址&gt;/v1
+read -rsp &quot;API key: &quot; OPENAI_API_KEY &amp;&amp; export OPENAI_API_KEY &amp;&amp; echo   # 粘贴后回车；不显示，也不进命令历史</code></pre></div>
+<h3>3. 冒烟测试</h3>
+<div class="cmd"><button class="copy" data-src="c3">复制</button><pre class="code" id="c3"><code>cb livecodebench --smoke      # 只跑最新的几道题，先确认接口、格式和扣费正常</code></pre></div>
+<h3>4. 正式运行</h3>
+<div class="cmd"><button class="copy" data-src="c4">复制</button><pre class="code" id="c4"><code>export LCB_IDS=samples/lcb_newest35.txt    # 本站结果用的 35 题；全部 100 题用 samples/lcb_newest100.txt
+nohup cb livecodebench &gt; ~/lcb.log 2&gt;&amp;1 &amp;   # 断开 SSH 也继续跑
+tail -f ~/lcb.log</code></pre></div>
+<p>推理模型和平台限制较多的模型，在第 4 步前按下面的参数手册加上对应设置，例如：</p>
+<div class="cmd"><button class="copy" data-src="c5">复制</button><pre class="code" id="c5"><code># 推理模型（思考计入输出 token），例如 DeepSeek-V4.1-Flash / V4-Pro
+export MAX_TOKENS=262144 WORKERS=16
+
+# 平台固定采样参数、思考很长的模型，例如 Kimi K3.1 Pro
+export MAX_TOKENS=none LCB_OMIT=temperature,top_p,n,presence_penalty,frequency_penalty \
+       LCB_STREAM=1 LCB_TIMEOUT=300 WORKERS=4</code></pre></div>
+<h3>5. 判分与费用</h3>
+<div class="cmd"><button class="copy" data-src="c6">复制</button><pre class="code" id="c6"><code>cb rejudge &lt;模型名&gt;/livecodebench-lcb_newest35-full   # 本站的判分方式，输出通过题数与逐题结果
+cb usage &lt;模型名&gt;/livecodebench-lcb_newest35-full --price-in 0.3 --price-hit 0.006 --price-out 1.2
+                                                      # 延迟、token 与费用（单价：美元/百万 token，按平台价目填）</code></pre></div>
+<p>运行目录在安装目录的 <code>runs/&lt;模型名&gt;/livecodebench-&lt;清单名&gt;-full/</code>，模型的原始回答、每次调用的记录（<code>usage.jsonl</code>）和判题结果（<code>rejudge.jsonl</code>）都在里面。<code>cb summary</code> 列出已完成的运行，其中的分数是 LCB 自带的判题，比较模型请用 <code>cb rejudge</code> 的结果。</p>
+<h3>6. 中断与续跑</h3>
+<p>直接重跑同一条命令：已经答过的题不会再请求；空答案（超时、余额不足、思考用完上限）会重新请求。每次续跑都会在本机重新判分，不花钱。</p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2 id="manual">参数手册</h2>
+<p class="sub">全部通过环境变量设置，在运行 <code>cb</code> 前 <code>export</code>。</p>
+<div class="tw"><table><thead><tr><th>变量</th><th class="nw">默认</th><th>作用</th><th>怎么选</th></tr></thead><tbody><tr><td class="nw"><code>MODEL</code></td><td class="nw">必填</td><td>平台上的模型名，也用作运行目录名（其中的 / 换成 _）</td><td>按平台文档，如 <code>deepseek-flash</code>、<code>kimi-k3.1-pro</code></td></tr><tr><td class="nw"><code>OPENAI_BASE_URL</code></td><td class="nw">必填</td><td>OpenAI 兼容接口地址，以 <code>/v1</code> 结尾</td><td>按平台文档</td></tr><tr><td class="nw"><code>OPENAI_API_KEY</code></td><td class="nw">必填</td><td>平台的 API key</td><td>用 <code>read -rs</code> 输入，不写进命令行、脚本或仓库</td></tr><tr><td class="nw"><code>LCB_IDS</code></td><td class="nw">全部 1055 题</td><td>只跑清单里的题，每行一个题号；相对路径从安装目录算起</td><td><code>samples/lcb_newest100.txt</code>：本站题库 100 题；<code>samples/lcb_newest35.txt</code>：本站结果用的 35 题；也可以自己写清单（题号见“题目”页）</td></tr><tr><td class="nw"><code>LCB_START</code></td><td class="nw">不限</td><td>只跑这个日期之后发布的题，如 <code>2025-01-01</code></td><td>设在模型训练截止日期之后，避开可能见过的题；release_v6 的题截至 2025-04-06</td></tr><tr><td class="nw"><code>LCB_RELEASE</code></td><td class="nw"><code>release_v6</code></td><td>LiveCodeBench 数据版本</td><td>保持默认，与本站可比</td></tr><tr><td class="nw"><code>MAX_TOKENS</code></td><td class="nw">16384</td><td>每次回答的最大 token 数，含思考；<code>none</code> 表示不传上限，由平台决定</td><td>非推理模型用默认；推理模型设成平台允许的最大输出（本站 DeepSeek 262144），或 <code>none</code>。上限太小时困难题会思考到上限、交不出答案而判失败；可以先小后大，续跑只重做空答案</td></tr><tr><td class="nw"><code>WORKERS</code></td><td class="nw">16</td><td>同时发出的请求数</td><td>按平台限流调；遇到 429 就调小。余额不多时调小，避免同时挂起多个昂贵请求（本站 Flash 16、Pro 8、Kimi 4）</td></tr><tr><td class="nw"><code>LCB_TIMEOUT</code></td><td class="nw">1800 秒</td><td>单个请求的超时；开流式时为两次收到 token 之间的最长间隔</td><td>非流式：不小于最长思考时间（本站困难题最长约 31 分钟）；流式：300</td></tr><tr><td class="nw"><code>LCB_STREAM</code></td><td class="nw">关</td><td><code>1</code> = 流式请求；运行目录里的 <code>usage.jsonl.live.&lt;进程号&gt;</code> 每 10 秒更新已收到的字符数</td><td>思考很长、或平台可能长时间不返回时开；Kimi K3.1 Pro 必须开</td></tr><tr><td class="nw"><code>LCB_OMIT</code></td><td class="nw">无</td><td>请求里不发送的字段，逗号分隔</td><td>平台固定了采样参数、传了会报错时用，如 Kimi K3.1 Pro：<code>temperature,top_p,n,presence_penalty,frequency_penalty</code></td></tr></tbody></table></div>
+<h3>固定不变的设置</h3>
+<div class="tw"><table><thead><tr><th>项目</th><th>固定为</th></tr></thead><tbody><tr><td class="nw">提示词</td><td>LCB 官方</td></tr><tr><td class="nw">采样次数</td><td>每题 1 次（pass@1）</td></tr><tr><td class="nw">temperature</td><td>0.2（LCB 官方）；用 <code>LCB_OMIT</code> 去掉后按平台默认</td></tr><tr><td class="nw">思考档位</td><td>不传，按平台默认</td></tr><tr><td class="nw">判题</td><td><code>cb rejudge</code>：与本站相同</td></tr></tbody></table></div>
+<h3>费用估算</h3>
+<p>费用 ≈ 输入 token × 输入单价 + 输出 token × 输出单价。输入只有题面，35 题约 2.4 万 token；输出 token 主要是思考，不同模型差别很大。本站 35 题的实际用量：</p>
+<div class="tw"><table><thead><tr><th>模型</th><th class="n">输入 token</th><th class="n">输出 token</th><th class="n">费用（美元）</th></tr></thead><tbody><tr><td class="nw"><span class="dot kimi"></span> Kimi K3.1 Pro</td><td class="n">24k</td><td class="n">852k</td><td class="n">$8.57</td></tr><tr><td class="nw"><span class="dot flash"></span> DeepSeek-V4.1-Flash</td><td class="n">22k</td><td class="n">644k</td><td class="n">$0.39</td></tr><tr><td class="nw"><span class="dot pro"></span> DeepSeek-V4-Pro</td><td class="n">24k</td><td class="n">1.67M</td><td class="n">$3.33</td></tr></tbody></table></div>
+<h3>常见问题</h3>
+<ul class="list">
+<li>报 400 参数错误：平台不接受某些请求字段，用 <code>LCB_OMIT</code> 去掉。</li>
+<li>很多空答案：通常是 <code>MAX_TOKENS</code> 太小，思考用完了上限；调大后重跑同一条命令，只重做空答案。</li>
+<li>429 限流：调小 <code>WORKERS</code>。</li>
+<li>余额不足：DeepSeek 立即返回 402，这题记为空答案，之后不再发新请求，充值后重跑补齐。本站观察到 Kimi 的非流式请求在余额耗尽后挂起 1–1.5 小时且照常扣费，所以要开 <code>LCB_STREAM=1</code>。</li>
+<li>其他 benchmark：<code>cb bigcodebench</code>（BigCodeBench-Hard）、<code>cb cruxeval</code>（CRUXEval）、<code>cb all</code>（三个都跑）；本站只用 LiveCodeBench。</li>
+</ul>
+</div></section>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6 <a href="method.html#ref-1">[1]</a>，运行与判分用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="data/lcb.json">data/lcb.json</a></p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

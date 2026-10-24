@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>abc399_f Range Power Sum · 代码能力评测</title>
-<meta name="description" content="abc399_f Range Power Sum：三个模型的结果与代码">
+<meta name="description" content="abc399_f Range Power Sum">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">abc399_f</span></p>
@@ -21,11 +21,11 @@
 </div></section>
 <section class="section alt"><div class="wrap">
 <h2>结果</h2>
-<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
-<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>2.5k</b><span>输出 token（含思考）</span></li><li><b>38 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>35</b><span>有效行</span></li><li><b>9</b><span>圈复杂度</span></li><li><b>64.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
-<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>2.5k</b><span>输出 token（含思考）</span></li><li><b>12 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>31</b><span>有效行</span></li><li><b>8</b><span>圈复杂度</span></li><li><b>63.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
-<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>6.6k</b><span>输出 token（含思考）</span></li><li><b>51 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>33</b><span>有效行</span></li><li><b>9</b><span>圈复杂度</span></li><li><b>69.3</b><span>可维护性指数</span></li><li><b>1</b><span>pyflakes 警告</span></li></ul></div></div>
-<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+<div class="compare small" style="--rows:12"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">官方测试 43/43</span><span>判题</span></li><li><b>2.5k</b><span>输出 token（含思考）</span></li><li><b>38 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>35</b><span>有效行</span></li><li><b>9</b><span>圈复杂度</span></li><li><b>64.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">官方测试 43/43</span><span>判题</span></li><li><b>2.5k</b><span>输出 token（含思考）</span></li><li><b>12 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>31</b><span>有效行</span></li><li><b>8</b><span>圈复杂度</span></li><li><b>63.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">官方测试 43/43</span><span>判题</span></li><li><b>6.6k</b><span>输出 token（含思考）</span></li><li><b>51 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>33</b><span>有效行</span></li><li><b>9</b><span>圈复杂度</span></li><li><b>69.3</b><span>可维护性指数</span></li><li><b>1</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计通过的答案。判题方法见 <a href="../method.html#judge">原理 › 判题</a>。</p>
 </div></section>
 <section class="section"><div class="wrap">
 <div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
@@ -185,12 +185,12 @@
 </pre></div>
 </div></div>
 </div></section>
-<div class="wrap"><nav class="pager"><a href="abc399_e.html">‹ abc399_e</a><a href="abc400_e.html">abc400_e ›</a></nav></div>
+<div class="wrap"><nav class="pager"><a href="3765.html">‹ 3765</a><a href="abc399_e.html">abc399_e ›</a></nav></div>
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
-<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
-<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+<p>评测框架 LiveCodeBench release_v6 <a href="../method.html#ref-1">[1]</a>，运行与判分用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb.json">data/lcb.json</a></p>
 </div></footer>
 <script src="../assets/app.js"></script>
 </body>
