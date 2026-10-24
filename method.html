@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html" aria-current="page">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html">自定义评测</a></li></ul></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html" aria-current="page">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html">自定义评测</a></li><li><a href="report-2026-10-23.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <h2>原理</h2>
@@ -21,15 +21,15 @@
 <div class="card"><h4>代码分析</h4><p>通过的答案绑核重跑，测 CPU 时间与峰值内存；用 radon、pyflakes 统计代码指标。</p></div>
 </div>
 <h3>评测设置</h3>
-<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">题库</td><td>LiveCodeBench release_v6 <span class="cite">[<a href="#ref-1">1</a>]</span> 中发布日期最新的 100 题，官方测试数据</td></tr><tr><td class="nw">提示词</td><td>LCB 官方提示词：AtCoder 题要求完整程序读写标准输入输出，LeetCode 题要求补全给定的 Python 函数</td></tr><tr><td class="nw">指标</td><td>pass@1 <span class="cite">[<a href="#ref-2">2</a>]</span>：每题生成 1 次，全部测试通过才算通过</td></tr><tr><td class="nw">调用</td><td>各厂商官方的 OpenAI 兼容 API；codingBench 的 <code>cb livecodebench</code></td></tr><tr><td class="nw">采样</td><td>temperature 0.2（LCB 官方）；平台固定采样参数的模型不传，按平台固定值</td></tr><tr><td class="nw">思考档位</td><td>不传，按各平台默认</td></tr><tr><td class="nw">输出上限</td><td>按模型设置；推理模型的思考计入输出 token，用完上限交不出答案即判失败</td></tr><tr><td class="nw">判题</td><td>见下文“判题”；与 <code>cb rejudge</code> 相同</td></tr><tr><td class="nw">计量</td><td>每次调用记录起止时间与服务端返回的 token 数（含思考）</td></tr><tr><td class="nw">费用</td><td>官方单价 × token，分峰谷的平台按调用时段计；用账户余额变化核对</td></tr></tbody></table></div>
+<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">题库</td><td>LiveCodeBench release_v6 <span class="cite">[<a href="#ref-1">1</a>]</span> 中发布日期最新的 100 题，官方测试数据</td></tr><tr><td class="nw">提示词</td><td>LCB 官方提示词：AtCoder 题要求完整程序读写标准输入输出，LeetCode 题要求补全给定的 Python 函数</td></tr><tr><td class="nw">指标</td><td>pass@1 <span class="cite">[<a href="#ref-2">2</a>]</span>：每题生成 1 次，全部测试通过才算通过</td></tr><tr><td class="nw">调用</td><td>各厂商官方的 OpenAI 兼容 API；codingBench 的 <code>cb livecodebench</code></td></tr><tr><td class="nw">采样</td><td>temperature 0.2（LCB 官方）；平台固定采样参数的模型不传，按平台固定值</td></tr><tr><td class="nw">思考档位</td><td>不传，按各平台默认</td></tr><tr><td class="nw">输出上限</td><td>按模型设置；推理模型的思考计入输出 token，用完上限交不出答案即判失败</td></tr><tr><td class="nw">判题</td><td>见下文“判题”；与 <code>cb rejudge</code> 相同</td></tr><tr><td class="nw">计量</td><td>每次调用记录起止时间与服务端返回的 token 数（含思考）</td></tr><tr><td class="nw">费用</td><td>官方单价 × token，分峰谷的平台按调用时段计</td></tr></tbody></table></div>
 <h3>为什么用最新的题</h3>
 <p>LiveCodeBench 持续从 AtCoder、LeetCode、Codeforces 收集比赛题并标注比赛日期，可以只用模型训练截止之后发布的题，降低训练数据污染 <span class="cite">[<a href="#ref-1">1</a>]</span>。题库中的 100 题发布于 2025-02-15 至 2025-04-06；对发布更晚的模型仍不能排除污染。</p>
 </div></section>
 <section class="section alt"><div class="wrap">
 <h2 id="judge">判题</h2>
-<p class="sub">测试不充分或有误会让通过率失真 <span class="cite">[<a href="#ref-3">3</a>, <a href="#ref-4">4</a>]</span>。LCB 自带的判题程序在标准输入输出上有缺陷，个别测试数据有误，因此不用它判 AtCoder 题。</p>
-<div class="tw"><table><thead><tr><th>问题</th><th>处理</th></tr></thead><tbody><tr><td>LCB 用模拟对象替换标准输入，<code>sys.stdin.buffer.readline</code> 每次都返回输入的第一行</td><td>AtCoder 答案改为独立 Python 进程，用真实的标准输入输出运行</td></tr><tr><td>不支持 <code>sys.stdout.buffer</code>：标准输出被替换为 StringIO</td><td>同上</td></tr><tr><td>测试数据错误：<code>abc397_d</code> 第 41 个测试 N=27，标准答案为“3 0”；y=0 不是正整数，27 不存在正整数解，正确输出为 -1</td><td>校验器：输出的 x、y 须为正整数且 x³ − y³ = N；输出 -1 时须确实无解</td></tr><tr><td>多解题按单一答案比对：<code>arc195_c</code> 允许任意合法构造</td><td>校验器：逐条检查摆法合法；Yes/No 须与标准答案一致</td></tr></tbody></table></div>
-<p class="note">每个测试限时 6 秒；校验器之外的题逐 token 比对输出。LeetCode 答案是函数调用，不受上述问题影响，沿用 LCB 的判题程序。LCB 的题目与测试数据为本评测固定的版本，未修改。同样的判题可在服务器上用 <code>cb rejudge</code> 完成（见 <a href="custom.html">自定义评测</a>）。</p>
+<p class="sub">测试不充分或有误会让通过率失真 <span class="cite">[<a href="#ref-3">3</a>, <a href="#ref-4">4</a>]</span>。本评测的判题规则如下，与 <code>cb rejudge</code> 相同。</p>
+<div class="tw"><table><thead><tr><th>适用</th><th>判定</th></tr></thead><tbody><tr><td class="nw">AtCoder（完整程序）</td><td>每份答案作为独立 Python 进程，用真实的标准输入输出运行全部官方测试，每个测试限时 6 秒，逐 token 比对输出</td></tr><tr><td class="nw">LeetCode（补全函数）</td><td>LCB 的函数调用判题，全部官方测试通过</td></tr><tr><td class="nw"><code>abc397_d</code></td><td>校验器：输出的 x、y 须为正整数且 x³ − y³ = N；输出 -1 时须确实无解（官方第 41 个测试的标准答案“3 0”不满足题意）</td></tr><tr><td class="nw"><code>arc195_c</code></td><td>校验器：允许任意合法摆法，逐条检查；Yes/No 须与标准答案一致</td></tr></tbody></table></div>
+<p class="note">LCB 的题目与测试数据为本评测固定的版本，未修改。命令见 <a href="custom.html">自定义评测</a>。</p>
 </div></section>
 <section class="section"><div class="wrap">
 <h2 id="perf">性能测量</h2>
