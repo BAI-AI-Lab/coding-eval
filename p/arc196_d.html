@@ -1,0 +1,956 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arc196_d Roadway · 代码能力评测</title>
+<meta name="description" content="arc196_d Roadway：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">arc196_d</span></p>
+<h1 class="ptitle">Roadway</h1>
+<p class="meta">AtCoder ARC 196 D 题 · 2025-04-06 · <span class="pill">困难</span></p>
+<p class="summary">一排 N 个城镇之间的道路可设任意整数权值，每人从 Sᵢ 走到 Tᵢ，要求出发和到达时体力恰为 0、途中始终为正；对每个查询区间判断能否同时满足这些人的要求。</p>
+
+<p><a class="btn" href="https://atcoder.jp/contests/arc196/tasks/arc196_d" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 42/42</span><span>复核</span></li><li><b>68.1k</b><span>输出 token（含思考）</span></li><li><b>1230 秒</b><span>延迟</span></li><li><b>0.06 秒（最快）</b><span>最慢测试的 CPU 时间</span></li><li><b>16 MB</b><span>峰值内存</span></li><li><b>183</b><span>有效行</span></li><li><b>56</b><span>圈复杂度</span></li><li><b>26.4</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 42/42</span><span>复核</span></li><li><b>43.0k</b><span>输出 token（含思考）</span></li><li><b>248 秒</b><span>延迟</span></li><li><b>0.13 秒（2.1×）</b><span>最慢测试的 CPU 时间</span></li><li><b>16 MB</b><span>峰值内存</span></li><li><b>250</b><span>有效行</span></li><li><b>22</b><span>圈复杂度</span></li><li><b>35.6</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 42/42</span><span>复核</span></li><li><b>110.4k</b><span>输出 token（含思考）</span></li><li><b>834 秒</b><span>延迟</span></li><li><b>0.15 秒（2.5×）</b><span>最慢测试的 CPU 时间</span></li><li><b>18 MB</b><span>峰值内存</span></li><li><b>326</b><span>有效行</span></li><li><b>46</b><span>圈复杂度</span></li><li><b>24.0</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 219 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+
+<span class="n">SHIFT</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">MASK</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SHIFT</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">INF</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">60</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MinSeg</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"t"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="n">INF</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">t</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">t</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span> <span class="k">else</span> <span class="n">b</span>
+            <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">right</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">INF</span>
+        <span class="k">while</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">l</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MaxSeg</span><span class="p">:</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"n"</span><span class="p">,</span> <span class="s2">"t"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">t</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">t</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="k">else</span> <span class="n">b</span>
+            <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">right</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">n</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">while</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">v</span>
+                <span class="n">l</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">r</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">r</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                    <span class="n">res</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="n">l</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="mi">3</span>
+
+    <span class="n">left</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 0: S &lt; T, 1: S &gt; T</span>
+
+    <span class="n">right_coords</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+    <span class="n">left_coords</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">right</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="n">right</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">left_coords</span><span class="p">[</span><span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">right_coords</span><span class="p">[</span><span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">left_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">left_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
+        <span class="n">right_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">right_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]))</span>
+
+    <span class="n">left_maps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">left_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])},</span>
+        <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">left_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])},</span>
+    <span class="p">]</span>
+    <span class="n">right_maps</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">right_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])},</span>
+        <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">right_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])},</span>
+    <span class="p">]</span>
+
+    <span class="n">pos_left</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">pos_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">pos_left</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">left_maps</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">left</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">pos_right</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">right_maps</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">right</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+    <span class="k">del</span> <span class="n">left_maps</span><span class="p">,</span> <span class="n">right_maps</span>
+
+    <span class="n">min_trees</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">MinSeg</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">right_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+        <span class="n">MinSeg</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">right_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+    <span class="p">]</span>
+    <span class="n">max_trees</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">MaxSeg</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_coords</span><span class="p">[</span><span class="mi">0</span><span class="p">])),</span>
+        <span class="n">MaxSeg</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">left_coords</span><span class="p">[</span><span class="mi">1</span><span class="p">])),</span>
+    <span class="p">]</span>
+
+    <span class="n">active_left</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">active_right</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">bound</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">window_left</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">cur</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">sign</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">bad</span> <span class="o">=</span> <span class="n">active_left</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">bad</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">bad</span> <span class="o">=</span> <span class="n">active_right</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">bad</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">right_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">min_trees</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">&gt;&gt;</span> <span class="n">SHIFT</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">:</span>
+                        <span class="n">bad</span> <span class="o">=</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="n">MASK</span>
+
+            <span class="k">if</span> <span class="n">bad</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">coords</span> <span class="o">=</span> <span class="n">left_coords</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">coords</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">hi</span><span class="p">:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="n">max_trees</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">key</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="p">(</span><span class="n">key</span> <span class="o">&gt;&gt;</span> <span class="n">SHIFT</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">b</span><span class="p">:</span>
+                        <span class="n">bad</span> <span class="o">=</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="n">MASK</span>
+
+            <span class="k">if</span> <span class="n">bad</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">window_left</span><span class="p">,</span> <span class="n">bad</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">left</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">right</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">sj</span> <span class="o">=</span> <span class="n">sign</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">active_left</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">active_right</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">min_trees</span><span class="p">[</span><span class="n">sj</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pos_right</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">INF</span><span class="p">)</span>
+                <span class="n">max_trees</span><span class="p">[</span><span class="n">sj</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pos_left</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="n">window_left</span> <span class="o">=</span> <span class="n">bad</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="n">active_left</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur</span>
+        <span class="n">active_right</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur</span>
+        <span class="n">min_trees</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pos_right</span><span class="p">[</span><span class="n">cur</span><span class="p">],</span> <span class="p">(</span><span class="n">a</span> <span class="o">&lt;&lt;</span> <span class="n">SHIFT</span><span class="p">)</span> <span class="o">|</span> <span class="n">cur</span><span class="p">)</span>
+        <span class="n">max_trees</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">pos_left</span><span class="p">[</span><span class="n">cur</span><span class="p">],</span> <span class="p">(</span><span class="n">b</span> <span class="o">&lt;&lt;</span> <span class="n">SHIFT</span><span class="p">)</span> <span class="o">|</span> <span class="n">cur</span><span class="p">)</span>
+        <span class="n">bound</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span> <span class="o">=</span> <span class="n">window_left</span>
+
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">ptr</span> <span class="o">+=</span> <span class="mi">2</span>
+        <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Yes"</span> <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;=</span> <span class="n">bound</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="k">else</span> <span class="s2">"No"</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 323 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+
+    <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sign</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>       <span class="c1"># endpoints are lower, inside is higher</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+            <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>      <span class="c1"># endpoints are higher, inside is lower</span>
+
+    <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">))</span>
+
+    <span class="n">best_prev</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Direct incompatible cases:</span>
+    <span class="c1"># 1. same left endpoint, different right endpoint</span>
+    <span class="c1"># 2. same right endpoint, different left endpoint</span>
+    <span class="c1"># 3. same endpoints with opposite signs</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">2</span>
+
+    <span class="n">idx1_l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">r1_l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">idx2_l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+
+    <span class="n">idx1_r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">l1_r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">idx2_r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+
+    <span class="n">exact_pos</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">exact_neg</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">sg</span> <span class="o">=</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">cand</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># same left, different right</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">r1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="n">idx2_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cand</span> <span class="o">&gt;</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cand</span>
+
+        <span class="c1"># same right, different left</span>
+        <span class="n">cand</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">x</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">l</span><span class="p">:</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="n">idx2_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">cand</span> <span class="o">&gt;</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cand</span>
+
+        <span class="c1"># same endpoints, opposite sign</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">l</span> <span class="o">*</span> <span class="n">base</span> <span class="o">+</span> <span class="n">r</span>
+        <span class="k">if</span> <span class="n">sg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">cand</span> <span class="o">=</span> <span class="n">exact_neg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cand</span> <span class="o">=</span> <span class="n">exact_pos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cand</span> <span class="o">&gt;</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cand</span>
+
+        <span class="k">if</span> <span class="n">sg</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">exact_pos</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exact_neg</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+        <span class="c1"># update same-left data</span>
+        <span class="k">if</span> <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">r1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="k">elif</span> <span class="n">r1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx2_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="n">idx1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">r1_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="c1"># update same-right data</span>
+        <span class="k">if</span> <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">l1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="k">elif</span> <span class="n">l1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">==</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx2_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="n">idx1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">l1_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+
+    <span class="c1"># Crossing incompatible pairs with the same sign.</span>
+    <span class="c1"># We handle both crossing directions by doing an original pass</span>
+    <span class="c1"># and a coordinate-reversed pass.</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_pass</span><span class="p">(</span><span class="n">transformed</span><span class="p">,</span> <span class="n">target_sign</span><span class="p">):</span>
+        <span class="n">coords</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">transformed</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_sign</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_sign</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">l</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="n">x</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+
+        <span class="n">seg</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arr</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">arr</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">arr</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">!=</span> <span class="n">last</span><span class="p">:</span>
+                    <span class="n">arr</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                    <span class="n">m</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">last</span> <span class="o">=</span> <span class="n">val</span>
+
+            <span class="k">if</span> <span class="n">m</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">arr</span><span class="p">[</span><span class="n">m</span><span class="p">:]</span>
+
+            <span class="n">seg</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">m</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">transformed</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_sign</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+                <span class="c1"># Query previous intervals j with:</span>
+                <span class="c1"># l_j &lt; l &lt; r_j &lt; r</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">r</span>
+
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">arr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">arr</span><span class="p">:</span>
+                        <span class="n">left</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span>
+                        <span class="n">right</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">hi</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span>
+                            <span class="n">tree</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+                            <span class="n">a</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="n">n</span>
+                            <span class="n">b</span> <span class="o">=</span> <span class="n">right</span> <span class="o">+</span> <span class="n">n</span>
+
+                            <span class="k">while</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="n">v</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">cand</span><span class="p">:</span>
+                                        <span class="n">cand</span> <span class="o">=</span> <span class="n">v</span>
+                                    <span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">b</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="n">b</span> <span class="o">-=</span> <span class="mi">1</span>
+                                    <span class="n">v</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">cand</span><span class="p">:</span>
+                                        <span class="n">cand</span> <span class="o">=</span> <span class="n">v</span>
+                                <span class="n">a</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                                <span class="n">b</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+                    <span class="n">x</span> <span class="o">-=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">cand</span> <span class="o">&gt;</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cand</span>
+
+                <span class="c1"># Insert current interval</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">arr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                    <span class="n">tree</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">n</span>
+
+                    <span class="k">if</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">:</span>
+                        <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                        <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">i</span><span class="p">:</span>
+                                <span class="k">break</span>
+                            <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                            <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+                    <span class="n">x</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">target_sign</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">l</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">r</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+
+                <span class="n">cand</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">r</span>
+
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">arr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">arr</span><span class="p">:</span>
+                        <span class="n">left</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">lo</span><span class="p">)</span>
+                        <span class="n">right</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">hi</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">right</span><span class="p">:</span>
+                            <span class="n">tree</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+                            <span class="n">a</span> <span class="o">=</span> <span class="n">left</span> <span class="o">+</span> <span class="n">n</span>
+                            <span class="n">b</span> <span class="o">=</span> <span class="n">right</span> <span class="o">+</span> <span class="n">n</span>
+
+                            <span class="k">while</span> <span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">a</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="n">v</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">cand</span><span class="p">:</span>
+                                        <span class="n">cand</span> <span class="o">=</span> <span class="n">v</span>
+                                    <span class="n">a</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">if</span> <span class="n">b</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                    <span class="n">b</span> <span class="o">-=</span> <span class="mi">1</span>
+                                    <span class="n">v</span> <span class="o">=</span> <span class="n">tree</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+                                    <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="n">cand</span><span class="p">:</span>
+                                        <span class="n">cand</span> <span class="o">=</span> <span class="n">v</span>
+                                <span class="n">a</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                                <span class="n">b</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+                    <span class="n">x</span> <span class="o">-=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+
+                <span class="k">if</span> <span class="n">cand</span> <span class="o">&gt;</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cand</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="p">:</span>
+                    <span class="n">arr</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+                    <span class="n">tree</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">pos</span> <span class="o">+</span> <span class="n">n</span>
+
+                    <span class="k">if</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">i</span><span class="p">:</span>
+                        <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                        <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">i</span><span class="p">:</span>
+                                <span class="k">break</span>
+                            <span class="n">tree</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+                            <span class="n">p</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+                    <span class="n">x</span> <span class="o">+=</span> <span class="n">x</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">x</span>
+
+    <span class="n">process_pass</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">process_pass</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">process_pass</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">process_pass</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">bad_max</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">cur</span><span class="p">:</span>
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">best_prev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">bad_max</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cur</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bad_max</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Yes"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"No"</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">ans</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 368 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_left</span><span class="p">,</span> <span class="n">bisect_right</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+
+    <span class="n">L</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">Sign</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 1: rightward (+), 0: leftward (-)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">t</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">sign</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">sign</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">Sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sign</span>
+
+    <span class="n">queries</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+        <span class="n">queries</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">),</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)))</span>
+
+    <span class="n">f</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Type A: identical interval, opposite signs</span>
+    <span class="n">same_interval</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">entry</span> <span class="o">=</span> <span class="n">same_interval</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">Sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">same_interval</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">entry</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">same_interval</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">entry</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="c1"># Type C: same-direction shared endpoint</span>
+    <span class="c1"># For left endpoints L and right endpoints R, keep top two indices with distinct other endpoint.</span>
+    <span class="n">top1_idx_l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top1_other_l</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top2_idx_l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top2_other_l</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+
+    <span class="n">top1_idx_r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top1_other_r</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top2_idx_r</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">top2_other_r</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># query left endpoint</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+        <span class="c1"># query right endpoint</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">l</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+        <span class="c1"># update left endpoint key = l, other = r</span>
+        <span class="n">o1</span> <span class="o">=</span> <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="n">o2</span> <span class="o">=</span> <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="n">i2</span> <span class="o">=</span> <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="k">elif</span> <span class="n">o1</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">elif</span> <span class="n">i2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i1</span>
+            <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">o1</span>
+            <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="k">elif</span> <span class="n">o2</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+            <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+            <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">top2_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i1</span>
+            <span class="n">top2_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">o1</span>
+            <span class="n">top1_idx_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_l</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+
+        <span class="c1"># update right endpoint key = r, other = l</span>
+        <span class="n">o1</span> <span class="o">=</span> <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">i1</span> <span class="o">=</span> <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">o2</span> <span class="o">=</span> <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">i2</span> <span class="o">=</span> <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i1</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="k">elif</span> <span class="n">o1</span> <span class="o">==</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+        <span class="k">elif</span> <span class="n">i2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i1</span>
+            <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">o1</span>
+            <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="k">elif</span> <span class="n">o2</span> <span class="o">==</span> <span class="n">l</span><span class="p">:</span>
+            <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+            <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">top2_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i1</span>
+            <span class="n">top2_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">o1</span>
+            <span class="n">top1_idx_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span>
+            <span class="n">top1_other_r</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span>
+
+    <span class="n">plus_intervals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">Sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">minus_intervals</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">L</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">R</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">Sign</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">process_structure</span><span class="p">(</span><span class="n">intervals</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">intervals</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">Nm1</span> <span class="o">=</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">r</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xs</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">l</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">})</span>
+
+        <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+        <span class="n">pos_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xs</span><span class="p">)}</span>
+        <span class="n">node_ys</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">size</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">pos</span>
+                <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+                    <span class="n">lst</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">lst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    <span class="n">node</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">Nm1</span> <span class="o">-</span> <span class="n">r</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">pos</span>
+                <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+                    <span class="n">lst</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">lst</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                    <span class="n">node</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+        <span class="n">node_bit</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">size</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">size</span><span class="p">):</span>
+            <span class="n">lst</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">lst</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">val</span> <span class="o">!=</span> <span class="n">lst</span><span class="p">[</span><span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]:</span>
+                        <span class="n">lst</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+                        <span class="n">m</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">del</span> <span class="n">lst</span><span class="p">[</span><span class="n">m</span><span class="p">:]</span>
+                <span class="n">node_ys</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lst</span>
+                <span class="n">node_bit</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+                <span class="n">xL</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">xR</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">Y</span> <span class="o">=</span> <span class="n">l</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">xL</span> <span class="o">&lt;=</span> <span class="n">xR</span><span class="p">:</span>
+                    <span class="n">lo</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xL</span><span class="p">)</span>
+                    <span class="n">hi</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xR</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">left</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">lo</span>
+                        <span class="n">right</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">hi</span>
+                        <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">left</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">node</span> <span class="o">=</span> <span class="n">left</span>
+                                <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                    <span class="n">p</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+                                    <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                                        <span class="n">val</span> <span class="o">=</span> <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                                        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                                            <span class="n">res</span> <span class="o">=</span> <span class="n">val</span>
+                                        <span class="n">p</span> <span class="o">-=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                                <span class="n">left</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">right</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+                                <span class="n">node</span> <span class="o">=</span> <span class="n">right</span>
+                                <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                    <span class="n">p</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+                                    <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                                        <span class="n">val</span> <span class="o">=</span> <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                                        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                                            <span class="n">res</span> <span class="o">=</span> <span class="n">val</span>
+                                        <span class="n">p</span> <span class="o">-=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                                <span class="n">right</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="n">left</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                            <span class="n">right</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+                            <span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="n">r</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">pos</span>
+                <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+                    <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                        <span class="n">yidx</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq</span><span class="p">)</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">yidx</span>
+                        <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">m</span><span class="p">:</span>
+                            <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                            <span class="n">p</span> <span class="o">+=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                    <span class="n">node</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">intervals</span><span class="p">:</span>
+                <span class="n">xL</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">xR</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">Y</span> <span class="o">=</span> <span class="n">Nm1</span> <span class="o">-</span> <span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">xL</span> <span class="o">&lt;=</span> <span class="n">xR</span><span class="p">:</span>
+                    <span class="n">lo</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xL</span><span class="p">)</span>
+                    <span class="n">hi</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">xR</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">lo</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="p">:</span>
+                        <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="n">left</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">lo</span>
+                        <span class="n">right</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">hi</span>
+                        <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">left</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">node</span> <span class="o">=</span> <span class="n">left</span>
+                                <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                    <span class="n">p</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+                                    <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                                        <span class="n">val</span> <span class="o">=</span> <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                                        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                                            <span class="n">res</span> <span class="o">=</span> <span class="n">val</span>
+                                        <span class="n">p</span> <span class="o">-=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                                <span class="n">left</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">right</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+                                <span class="n">node</span> <span class="o">=</span> <span class="n">right</span>
+                                <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                    <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                                    <span class="n">p</span> <span class="o">=</span> <span class="n">bisect_right</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">Y</span><span class="p">)</span>
+                                    <span class="k">while</span> <span class="n">p</span><span class="p">:</span>
+                                        <span class="n">val</span> <span class="o">=</span> <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                                        <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;</span> <span class="n">res</span><span class="p">:</span>
+                                            <span class="n">res</span> <span class="o">=</span> <span class="n">val</span>
+                                        <span class="n">p</span> <span class="o">-=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                                <span class="n">right</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="n">left</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                            <span class="n">right</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+                        <span class="k">if</span> <span class="n">res</span> <span class="o">&gt;</span> <span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">]:</span>
+                            <span class="n">f</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
+
+                <span class="n">x</span> <span class="o">=</span> <span class="n">l</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">Nm1</span> <span class="o">-</span> <span class="n">r</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">pos_map</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">node</span> <span class="o">=</span> <span class="n">size</span> <span class="o">+</span> <span class="n">pos</span>
+                <span class="k">while</span> <span class="n">node</span><span class="p">:</span>
+                    <span class="n">uniq</span> <span class="o">=</span> <span class="n">node_ys</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">uniq</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">bit</span> <span class="o">=</span> <span class="n">node_bit</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                        <span class="n">yidx</span> <span class="o">=</span> <span class="n">bisect_left</span><span class="p">(</span><span class="n">uniq</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq</span><span class="p">)</span>
+                        <span class="n">p</span> <span class="o">=</span> <span class="n">yidx</span>
+                        <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">m</span><span class="p">:</span>
+                            <span class="n">bit</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+                            <span class="n">p</span> <span class="o">+=</span> <span class="n">p</span> <span class="o">&amp;</span> <span class="o">-</span><span class="n">p</span>
+                    <span class="n">node</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+
+    <span class="c1"># Type B: crossing intervals with the same sign</span>
+    <span class="n">process_structure</span><span class="p">(</span><span class="n">plus_intervals</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">process_structure</span><span class="p">(</span><span class="n">plus_intervals</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">process_structure</span><span class="p">(</span><span class="n">minus_intervals</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">process_structure</span><span class="p">(</span><span class="n">minus_intervals</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+
+    <span class="c1"># Range maximum of f</span>
+    <span class="n">size_seg</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">size_seg</span> <span class="o">&lt;</span> <span class="n">M</span><span class="p">:</span>
+        <span class="n">size_seg</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+    <span class="n">seg</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">size_seg</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">size_seg</span> <span class="o">+</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size_seg</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">seg</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">seg</span><span class="p">[</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">seg</span><span class="p">[</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">1</span><span class="p">]</span> <span class="k">else</span> <span class="n">seg</span><span class="p">[</span><span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">lq</span><span class="p">,</span> <span class="n">rq</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">lq</span> <span class="o">+</span> <span class="n">size_seg</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">rq</span> <span class="o">+</span> <span class="n">size_seg</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">mx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">left</span> <span class="o">&lt;=</span> <span class="n">right</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">left</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">seg</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">mx</span><span class="p">:</span>
+                    <span class="n">mx</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
+                <span class="n">left</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">right</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">seg</span><span class="p">[</span><span class="n">right</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">mx</span><span class="p">:</span>
+                    <span class="n">mx</span> <span class="o">=</span> <span class="n">seg</span><span class="p">[</span><span class="n">right</span><span class="p">]</span>
+                <span class="n">right</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">left</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+            <span class="n">right</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">mx</span> <span class="o">&gt;=</span> <span class="n">lq</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"No"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"Yes"</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="arc196_c.html">‹ arc196_c</a><a href="3784.html">3784 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

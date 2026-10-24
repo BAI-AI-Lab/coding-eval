@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3801 Count Beautiful Numbers · 代码能力评测</title>
+<meta name="description" content="3801 Count Beautiful Numbers：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">3801</span></p>
+<h1 class="ptitle">Count Beautiful Numbers</h1>
+<p class="meta">LeetCode 周赛 441 · 2025-03-15 · <span class="pill">困难</span></p>
+<p class="summary">各位数字之积能被各位数字之和整除的正整数称为美丽数；求 [l, r] 内美丽数的个数。</p>
+<p><b>要点</b>：数位 DP：含 0 时积为 0，必满足；否则积为 2ᵃ3ᵇ5ᶜ7ᵈ，状态有限；暴力枚举超时。</p>
+<p><a class="btn" href="https://leetcode.com/problems/count-beautiful-numbers/" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>6.4k</b><span>输出 token（含思考）</span></li><li><b>99 秒</b><span>延迟</span></li><li><b>0.11 秒（最快）</b><span>最慢测试的 CPU 时间</span></li><li><b>26 MB</b><span>峰值内存</span></li><li><b>37</b><span>有效行</span></li><li><b>3</b><span>圈复杂度</span></li><li><b>61.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>3.8k</b><span>输出 token（含思考）</span></li><li><b>22 秒</b><span>延迟</span></li><li><b>0.11 秒</b><span>最慢测试的 CPU 时间</span></li><li><b>26 MB</b><span>峰值内存</span></li><li><b>25</b><span>有效行</span></li><li><b>3</b><span>圈复杂度</span></li><li><b>51.6</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>66.3k</b><span>输出 token（含思考）</span></li><li><b>474 秒</b><span>延迟</span></li><li><b>0.93 秒（8.3×）</b><span>最慢测试的 CPU 时间</span></li><li><b>18 MB</b><span>峰值内存</span></li><li><b>81</b><span>有效行</span></li><li><b>5</b><span>圈复杂度</span></li><li><b>55.0</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 48 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beautifulNumbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_up_to</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+            <span class="n">digits</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span>
+
+            <span class="nd">@lru_cache</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">dfs</span><span class="p">(</span>
+                <span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                <span class="n">digit_sum</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                <span class="n">digit_product</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                <span class="n">started</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+                <span class="n">tight</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
+            <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="mi">0</span>
+                    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">digit_product</span> <span class="o">%</span> <span class="n">digit_sum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+
+                <span class="n">limit</span> <span class="o">=</span> <span class="n">digits</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="k">if</span> <span class="n">tight</span> <span class="k">else</span> <span class="mi">9</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">limit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">next_tight</span> <span class="o">=</span> <span class="n">tight</span> <span class="ow">and</span> <span class="n">d</span> <span class="o">==</span> <span class="n">digits</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span> <span class="ow">and</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="c1"># Leading zero: the number has not started yet.</span>
+                        <span class="n">total</span> <span class="o">+=</span> <span class="n">dfs</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">next_tight</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">total</span> <span class="o">+=</span> <span class="n">dfs</span><span class="p">(</span>
+                            <span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                            <span class="n">digit_sum</span> <span class="o">+</span> <span class="n">d</span><span class="p">,</span>
+                            <span class="n">digit_product</span> <span class="o">*</span> <span class="n">d</span><span class="p">,</span>
+                            <span class="kc">True</span><span class="p">,</span>
+                            <span class="n">next_tight</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">total</span>
+
+            <span class="k">return</span> <span class="n">dfs</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">count_up_to</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">count_up_to</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 34 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beautifulNumbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+            <span class="n">digits</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">digits</span><span class="p">)</span>
+
+            <span class="nd">@lru_cache</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="k">def</span><span class="w"> </span><span class="nf">dp</span><span class="p">(</span><span class="n">pos</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">digit_sum</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">digit_product</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">tight</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">started</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pos</span> <span class="o">==</span> <span class="n">length</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">started</span> <span class="ow">and</span> <span class="n">digit_product</span> <span class="o">%</span> <span class="n">digit_sum</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
+
+                <span class="n">limit</span> <span class="o">=</span> <span class="n">digits</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span> <span class="k">if</span> <span class="n">tight</span> <span class="k">else</span> <span class="mi">9</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">limit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">next_tight</span> <span class="o">=</span> <span class="n">tight</span> <span class="ow">and</span> <span class="p">(</span><span class="n">d</span> <span class="o">==</span> <span class="n">digits</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">started</span> <span class="ow">and</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">total</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">digit_sum</span><span class="p">,</span> <span class="n">digit_product</span><span class="p">,</span> <span class="n">next_tight</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="ow">not</span> <span class="n">started</span><span class="p">:</span>
+                        <span class="n">total</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">next_tight</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">total</span> <span class="o">+=</span> <span class="n">dp</span><span class="p">(</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">digit_sum</span> <span class="o">+</span> <span class="n">d</span><span class="p">,</span> <span class="n">digit_product</span> <span class="o">*</span> <span class="n">d</span><span class="p">,</span> <span class="n">next_tight</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+                <span class="k">return</span> <span class="n">total</span>
+
+            <span class="k">return</span> <span class="n">dp</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">count</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">count</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 107 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">beautifulNumbers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">r</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_no_zero_upto</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">"""Count positive integers &lt;= n with no digit 0."""</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="mi">9</span> <span class="o">**</span> <span class="n">m</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="n">digit</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">-</span> <span class="mi">48</span>
+                <span class="n">rem</span> <span class="o">=</span> <span class="n">L</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">digit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">total</span> <span class="o">+=</span> <span class="p">(</span><span class="n">digit</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">9</span> <span class="o">**</span> <span class="n">rem</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">total</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">build_ways</span><span class="p">(</span><span class="n">S</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">"""</span>
+<span class="sd">            ways[rem][sum][prod] = number of completions of length rem</span>
+<span class="sd">            (digits 1..9, no zero) such that final digit sum is S and</span>
+<span class="sd">            final product is divisible by S (i.e. prod modulo S becomes 0).</span>
+<span class="sd">            """</span>
+            <span class="n">mul</span> <span class="o">=</span> <span class="p">[[(</span><span class="n">p</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="o">%</span> <span class="n">S</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span><span class="p">)]</span>
+            <span class="n">prev</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">prev</span><span class="p">[</span><span class="n">S</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">ways</span> <span class="o">=</span> <span class="p">[</span><span class="n">prev</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_len</span><span class="p">):</span>
+                <span class="n">cur</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">S</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">max_d</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">S</span> <span class="o">-</span> <span class="n">s</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">max_d</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">S</span><span class="p">):</span>
+                        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                            <span class="n">total</span> <span class="o">+=</span> <span class="n">prev</span><span class="p">[</span><span class="n">s</span> <span class="o">+</span> <span class="n">d</span><span class="p">][</span><span class="n">mul</span><span class="p">[</span><span class="n">p</span><span class="p">][</span><span class="n">d</span><span class="p">]]</span>
+                        <span class="n">cur</span><span class="p">[</span><span class="n">s</span><span class="p">][</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">total</span>
+                <span class="n">ways</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="n">prev</span> <span class="o">=</span> <span class="n">cur</span>
+            <span class="k">return</span> <span class="n">ways</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">count_zf_beautiful_upto</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">S</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ways</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+<span class="w">            </span><span class="sd">"""Count zero-free beautiful numbers &lt;= n with digit sum S."""</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+            <span class="n">L</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">start_prod</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">%</span> <span class="n">S</span>
+            <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="c1"># All shorter lengths are automatically &lt;= n.</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">L</span><span class="p">):</span>
+                <span class="n">ans</span> <span class="o">+=</span> <span class="n">ways</span><span class="p">[</span><span class="n">m</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">start_prod</span><span class="p">]</span>
+
+            <span class="n">cur_sum</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">cur_prod</span> <span class="o">=</span> <span class="n">start_prod</span>
+
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="n">limit</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">ch</span><span class="p">)</span> <span class="o">-</span> <span class="mi">48</span>
+                <span class="n">rem</span> <span class="o">=</span> <span class="n">L</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="c1"># Put a smaller non-zero digit here; the rest can be anything.</span>
+                <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">limit</span><span class="p">):</span>
+                    <span class="n">ns</span> <span class="o">=</span> <span class="n">cur_sum</span> <span class="o">+</span> <span class="n">d</span>
+                    <span class="k">if</span> <span class="n">ns</span> <span class="o">&lt;=</span> <span class="n">S</span><span class="p">:</span>
+                        <span class="n">np</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_prod</span> <span class="o">*</span> <span class="n">d</span><span class="p">)</span> <span class="o">%</span> <span class="n">S</span>
+                        <span class="n">ans</span> <span class="o">+=</span> <span class="n">ways</span><span class="p">[</span><span class="n">rem</span><span class="p">][</span><span class="n">ns</span><span class="p">][</span><span class="n">np</span><span class="p">]</span>
+
+                <span class="c1"># Continue with the exact digit of n.</span>
+                <span class="k">if</span> <span class="n">limit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">cur_sum</span> <span class="o">+</span> <span class="n">limit</span> <span class="o">&gt;</span> <span class="n">S</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">cur_sum</span> <span class="o">+=</span> <span class="n">limit</span>
+                <span class="n">cur_prod</span> <span class="o">=</span> <span class="p">(</span><span class="n">cur_prod</span> <span class="o">*</span> <span class="n">limit</span><span class="p">)</span> <span class="o">%</span> <span class="n">S</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cur_sum</span> <span class="o">==</span> <span class="n">S</span> <span class="ow">and</span> <span class="n">cur_prod</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ans</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">return</span> <span class="n">ans</span>
+
+        <span class="c1"># Any number containing a zero is beautiful: product = 0.</span>
+        <span class="n">total_range</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">zf_range</span> <span class="o">=</span> <span class="n">count_no_zero_upto</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">count_no_zero_upto</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">zero_containing</span> <span class="o">=</span> <span class="n">total_range</span> <span class="o">-</span> <span class="n">zf_range</span>
+
+        <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+        <span class="n">max_sum</span> <span class="o">=</span> <span class="mi">9</span> <span class="o">*</span> <span class="n">max_len</span>
+
+        <span class="n">zf_beautiful_r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">zf_beautiful_lm</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">S</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_sum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ways</span> <span class="o">=</span> <span class="n">build_ways</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">max_len</span><span class="p">)</span>
+            <span class="n">zf_beautiful_r</span> <span class="o">+=</span> <span class="n">count_zf_beautiful_upto</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">ways</span><span class="p">)</span>
+            <span class="n">zf_beautiful_lm</span> <span class="o">+=</span> <span class="n">count_zf_beautiful_upto</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="n">ways</span><span class="p">)</span>
+
+        <span class="n">zero_free_beautiful</span> <span class="o">=</span> <span class="n">zf_beautiful_r</span> <span class="o">-</span> <span class="n">zf_beautiful_lm</span>
+        <span class="k">return</span> <span class="n">zero_containing</span> <span class="o">+</span> <span class="n">zero_free_beautiful</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="3784.html">‹ 3784</a><a href="3744.html">3744 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

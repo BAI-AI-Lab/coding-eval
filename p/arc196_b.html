@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arc196_b Torus Loop · 代码能力评测</title>
+<meta name="description" content="arc196_b Torus Loop：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">arc196_b</span></p>
+<h1 class="ptitle">Torus Loop</h1>
+<p class="meta">AtCoder ARC 196 B 题 · 2025-04-06 · <span class="pill">困难</span></p>
+<p class="summary">每格瓷砖画有一段拐角线或直线，可以旋转；把网格看作环面，求线段处处没有断头的摆法数，模 998244353。</p>
+
+<p><a class="btn" href="https://atcoder.jp/contests/arc196/tasks/arc196_b" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 2/2</span><span>复核</span></li><li><b>16.9k</b><span>输出 token（含思考）</span></li><li><b>280 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>64</b><span>有效行</span></li><li><b>9</b><span>圈复杂度</span></li><li><b>55.2</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓*</p><p class="cap">通过</p><ul class="specs"><li><span class="t">失败（运行/编译错误）</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 2/2</span><span>复核</span></li><li><b>22.7k</b><span>输出 token（含思考）</span></li><li><b>121 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>87</b><span>有效行</span></li><li><b>20</b><span>圈复杂度</span></li><li><b>47.0</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓*</p><p class="cap">通过</p><ul class="specs"><li><span class="t">失败（运行/编译错误）</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 2/2</span><span>复核</span></li><li><b>67.9k</b><span>输出 token（含思考）</span></li><li><b>496 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>64</b><span>有效行</span></li><li><b>17</b><span>圈复杂度</span></li><li><b>58.1</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 82 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">pos</span><span class="p">])</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="n">pos</span> <span class="o">+=</span> <span class="mi">2</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">W</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>  <span class="c1"># value(x) XOR value(parent[x])</span>
+
+        <span class="n">col_prefix</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">n</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">root</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                <span class="n">d</span> <span class="o">^=</span> <span class="n">parity</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span>
+                <span class="n">parity</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="k">return</span> <span class="n">root</span><span class="p">,</span> <span class="n">d</span>
+            <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="mi">0</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">unite</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">required_xor</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">components</span><span class="p">,</span> <span class="n">valid</span>
+            <span class="n">ra</span><span class="p">,</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+            <span class="n">rb</span><span class="p">,</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">ra</span> <span class="o">==</span> <span class="n">rb</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">pa</span> <span class="o">^</span> <span class="n">pb</span><span class="p">)</span> <span class="o">!=</span> <span class="n">required_xor</span><span class="p">:</span>
+                    <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">return</span>
+
+            <span class="n">d</span> <span class="o">=</span> <span class="n">pa</span> <span class="o">^</span> <span class="n">pb</span> <span class="o">^</span> <span class="n">required_xor</span>
+            <span class="k">if</span> <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]:</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">=</span> <span class="n">rb</span>
+                <span class="n">parity</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">parent</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra</span>
+                <span class="n">parity</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+                <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span>
+            <span class="n">components</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">pos</span><span class="p">]</span>
+            <span class="n">pos</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">row_prefix</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">65</span><span class="p">:</span>  <span class="c1"># 'A'</span>
+                    <span class="n">row_prefix</span> <span class="o">^=</span> <span class="mi">1</span>
+                    <span class="n">col_prefix</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="n">valid</span><span class="p">:</span>  <span class="c1"># 'B'</span>
+                    <span class="c1"># Row variable i and column variable H+j.</span>
+                    <span class="n">unite</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">H</span> <span class="o">+</span> <span class="n">j</span><span class="p">,</span> <span class="mi">1</span> <span class="o">^</span> <span class="n">row_prefix</span> <span class="o">^</span> <span class="n">col_prefix</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">row_prefix</span><span class="p">:</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">valid</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">col_prefix</span><span class="p">):</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"0"</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 117 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+
+<span class="n">parent</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">xr</span> <span class="o">=</span> <span class="p">[]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">parent</span>
+    <span class="n">xo</span> <span class="o">=</span> <span class="n">xr</span>
+
+    <span class="n">r</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">p</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">:</span>
+        <span class="n">acc</span> <span class="o">^=</span> <span class="n">xo</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+
+    <span class="n">cur</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="n">cur_acc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">p</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span> <span class="o">!=</span> <span class="n">cur</span><span class="p">:</span>
+        <span class="n">nxt</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">xo</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="n">xo</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span> <span class="o">=</span> <span class="n">acc</span> <span class="o">^</span> <span class="n">cur_acc</span>
+        <span class="n">cur_acc</span> <span class="o">^=</span> <span class="n">w</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">nxt</span>
+
+    <span class="k">return</span> <span class="n">r</span><span class="p">,</span> <span class="n">acc</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">parent</span><span class="p">,</span> <span class="n">xr</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">H</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
+
+        <span class="n">grid</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">)]</span>
+
+        <span class="n">col_par</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span>
+        <span class="n">invalid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">grid</span><span class="p">:</span>
+            <span class="n">row_par</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">65</span><span class="p">:</span>  <span class="c1"># 'A'</span>
+                    <span class="n">row_par</span> <span class="o">^=</span> <span class="mi">1</span>
+                    <span class="n">col_par</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">row_par</span><span class="p">:</span>
+                <span class="n">invalid</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">invalid</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">col_par</span><span class="p">):</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"0"</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">W</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="n">xr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">components</span> <span class="o">=</span> <span class="n">n</span>
+
+        <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid</span><span class="p">):</span>
+            <span class="n">row_pref</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">65</span><span class="p">:</span>  <span class="c1"># 'A'</span>
+                    <span class="n">row_pref</span> <span class="o">^=</span> <span class="mi">1</span>
+                    <span class="n">col_par</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># 'B'</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">^</span> <span class="n">row_pref</span> <span class="o">^</span> <span class="n">col_par</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                    <span class="n">u</span> <span class="o">=</span> <span class="n">i</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">j</span>
+
+                    <span class="n">ru</span><span class="p">,</span> <span class="n">pu</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                    <span class="n">rv</span><span class="p">,</span> <span class="n">pv</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">ru</span> <span class="o">==</span> <span class="n">rv</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">pu</span> <span class="o">^</span> <span class="n">pv</span><span class="p">)</span> <span class="o">!=</span> <span class="n">d</span><span class="p">:</span>
+                            <span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="k">break</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">t</span> <span class="o">=</span> <span class="n">d</span> <span class="o">^</span> <span class="n">pu</span> <span class="o">^</span> <span class="n">pv</span>
+
+                        <span class="k">if</span> <span class="n">size</span><span class="p">[</span><span class="n">ru</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="n">rv</span><span class="p">]:</span>
+                            <span class="n">parent</span><span class="p">[</span><span class="n">ru</span><span class="p">]</span> <span class="o">=</span> <span class="n">rv</span>
+                            <span class="n">xr</span><span class="p">[</span><span class="n">ru</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                            <span class="n">size</span><span class="p">[</span><span class="n">rv</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">ru</span><span class="p">]</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">parent</span><span class="p">[</span><span class="n">rv</span><span class="p">]</span> <span class="o">=</span> <span class="n">ru</span>
+                            <span class="n">xr</span><span class="p">[</span><span class="n">rv</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                            <span class="n">size</span><span class="p">[</span><span class="n">ru</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">rv</span><span class="p">]</span>
+
+                        <span class="n">components</span> <span class="o">-=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="k">if</span> <span class="n">ok</span><span class="p">:</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"0"</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 84 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">readline</span>
+    <span class="n">T_line</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">T_line</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">T_line</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">H</span><span class="p">,</span> <span class="n">W</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">W</span>
+
+        <span class="n">parent</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">V</span><span class="p">))</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+        <span class="n">comps</span> <span class="o">=</span> <span class="n">V</span>
+        <span class="n">consistent</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># col_pref[j] = parity of A in column j above the current row</span>
+        <span class="n">col_pref</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">W</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">H</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># row_pref = parity of A in this row before the current column</span>
+            <span class="n">row_pref</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">ch</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="mi">65</span><span class="p">:</span>  <span class="c1"># 'A'</span>
+                    <span class="n">row_pref</span> <span class="o">^=</span> <span class="mi">1</span>
+                    <span class="n">col_pref</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">^=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># 'B'</span>
+                    <span class="k">if</span> <span class="n">consistent</span><span class="p">:</span>
+                        <span class="c1"># equation: r_i xor c_j = 1 xor row_pref xor col_pref[j]</span>
+                        <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">^</span> <span class="n">row_pref</span> <span class="o">^</span> <span class="n">col_pref</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+                        <span class="c1"># find row i</span>
+                        <span class="n">ra</span> <span class="o">=</span> <span class="n">i</span>
+                        <span class="n">xa</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">parent</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">!=</span> <span class="n">ra</span><span class="p">:</span>
+                            <span class="n">xa</span> <span class="o">^=</span> <span class="n">parity</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span>
+                            <span class="n">ra</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span>
+
+                        <span class="c1"># find column j</span>
+                        <span class="n">rb</span> <span class="o">=</span> <span class="n">H</span> <span class="o">+</span> <span class="n">j</span>
+                        <span class="n">xb</span> <span class="o">=</span> <span class="mi">0</span>
+                        <span class="k">while</span> <span class="n">parent</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">!=</span> <span class="n">rb</span><span class="p">:</span>
+                            <span class="n">xb</span> <span class="o">^=</span> <span class="n">parity</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span>
+                            <span class="n">rb</span> <span class="o">=</span> <span class="n">parent</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">ra</span> <span class="o">==</span> <span class="n">rb</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">xa</span> <span class="o">^</span> <span class="n">xb</span><span class="p">)</span> <span class="o">!=</span> <span class="n">k</span><span class="p">:</span>
+                                <span class="n">consistent</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">t</span> <span class="o">=</span> <span class="n">k</span> <span class="o">^</span> <span class="n">xa</span> <span class="o">^</span> <span class="n">xb</span>
+                            <span class="k">if</span> <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]:</span>
+                                <span class="n">parent</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">=</span> <span class="n">rb</span>
+                                <span class="n">parity</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                                <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">parent</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">=</span> <span class="n">ra</span>
+                                <span class="n">parity</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span> <span class="o">=</span> <span class="n">t</span>
+                                <span class="n">size</span><span class="p">[</span><span class="n">ra</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">rb</span><span class="p">]</span>
+                            <span class="n">comps</span> <span class="o">-=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">row_pref</span><span class="p">:</span>
+                <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">valid</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">col_pref</span><span class="p">):</span>
+            <span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="n">valid</span> <span class="ow">and</span> <span class="n">consistent</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">comps</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">"0"</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="arc196_a.html">‹ arc196_a</a><a href="arc196_c.html">arc196_c ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

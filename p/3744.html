@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>3744 Minimum Operations to Make Array Elements Zero · 代码能力评测</title>
+<meta name="description" content="3744 Minimum Operations to Make Array Elements Zero：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">3744</span></p>
+<h1 class="ptitle">Minimum Operations to Make Array Elements Zero</h1>
+<p class="meta">LeetCode 周赛 442 · 2025-03-22 · <span class="pill">困难</span></p>
+<p class="summary">每个查询 [l, r] 对应数组 l, l+1, …, r；每次操作选两个数，各自替换为除以 4 向下取整的结果；求每个查询把所有数变为 0 的最少操作数，输出总和。</p>
+
+<p><a class="btn" href="https://leetcode.com/problems/minimum-operations-to-make-array-elements-zero/" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>14.1k</b><span>输出 token（含思考）</span></li><li><b>220 秒</b><span>延迟</span></li><li><b>0.27 秒（5.0×）</b><span>最慢测试的 CPU 时间</span></li><li><b>32 MB</b><span>峰值内存</span></li><li><b>14</b><span>有效行</span></li><li><b>7</b><span>圈复杂度</span></li><li><b>84.0</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>5.9k</b><span>输出 token（含思考）</span></li><li><b>33 秒</b><span>延迟</span></li><li><b>0.67 秒（12.5×）</b><span>最慢测试的 CPU 时间</span></li><li><b>32 MB</b><span>峰值内存</span></li><li><b>25</b><span>有效行</span></li><li><b>5</b><span>圈复杂度</span></li><li><b>52.3</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">函数调用题，沿用 LCB 判分</span><span>复核</span></li><li><b>34.9k</b><span>输出 token（含思考）</span></li><li><b>250 秒</b><span>延迟</span></li><li><b>0.05 秒（最快）</b><span>最慢测试的 CPU 时间</span></li><li><b>32 MB</b><span>峰值内存</span></li><li><b>17</b><span>有效行</span></li><li><b>7</b><span>圈复杂度</span></li><li><b>76.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 22 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minOperations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+            <span class="n">total_depth</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">max_depth</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">power</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="c1"># A number x needs one operation for each power 1, 4, 16, ... &lt;= x.</span>
+            <span class="k">while</span> <span class="n">power</span> <span class="o">&lt;=</span> <span class="n">r</span><span class="p">:</span>
+                <span class="n">max_depth</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">total_depth</span> <span class="o">+=</span> <span class="n">r</span> <span class="o">-</span> <span class="nb">max</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">power</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">power</span> <span class="o">*=</span> <span class="mi">4</span>
+
+            <span class="c1"># Each operation handles two unit steps, while the deepest element</span>
+            <span class="c1"># can be processed at most once per operation.</span>
+            <span class="n">answer</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_depth</span><span class="p">,</span> <span class="p">(</span><span class="n">total_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">answer</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 32 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minOperations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">prefix</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">while</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">total</span> <span class="o">+=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">p</span> <span class="o">*=</span> <span class="mi">4</span>
+                <span class="n">k</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">return</span> <span class="n">total</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">max_steps</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">while</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">x</span> <span class="o">//=</span> <span class="mi">4</span>
+                <span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="n">steps</span>
+
+        <span class="n">answer</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+            <span class="n">total_steps</span> <span class="o">=</span> <span class="n">prefix</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">prefix</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">max_required</span> <span class="o">=</span> <span class="n">max_steps</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="n">answer</span> <span class="o">+=</span> <span class="nb">max</span><span class="p">(</span><span class="n">max_required</span><span class="p">,</span> <span class="p">(</span><span class="n">total_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">answer</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 26 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Solution</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">minOperations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="c1"># pref[k] = total base-4 digits of all positive integers</span>
+        <span class="c1"># with at most k digits (i.e. numbers 1..4^k - 1)</span>
+        <span class="n">pref</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">64</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">64</span><span class="p">):</span>
+            <span class="n">pref</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">pref</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">total_digits_upto</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+            <span class="c1"># d = number of base-4 digits of n</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="n">first_d_digit</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">pref</span><span class="p">[</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">first_d_digit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+            <span class="n">total_steps</span> <span class="o">=</span> <span class="n">total_digits_upto</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="o">-</span> <span class="n">total_digits_upto</span><span class="p">(</span><span class="n">l</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ans</span> <span class="o">+=</span> <span class="p">(</span><span class="n">total_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">ans</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="3801.html">‹ 3801</a><a href="3765.html">3765 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>abc397_d Cubes · 代码能力评测</title>
+<meta name="description" content="abc397_d Cubes：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">abc397_d</span></p>
+<h1 class="ptitle">Cubes</h1>
+<p class="meta">AtCoder ABC 397 D 题 · 2025-03-15 · <span class="pill">困难</span></p>
+<p class="summary">给定正整数 N，判断是否存在正整数 x、y 使 x³ − y³ = N；存在则输出一组。</p>
+
+<p><a class="btn" href="https://atcoder.jp/contests/abc397/tasks/abc397_d" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓*</p><p class="cap">通过</p><ul class="specs"><li><span class="t">失败（答案错误）</span><span>LCB 原始判分</span></li><li><span class="t">校验器 43/43</span><span>复核</span></li><li><b>3.3k</b><span>输出 token（含思考）</span></li><li><b>49 秒</b><span>延迟</span></li><li><b>0.14 秒</b><span>最慢测试的 CPU 时间</span></li><li><b>12 MB</b><span>峰值内存</span></li><li><b>23</b><span>有效行</span></li><li><b>8</b><span>圈复杂度</span></li><li><b>72.5</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓*</p><p class="cap">通过</p><ul class="specs"><li><span class="t">失败（答案错误）</span><span>LCB 原始判分</span></li><li><span class="t">校验器 43/43</span><span>复核</span></li><li><b>5.0k</b><span>输出 token（含思考）</span></li><li><b>25 秒</b><span>延迟</span></li><li><b>0.14 秒</b><span>最慢测试的 CPU 时间</span></li><li><b>12 MB</b><span>峰值内存</span></li><li><b>22</b><span>有效行</span></li><li><b>7</b><span>圈复杂度</span></li><li><b>63.5</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓*</p><p class="cap">通过</p><ul class="specs"><li><span class="t">失败（答案错误）</span><span>LCB 原始判分</span></li><li><span class="t">校验器 43/43</span><span>复核</span></li><li><b>26.4k</b><span>输出 token（含思考）</span></li><li><b>179 秒</b><span>延迟</span></li><li><b>0.11 秒（最快）</b><span>最慢测试的 CPU 时间</span></li><li><b>12 MB</b><span>峰值内存</span></li><li><b>29</b><span>有效行</span></li><li><b>10</b><span>圈复杂度</span></li><li><b>67.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 34 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="c1"># Let d = x - y. Then:</span>
+    <span class="c1"># n = d^3 + 3*d^2*y + 3*d*y^2, so d^3 &lt; n.</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">n</span> <span class="o">//</span> <span class="n">d</span>
+
+            <span class="c1"># q = 3*y^2 + 3*d*y + d^2</span>
+            <span class="c1"># Its discriminant is 12*q - 3*d^2.</span>
+            <span class="n">discriminant</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">q</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span>
+            <span class="k">if</span> <span class="n">discriminant</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">isqrt</span><span class="p">(</span><span class="n">discriminant</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">root</span> <span class="o">*</span> <span class="n">root</span> <span class="o">==</span> <span class="n">discriminant</span><span class="p">:</span>
+                    <span class="n">numerator</span> <span class="o">=</span> <span class="n">root</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span>
+                    <span class="k">if</span> <span class="n">numerator</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">numerator</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">y</span> <span class="o">=</span> <span class="n">numerator</span> <span class="o">//</span> <span class="mi">6</span>
+                        <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">d</span>
+                        <span class="k">if</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+                            <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                            <span class="k">return</span>
+        <span class="n">d</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 31 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">N</span> <span class="o">%</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">d</span>
+
+            <span class="c1"># m = 3y^2 + 3dy + d^2</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">isqrt</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">s</span> <span class="o">*</span> <span class="n">s</span> <span class="o">==</span> <span class="n">D</span><span class="p">:</span>
+                <span class="n">num</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span>
+                <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">num</span> <span class="o">//</span> <span class="mi">6</span>
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">d</span>
+
+                    <span class="k">if</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                        <span class="k">return</span>
+
+        <span class="n">d</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 40 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">isqrt</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="c1"># d = x - y</span>
+    <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Since y &gt;= 1, N &gt; d^3</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span> <span class="o">&gt;=</span> <span class="n">N</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="k">if</span> <span class="n">N</span> <span class="o">%</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="n">N</span> <span class="o">//</span> <span class="n">d</span>
+        <span class="c1"># S = 3*y^2 + 3*d*y + d^2</span>
+        <span class="c1"># Solve for y: 3*y^2 + 3*d*y + (d^2 - S) = 0</span>
+        <span class="n">D</span> <span class="o">=</span> <span class="mi">12</span> <span class="o">*</span> <span class="n">S</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span>
+        <span class="k">if</span> <span class="n">D</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">isqrt</span><span class="p">(</span><span class="n">D</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">*</span> <span class="n">r</span> <span class="o">!=</span> <span class="n">D</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">num</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">d</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">num</span> <span class="o">%</span> <span class="mi">6</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">num</span> <span class="o">//</span> <span class="mi">6</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">d</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">-</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="o">==</span> <span class="n">N</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+                <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="3793.html">‹ 3793</a><a href="abc397_e.html">abc397_e ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

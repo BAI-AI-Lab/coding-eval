@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>abc400_g Patisserie ABC 3 · 代码能力评测</title>
+<meta name="description" content="abc400_g Patisserie ABC 3：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">abc400_g</span></p>
+<h1 class="ptitle">Patisserie ABC 3</h1>
+<p class="meta">AtCoder ABC 400 G 题 · 2025-04-05 · <span class="pill">困难</span></p>
+<p class="summary">N 个蛋糕各有三项属性，从中组成 K 对，每对的价格是两者三项属性分别相加后的最大值；求 K 对总价格的最大值。</p>
+
+<p><a class="btn" href="https://atcoder.jp/contests/abc400/tasks/abc400_g" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 6/6</span><span>复核</span></li><li><b>43.4k</b><span>输出 token（含思考）</span></li><li><b>735 秒</b><span>延迟</span></li><li><b>0.16 秒（最快）</b><span>最慢测试的 CPU 时间</span></li><li><b>32 MB</b><span>峰值内存</span></li><li><b>90</b><span>有效行</span></li><li><b>36</b><span>圈复杂度</span></li><li><b>51.6</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 6/6</span><span>复核</span></li><li><b>55.0k</b><span>输出 token（含思考）</span></li><li><b>334 秒</b><span>延迟</span></li><li><b>0.27 秒</b><span>最慢测试的 CPU 时间</span></li><li><b>40 MB</b><span>峰值内存</span></li><li><b>172</b><span>有效行</span></li><li><b>68</b><span>圈复杂度</span></li><li><b>33.9</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 6/6</span><span>复核</span></li><li><b>112.7k</b><span>输出 token（含思考）</span></li><li><b>941 秒</b><span>延迟</span></li><li><b>1.45 秒（9.3×）</b><span>最慢测试的 CPU 时间</span></li><li><b>40 MB</b><span>峰值内存</span></li><li><b>170</b><span>有效行</span></li><li><b>24</b><span>圈复杂度</span></li><li><b>25.5</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 119 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">test_count</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">INF</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">**</span> <span class="mi">30</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">test_count</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">maximum</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">base_color</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">maximum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="n">base_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">maximum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+                <span class="n">base_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">maximum</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+                <span class="n">base_color</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="n">maximum</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">chosen_count</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span>
+        <span class="n">chosen</span> <span class="o">=</span> <span class="n">order</span><span class="p">[:</span><span class="n">chosen_count</span><span class="p">]</span>
+        <span class="n">unchosen</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">chosen_count</span><span class="p">:]</span>
+
+        <span class="n">upper_bound</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">maximum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chosen</span><span class="p">)</span>
+        <span class="n">counts</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chosen</span><span class="p">:</span>
+            <span class="n">counts</span><span class="p">[</span><span class="n">base_color</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">odd_colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">counts</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">odd_colors</span><span class="p">:</span>
+            <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">upper_bound</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Keep the two best candidates. Two changes can conflict on at most</span>
+        <span class="c1"># one chosen cake and at most one unchosen cake.</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">add_two</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">item</span> <span class="o">&lt;</span> <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">item</span>
+                <span class="n">lst</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="c1"># recolor[a][b]: (loss, cake), for chosen cakes whose base color is a.</span>
+        <span class="n">recolor</span> <span class="o">=</span> <span class="p">[[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="c1"># lowest[a]: two smallest maximum values among chosen cakes of color a.</span>
+        <span class="n">lowest</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+        <span class="c1"># highest[b]: two largest b-values among unchosen cakes, negated.</span>
+        <span class="n">highest</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">chosen</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">base_color</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">maximum</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">add_two</span><span class="p">(</span><span class="n">lowest</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">:</span>
+                    <span class="n">add_two</span><span class="p">(</span><span class="n">recolor</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">],</span> <span class="p">(</span><span class="n">mi</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">b</span><span class="p">],</span> <span class="n">i</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">unchosen</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">add_two</span><span class="p">(</span><span class="n">highest</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="p">(</span><span class="o">-</span><span class="n">values</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">b</span><span class="p">],</span> <span class="n">j</span><span class="p">))</span>
+
+        <span class="c1"># A change is (loss, chosen_cake, unchosen_cake).</span>
+        <span class="c1"># unchosen_cake == -1 means a recoloring; otherwise it is a swap.</span>
+        <span class="n">changes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">current</span> <span class="o">=</span> <span class="p">[(</span><span class="n">loss</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">loss</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">recolor</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">b</span><span class="p">]]</span>
+                <span class="k">for</span> <span class="n">mi</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lowest</span><span class="p">[</span><span class="n">a</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">neg_value</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">highest</span><span class="p">[</span><span class="n">b</span><span class="p">]:</span>
+                        <span class="n">current</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">mi</span> <span class="o">+</span> <span class="n">neg_value</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">))</span>
+                <span class="n">changes</span><span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span> <span class="o">=</span> <span class="n">current</span>
+
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">odd_colors</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+        <span class="n">best_loss</span> <span class="o">=</span> <span class="n">INF</span>
+
+        <span class="c1"># One change toggling the two odd colors.</span>
+        <span class="k">for</span> <span class="n">direction</span> <span class="ow">in</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">),</span> <span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">loss</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">[</span><span class="n">direction</span><span class="p">]:</span>
+                <span class="n">best_loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">best_loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">)</span>
+
+        <span class="c1"># Or two changes whose combined parity effect is the same.</span>
+        <span class="k">for</span> <span class="n">d1</span> <span class="ow">in</span> <span class="p">((</span><span class="n">a</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">a</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">d2</span> <span class="ow">in</span> <span class="p">((</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">),</span> <span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">b</span><span class="p">)):</span>
+                <span class="k">for</span> <span class="n">first</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">[</span><span class="n">d1</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">changes</span><span class="p">[</span><span class="n">d2</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">second</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                            <span class="k">continue</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">second</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
+                                <span class="ow">and</span> <span class="n">first</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">second</span><span class="p">[</span><span class="mi">2</span><span class="p">]):</span>
+                            <span class="k">continue</span>
+                        <span class="n">best_loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                            <span class="n">best_loss</span><span class="p">,</span> <span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">second</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="p">)</span>
+
+        <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">upper_bound</span> <span class="o">-</span> <span class="n">best_loss</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 220 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">heapq</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+    <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">NEG</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span><span class="o">**</span><span class="mi">30</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="mi">15</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+
+        <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">y</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">elif</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">y</span> <span class="o">&gt;=</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="n">M</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">K</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">))</span>
+        <span class="n">order</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">base</span> <span class="o">=</span> <span class="n">order</span><span class="p">[:</span><span class="n">M</span><span class="p">]</span>
+        <span class="n">outside</span> <span class="o">=</span> <span class="n">order</span><span class="p">[</span><span class="n">M</span><span class="p">:]</span>
+
+        <span class="n">base_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base</span><span class="p">)</span>
+        <span class="n">base_parity</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base</span><span class="p">:</span>
+            <span class="n">base_parity</span> <span class="o">^=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">smax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="n">M</span><span class="p">)</span>
+
+        <span class="c1"># Base candidates</span>
+        <span class="n">base_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="n">rem_cands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base_sorted</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pl</span><span class="p">:</span>
+                    <span class="n">rem_cands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">if</span> <span class="n">cnt</span> <span class="o">==</span> <span class="n">C</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base_sorted</span><span class="p">[:</span><span class="n">C</span><span class="p">]:</span>
+            <span class="n">rem_cands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">mod_cands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pl</span><span class="p">)</span>
+                <span class="n">cand</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nsmallest</span><span class="p">(</span>
+                    <span class="n">C</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
+                    <span class="n">mod_cands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">base_cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">rem_cands</span> <span class="o">|</span> <span class="n">mod_cands</span><span class="p">)</span>
+
+        <span class="c1"># Outside candidates</span>
+        <span class="n">out_unmod_cands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pl</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">outside</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">pl</span><span class="p">)</span>
+            <span class="n">cand</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
+                <span class="n">out_unmod_cands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">out_mod_cands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">cand</span> <span class="o">=</span> <span class="n">heapq</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span>
+                <span class="n">C</span><span class="p">,</span> <span class="n">outside</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">:</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">c</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">:</span>
+                <span class="n">out_mod_cands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">outside_cands</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">out_unmod_cands</span> <span class="o">|</span> <span class="n">out_mod_cands</span><span class="p">)</span>
+
+        <span class="c1"># DP over base-side operations:</span>
+        <span class="c1"># removals, modifications, parity</span>
+        <span class="n">base_dp</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">NEG</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">base_dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">base_cands</span><span class="p">:</span>
+            <span class="n">pi</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">vi</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">ndp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">base_dp</span><span class="p">[</span><span class="n">r</span><span class="p">]]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+            <span class="c1"># Remove this base item</span>
+            <span class="k">if</span> <span class="n">smax</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">togg</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pi</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                        <span class="n">row</span> <span class="o">=</span> <span class="n">base_dp</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">ndp</span><span class="p">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">par</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="n">npar</span> <span class="o">=</span> <span class="n">par</span> <span class="o">^</span> <span class="n">togg</span>
+                            <span class="n">nv</span> <span class="o">=</span> <span class="n">val</span> <span class="o">-</span> <span class="n">mi</span>
+                            <span class="k">if</span> <span class="n">nv</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]:</span>
+                                <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv</span>
+
+            <span class="c1"># Modify this base item</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">pi</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">togg</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pi</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">c</span><span class="p">)</span>
+                <span class="n">add</span> <span class="o">=</span> <span class="n">vi</span><span class="p">[</span><span class="n">c</span><span class="p">]</span> <span class="o">-</span> <span class="n">mi</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                        <span class="n">row</span> <span class="o">=</span> <span class="n">base_dp</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">ndp</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">mod</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">par</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="n">npar</span> <span class="o">=</span> <span class="n">par</span> <span class="o">^</span> <span class="n">togg</span>
+                            <span class="n">nv</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="n">add</span>
+                            <span class="k">if</span> <span class="n">nv</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]:</span>
+                                <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv</span>
+
+            <span class="n">base_dp</span> <span class="o">=</span> <span class="n">ndp</span>
+
+        <span class="c1"># DP over outside-side operations:</span>
+        <span class="c1"># additions, modifications among additions, parity</span>
+        <span class="n">out_dp</span> <span class="o">=</span> <span class="p">[[[</span><span class="n">NEG</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+        <span class="n">out_dp</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">outside_cands</span><span class="p">:</span>
+            <span class="n">pi</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">vi</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+            <span class="n">ndp</span> <span class="o">=</span> <span class="p">[[</span><span class="n">row</span><span class="p">[:]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">out_dp</span><span class="p">[</span><span class="n">r</span><span class="p">]]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+            <span class="c1"># Add unmodified</span>
+            <span class="k">if</span> <span class="n">smax</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">togg</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pi</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                        <span class="n">row</span> <span class="o">=</span> <span class="n">out_dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">ndp</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">par</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="n">npar</span> <span class="o">=</span> <span class="n">par</span> <span class="o">^</span> <span class="n">togg</span>
+                            <span class="n">nv</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="n">mi</span>
+                            <span class="k">if</span> <span class="n">nv</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]:</span>
+                                <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv</span>
+
+            <span class="c1"># Add modified</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="n">pi</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">togg</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">c</span>
+                <span class="n">add</span> <span class="o">=</span> <span class="n">vi</span><span class="p">[</span><span class="n">c</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">mod</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                        <span class="n">row</span> <span class="o">=</span> <span class="n">out_dp</span><span class="p">[</span><span class="n">a</span><span class="p">][</span><span class="n">mod</span><span class="p">]</span>
+                        <span class="n">target</span> <span class="o">=</span> <span class="n">ndp</span><span class="p">[</span><span class="n">a</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="n">mod</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                            <span class="n">val</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="n">par</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                                <span class="k">continue</span>
+                            <span class="n">npar</span> <span class="o">=</span> <span class="n">par</span> <span class="o">^</span> <span class="n">togg</span>
+                            <span class="n">nv</span> <span class="o">=</span> <span class="n">val</span> <span class="o">+</span> <span class="n">add</span>
+                            <span class="k">if</span> <span class="n">nv</span> <span class="o">&gt;</span> <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]:</span>
+                                <span class="n">target</span><span class="p">[</span><span class="n">npar</span><span class="p">]</span> <span class="o">=</span> <span class="n">nv</span>
+
+            <span class="n">out_dp</span> <span class="o">=</span> <span class="n">ndp</span>
+
+        <span class="n">best_delta</span> <span class="o">=</span> <span class="n">NEG</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">smax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">mod_base</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">mod_out</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span> <span class="o">-</span> <span class="n">mod_base</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">pb</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
+                        <span class="n">valb</span> <span class="o">=</span> <span class="n">base_dp</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">mod_base</span><span class="p">][</span><span class="n">pb</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">valb</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">need_po</span> <span class="o">=</span> <span class="n">base_parity</span> <span class="o">^</span> <span class="n">pb</span>
+                        <span class="n">valo</span> <span class="o">=</span> <span class="n">out_dp</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">mod_out</span><span class="p">][</span><span class="n">need_po</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">valo</span> <span class="o">==</span> <span class="n">NEG</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
+                        <span class="n">total</span> <span class="o">=</span> <span class="n">valb</span> <span class="o">+</span> <span class="n">valo</span>
+                        <span class="k">if</span> <span class="n">total</span> <span class="o">&gt;</span> <span class="n">best_delta</span><span class="p">:</span>
+                            <span class="n">best_delta</span> <span class="o">=</span> <span class="n">total</span>
+
+        <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base_sum</span> <span class="o">+</span> <span class="n">best_delta</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">outs</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 203 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">heapq</span><span class="w"> </span><span class="kn">import</span> <span class="n">heappush</span><span class="p">,</span> <span class="n">heappop</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+    <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">K</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">2</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">Y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">Z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">maxc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">3</span>
+            <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+            <span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">y</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">z</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">z</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+            <span class="n">maxc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+        <span class="n">sel</span> <span class="o">=</span> <span class="n">order</span><span class="p">[:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">K</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">:</span>
+            <span class="n">selected</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">base</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">)</span>
+
+        <span class="n">cnt</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">:</span>
+            <span class="n">cnt</span><span class="p">[</span><span class="n">maxc</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">cnt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">cnt</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base</span><span class="p">))</span>
+            <span class="k">continue</span>
+
+        <span class="n">odd</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="k">if</span> <span class="n">cnt</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">odd</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">odd</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">c3</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">-</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span>
+
+        <span class="n">unselected</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="n">Mmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">)</span>
+
+        <span class="n">S</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="p">[</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">V</span> <span class="o">=</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">4</span>
+
+        <span class="n">g</span> <span class="o">=</span> <span class="p">[[]</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">V</span><span class="p">)]</span>
+        <span class="n">to</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">cap</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">edge_cost</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">add_edge</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">cst</span><span class="p">):</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to</span><span class="p">))</span>
+            <span class="n">to</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">cap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">edge_cost</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cst</span><span class="p">)</span>
+            <span class="n">g</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to</span><span class="p">))</span>
+            <span class="n">to</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="n">cap</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">edge_cost</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="o">-</span><span class="n">cst</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">:</span>
+            <span class="n">ci</span> <span class="o">=</span> <span class="n">maxc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">col</span><span class="p">[</span><span class="n">ci</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">S</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ci</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ci</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">Y</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">ci</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">add_edge</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">unselected</span><span class="p">:</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="o">-</span><span class="n">X</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">Y</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+            <span class="n">add_edge</span><span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">col</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="o">-</span><span class="n">Z</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+        <span class="n">pot0</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+        <span class="n">pot0</span><span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mmin</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sel</span><span class="p">:</span>
+            <span class="n">pot0</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">unselected</span><span class="p">:</span>
+            <span class="n">pot0</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">M</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+        <span class="n">INF</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">30</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">min_cost_option</span><span class="p">(</span><span class="n">src_list</span><span class="p">,</span> <span class="n">tgt_list</span><span class="p">):</span>
+            <span class="n">supply</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">amt</span> <span class="ow">in</span> <span class="n">src_list</span><span class="p">:</span>
+                <span class="n">supply</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="n">supply</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">amt</span>
+            <span class="n">demand</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">amt</span> <span class="ow">in</span> <span class="n">tgt_list</span><span class="p">:</span>
+                <span class="n">demand</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">demand</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">amt</span>
+
+            <span class="n">flow_needed</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">demand</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">pot</span> <span class="o">=</span> <span class="n">pot0</span><span class="p">[:]</span>
+            <span class="n">changed</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">flow_needed</span><span class="p">):</span>
+                <span class="n">dist</span> <span class="o">=</span> <span class="p">[</span><span class="n">INF</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+                <span class="n">prev_node</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+                <span class="n">prev_edge</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">V</span>
+                <span class="n">heap</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">amt</span> <span class="ow">in</span> <span class="n">supply</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">pot</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+                        <span class="n">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="n">s</span><span class="p">],</span> <span class="n">s</span><span class="p">))</span>
+
+                <span class="k">while</span> <span class="n">heap</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">,</span> <span class="n">u</span> <span class="o">=</span> <span class="n">heappop</span><span class="p">(</span><span class="n">heap</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="n">dist</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                        <span class="k">continue</span>
+                    <span class="k">for</span> <span class="n">eid</span> <span class="ow">in</span> <span class="n">g</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                        <span class="k">if</span> <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">v</span> <span class="o">=</span> <span class="n">to</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span>
+                            <span class="n">nd</span> <span class="o">=</span> <span class="n">d</span> <span class="o">+</span> <span class="n">edge_cost</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">+</span> <span class="n">pot</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">-</span> <span class="n">pot</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">nd</span> <span class="o">&lt;</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+                                <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">nd</span>
+                                <span class="n">prev_node</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">u</span>
+                                <span class="n">prev_edge</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">eid</span>
+                                <span class="n">heappush</span><span class="p">(</span><span class="n">heap</span><span class="p">,</span> <span class="p">(</span><span class="n">nd</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+
+                <span class="n">target</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="n">best_cost</span> <span class="o">=</span> <span class="n">INF</span>
+                <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">amt</span> <span class="ow">in</span> <span class="n">demand</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">amt</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">dist</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">INF</span><span class="p">:</span>
+                        <span class="n">cur</span> <span class="o">=</span> <span class="n">dist</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">+</span> <span class="n">pot</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">cur</span> <span class="o">&lt;</span> <span class="n">best_cost</span><span class="p">:</span>
+                            <span class="n">best_cost</span> <span class="o">=</span> <span class="n">cur</span>
+                            <span class="n">target</span> <span class="o">=</span> <span class="n">t</span>
+
+                <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">eid</span><span class="p">,</span> <span class="n">old</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">changed</span><span class="p">):</span>
+                        <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span>
+                    <span class="k">return</span> <span class="n">INF</span>
+
+                <span class="n">node</span> <span class="o">=</span> <span class="n">target</span>
+                <span class="n">path_cost</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="n">prev_edge</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">eid</span> <span class="o">=</span> <span class="n">prev_edge</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+                    <span class="n">rev</span> <span class="o">=</span> <span class="n">eid</span> <span class="o">^</span> <span class="mi">1</span>
+                    <span class="n">changed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">eid</span><span class="p">,</span> <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]))</span>
+                    <span class="n">changed</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">rev</span><span class="p">,</span> <span class="n">cap</span><span class="p">[</span><span class="n">rev</span><span class="p">]))</span>
+                    <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="n">cap</span><span class="p">[</span><span class="n">rev</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">path_cost</span> <span class="o">+=</span> <span class="n">edge_cost</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span>
+                    <span class="n">node</span> <span class="o">=</span> <span class="n">prev_node</span><span class="p">[</span><span class="n">node</span><span class="p">]</span>
+
+                <span class="n">source</span> <span class="o">=</span> <span class="n">node</span>
+                <span class="k">if</span> <span class="n">supply</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">eid</span><span class="p">,</span> <span class="n">old</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">changed</span><span class="p">):</span>
+                        <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span>
+                    <span class="k">return</span> <span class="n">INF</span>
+
+                <span class="n">supply</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">demand</span><span class="p">[</span><span class="n">target</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">total_cost</span> <span class="o">+=</span> <span class="n">path_cost</span>
+
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">V</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">INF</span><span class="p">:</span>
+                        <span class="n">pot</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="n">dist</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">eid</span><span class="p">,</span> <span class="n">old</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">changed</span><span class="p">):</span>
+                <span class="n">cap</span><span class="p">[</span><span class="n">eid</span><span class="p">]</span> <span class="o">=</span> <span class="n">old</span>
+            <span class="k">return</span> <span class="n">total_cost</span>
+
+        <span class="n">ca</span><span class="p">,</span> <span class="n">cb</span><span class="p">,</span> <span class="n">cc</span> <span class="o">=</span> <span class="n">col</span><span class="p">[</span><span class="n">a</span><span class="p">],</span> <span class="n">col</span><span class="p">[</span><span class="n">b</span><span class="p">],</span> <span class="n">col</span><span class="p">[</span><span class="n">c3</span><span class="p">]</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">INF</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">min_cost_option</span><span class="p">([(</span><span class="n">ca</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="p">[(</span><span class="n">cb</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">min_cost_option</span><span class="p">([(</span><span class="n">cb</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="p">[(</span><span class="n">ca</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">min_cost_option</span><span class="p">([(</span><span class="n">ca</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="mi">1</span><span class="p">)],</span> <span class="p">[(</span><span class="n">cc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]))</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">min_cost_option</span><span class="p">([(</span><span class="n">cc</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="p">[(</span><span class="n">ca</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="n">cb</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">base</span> <span class="o">-</span> <span class="n">loss</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="abc400_e.html">‹ abc400_e</a><a href="arc196_a.html">arc196_a ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

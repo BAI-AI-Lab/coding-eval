@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>原理 · 代码能力评测</title>
+<meta name="description" content="评测流程、设置、LCB 判分问题与复核、性能测量方法、参评模型">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html">BAI AI Lab 代码评测</a><ul><li><a href="index.html">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html" aria-current="page">原理</a></li><li><a href="results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<h2>原理</h2>
+<p class="sub">用 LiveCodeBench 的官方题目、提示词和判题程序评测，再对判为失败的答案复核，最后测量通过答案的运行效率和代码指标。</p>
+<div class="steps">
+<div class="card"><h4>选题</h4><p>release_v6 最新 100 题中取最新的中等 10、困难 25 题。</p></div>
+<div class="card"><h4>生成</h4><p>官方提示词，每题调用模型 API 1 次，提取回答中的最后一个代码块。</p></div>
+<div class="card"><h4>判题</h4><p>AtCoder 题作为完整程序读写标准输入输出，LeetCode 题调用给定函数；隐藏测试全过才算通过。</p></div>
+<div class="card"><h4>复核</h4><p>用真实 stdin/stdout 重跑全部 AtCoder 答案，多解题用校验器。</p></div>
+<div class="card"><h4>代码分析</h4><p>通过的答案绑核重跑，测 CPU 时间与峰值内存；radon、pyflakes 统计代码指标。</p></div>
+</div>
+<h3>评测设置</h3>
+<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">评测集</td><td>LiveCodeBench release_v6（ICLR 2025），官方提示词、官方判题，隐藏测试全过才算通过</td></tr><tr><td class="nw">指标</td><td>pass@1，每题 1 次</td></tr><tr><td class="nw">调用</td><td>各厂商官方 API；codingBench 的 <code>cb livecodebench</code></td></tr><tr><td class="nw">思考档位</td><td>各模型默认（Kimi max，DeepSeek high）</td></tr><tr><td class="nw">采样</td><td>DeepSeek：temperature 0.2（LCB 官方）；Kimi：固定 1.0（API 不允许传入）</td></tr><tr><td class="nw">输出上限</td><td>DeepSeek 262,144；Kimi 131,072（默认）；全部回答正常结束（finish_reason=stop），无截断</td></tr><tr><td class="nw">并发</td><td>V4.1-Flash 16，V4-Pro 8；Kimi 前 32 题 4 路非流式，后 3 题 1 路流式（5 分钟无 token 判超时）</td></tr><tr><td class="nw">计量</td><td>每次调用记录起止时间与服务端返回的 token 数（含思考）</td></tr><tr><td class="nw">费用</td><td>官方单价 × token，DeepSeek 按调用时段区分峰谷；用账户余额变化核对</td></tr></tbody></table></div>
+<h3>为什么用最新的题</h3>
+<p>LiveCodeBench 持续从 AtCoder、LeetCode、Codeforces 收集比赛题并标注发布日期，可以只用某个日期之后的题，降低训练数据污染。本次 35 题发布于 2025-03-15 至 2025-04-06，仍早于三个模型的发布时间，不排除污染（见“结果 › 局限”）。</p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2 id="rejudge">判分与复核</h2>
+<p class="sub">LCB 判题程序在标准输入输出上有缺陷，测试数据也有错误。只用原始判分会低估模型，甚至颠倒排名。</p>
+<div class="tw"><table><thead><tr><th>问题</th><th>受影响答案</th><th class="nw">LCB 判定</th><th>复核</th></tr></thead><tbody><tr><td>测试数据错误：<code>abc397_d</code> 第 41 个测试 N=27，标准答案为“3 0”；y=0 不是正整数，27 不存在正整数解，正确输出为 -1</td><td>三个模型（均输出 -1）</td><td class="nw">答案错误</td><td class="nw">校验器 43/43</td></tr><tr><td>多解题按单一答案比对：<code>arc195_c</code> 允许任意合法构造</td><td>三个模型</td><td class="nw">答案错误</td><td class="nw">校验器 5/5</td></tr><tr><td><code>sys.stdin.buffer.readline</code> 模拟错误：每次都返回输入的第一行</td><td>Flash <code>abc399_c</code>、<code>arc196_b</code>；Pro <code>arc196_b</code></td><td>答案错误 / 运行错误</td><td>真实输入全部通过</td></tr><tr><td>不支持 <code>sys.stdout.buffer</code>：标准输出被替换为 StringIO</td><td>Kimi、Flash <code>abc398_f</code></td><td class="nw">运行错误</td><td class="nw">真实输出 43/43</td></tr><tr><td>API 返回与题目无关的内容（一部电影的营销手法）</td><td>Kimi <code>abc399_e</code></td><td class="nw">无代码</td><td>人工另行调用，验证正确</td></tr></tbody></table></div>
+<p class="note">复核方法：26 道 AtCoder 题 × 3 个模型 = 78 份答案，作为独立 Python 进程用真实 stdin/stdout 运行官方全部测试（每个测试 6 秒）。两道多解题用按题意编写的校验器，其余逐 token 比对。LCB 判为通过的答案复核后全部仍通过。LeetCode 9 题为函数调用，不受上述问题影响，沿用 LCB 判分。上述问题均出自 LCB 官方判题代码与数据（本评测固定的版本），未作修改。Kimi <code>abc398_g</code> 在 LCB 中报 IndexError，也是 readline 问题导致；换成真实输入后仍有 4/43 个测试答案错误，按失败计。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<h2 id="perf">性能测量</h2>
+<p class="sub">只比较复核后通过的答案，所有输出都校验正确后才计入。</p>
+<div class="tw"><table><thead><tr><th>项目</th><th>设置</th></tr></thead><tbody><tr><td class="nw">对象</td><td>复核后通过的答案（Kimi 33 份，不含 <code>abc398_g</code>、<code>abc399_e</code>；DeepSeek 各 35 份）</td></tr><tr><td class="nw">运行</td><td>每次运行都是一个全新的 Python 3.11 进程（LCB 环境），绑定到单个 CPU 核；共 11,124 次，输出全部正确</td></tr><tr><td class="nw">计时</td><td>AtCoder：进程 CPU 时间（rusage）扣除启动基线 25.7 ms；LeetCode：只计 <code>Solution</code> 方法调用的 CPU 时间</td></tr><tr><td class="nw">内存</td><td>进程峰值常驻内存（ru_maxrss）；空程序为 12.1 MB</td></tr><tr><td class="nw">重复</td><td>每个测试 3 次、三个模型轮流先跑，取中位数；同一测试 3 次的离散度中位数 2.0%，P90 6.4%</td></tr><tr><td class="nw">可比题</td><td>最慢答案扣除启动后仍 ≥ 0.1 秒的题，共 13 题；其余 22 题官方测试太小，耗时主要是启动开销，不比较</td></tr></tbody></table></div>
+<h3 id="static">静态指标</h3>
+<ul class="list">
+<li>有效行：不含空行和注释的代码行（radon raw）。注释行含文档字符串。</li>
+<li>圈复杂度：每份答案所有函数与方法的圈复杂度之和（radon cc）。</li>
+<li>可维护性指数：0–100，越高越好（radon mi，含多行字符串）。</li>
+<li>嵌套深度：语法树中复合语句（if、for、while、with、try、def、class、match）的最大嵌套层数。</li>
+<li>pyflakes 警告：未使用的变量、未定义的名字等。</li>
+</ul>
+<p>这些指标只描述代码形态，不评价可读性、命名等主观项。</p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>参评模型</h2>
+<p class="sub">信息取自两家官方文档与 API <code>/v1/models</code>（2026-10-23）。</p>
+<div class="tw"><table><thead><tr><th></th><th><span class="dot kimi"></span> Kimi K3.1 Pro</th><th><span class="dot flash"></span> DeepSeek-V4.1-Flash</th><th><span class="dot pro"></span> DeepSeek-V4-Pro</th></tr></thead><tbody><tr><td class="nw">API 模型名</td><td><code>kimi-k3.1-pro</code></td><td><code>deepseek-flash</code></td><td><code>deepseek-v4-pro</code></td></tr><tr><td class="nw">最近更新</td><td>K3.1 系列首发</td><td>2026-10-17（1017 版）</td><td>2026-08-13（GA）</td></tr><tr><td class="nw">规模</td><td>3T 级，K3（2.8T）后训练</td><td>552B MoE，激活 8B 输入 / 16B 输出</td><td>未公布</td></tr><tr><td class="nw">权重</td><td>开放</td><td>开放，MIT</td><td>—</td></tr><tr><td class="nw">上下文 / 最大输出</td><td>1M / 默认 131,072</td><td>1M / 393,216</td><td>1M / 393,216</td></tr><tr><td class="nw">输入</td><td>文本、图像</td><td>文本、图像</td><td>文本</td></tr><tr><td class="nw">思考档位</td><td>恒开；low/high/max，默认 max</td><td>low/high/max，默认 high</td><td>low/high/max，默认 high</td></tr><tr><td class="nw">采样</td><td>固定 T=1.0、top_p=0.95</td><td>推荐 T=1.0</td><td>—</td></tr><tr><td>单价（美元/百万 token：输入 / 缓存 / 输出）</td><td>2 / 0.2 / 10，无峰谷</td><td>0.3 / 0.006 / 1.2，谷时半价</td><td>1.32 / 0.044 / 3.96，谷时半价</td></tr></tbody></table></div>
+<h3>Kimi K3.1 Pro</h3>
+<ul class="list">
+<li>变更：在 K3 上大幅增加后训练算力，覆盖数百个领域联合 RL；重做 RL 框架、长上下文推理、沙箱、rollout 调度。</li>
+<li>官方提升方向：编程、3D 建模（直接写 Blender / CAD 脚本）、金融研究（内部 Financial Research 比 K3 高 11.6 分）、智能体。</li>
+<li>安全：中期训练与 RL 数据剔除网络安全内容；xdev-bench-hard pass@3 81.0%（不剔除 90.5%）。</li>
+<li>高速版 <code>kimi-k3.1-pro-highspeed</code>：速度 2–3 倍，价格 2 倍。K2 系列 2026 年底下线。</li>
+<li>使用限制：充值 ≥ 1 美元解锁；累计充值决定并发 / TPM；temperature、top_p、n、penalty 不可传。</li>
+<li>官方文档中的编程基准分数为占位符（“[xx.x%]”），无可引用数据。</li>
+</ul>
+<h3>DeepSeek-V4.1-Flash</h3>
+<ul class="list">
+<li>2026-09-10 发布：20 层因果编码器 + 20 层解码器；MoE 1 共享 + 384 路由专家，每 token 激活 6 个；KV 缓存 890 字节/token，HBM 为上一代 1/4、SSD 为 1/8；原生视觉；降价；V4-Flash 下线。</li>
+<li>2026-10-17 更新为 1017 版（新 / 旧）：Terminal-Bench 4.0 42.3 / 31.2，DeepSWE v1.1 77.0 / 74.2，ProgramBench 29.1 / 20.3，NL2Repo 68.2 / 65.4，HLE 42.6 / 36.8；输出更短、耗时更少；价格与调用方式不变。</li>
+<li>Codeforces 3471（max 档；同表 V4-Pro 3348）。输出单价为 V4-Pro 的 30%、Kimi K3.1 Pro 的 12%。</li>
+</ul>
+<h3>DeepSeek-V4-Pro</h3>
+<ul class="list">
+<li>2026-04-24 首发；2026-08-13 GA：HLE 42.7 / 60.0（无 / 有工具），Terminal-Bench 2.1 87.9，DeepSWE 62.7，NL2Repo 61.5，Toolathlon-Verified 74.1；引入 low/high/max 三档；2026-08-16 起峰谷定价。</li>
+<li>V4.1-Flash 新闻稿称 9 月 14 日起该模型名改由 V4.1-Flash 承接，更新日志称继续提供、计费不变。本次 API 返回的模型名为 <code>deepseek-v4-pro</code>，按 V4-Pro 单价扣费。</li>
+<li>仅文本输入；单价为 V4.1-Flash 的 3.3 倍；DeepSeek 自报多数基准低于 V4.1-Flash。</li>
+</ul>
+</div></section>
+<section class="section"><div class="wrap">
+<h2>来源</h2>
+<ul class="list">
+<li>LiveCodeBench：<a href="https://livecodebench.github.io">livecodebench.github.io</a></li>
+<li>Kimi：<a href="https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart">K3.1 Pro 快速开始</a>、<a href="https://platform.kimi.ai/docs/models">模型列表</a>、<a href="https://platform.kimi.ai/docs/pricing/chat">价格</a></li>
+<li>DeepSeek：<a href="https://api-docs.deepseek.com/updates/">更新日志</a>、<a href="https://www.deepseek.com/en/news/deepseek-v4-1-flash/">V4.1-Flash 发布</a>、<a href="https://huggingface.co/deepseek-ai/DeepSeek-V4.1-Flash">模型卡</a>、<a href="https://api-docs.deepseek.com/quick_start/pricing">价格</a></li>
+<li>上下文、最大输出、默认档位：两家 API <code>/v1/models</code>（2026-10-23）</li>
+</ul>
+</div></section>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

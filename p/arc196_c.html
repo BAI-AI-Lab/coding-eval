@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arc196_c Strongly Connected · 代码能力评测</title>
+<meta name="description" content="arc196_c Strongly Connected：三个模型的结果与代码">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html">BAI AI Lab 代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">arc196_c</span></p>
+<h1 class="ptitle">Strongly Connected</h1>
+<p class="meta">AtCoder ARC 196 C 题 · 2025-04-06 · <span class="pill">困难</span></p>
+<p class="summary">2N 个点依次连有向边，每个白点与一个黑点配对并从白点连边到黑点；求使整张图强连通的配对方案数，模 998244353。</p>
+
+<p><a class="btn" href="https://atcoder.jp/contests/arc196/tasks/arc196_c" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>105.4k</b><span>输出 token（含思考）</span></li><li><b>1730 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>193</b><span>有效行</span></li><li><b>33</b><span>圈复杂度</span></li><li><b>36.8</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>76.8k</b><span>输出 token（含思考）</span></li><li><b>439 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>179</b><span>有效行</span></li><li><b>18</b><span>圈复杂度</span></li><li><b>33.8</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3></div>
+<p class="verdict ok">✓</p><p class="cap">通过</p><ul class="specs"><li><span class="t">通过</span><span>LCB 原始判分</span></li><li><span class="t">逐 token 比对 43/43</span><span>复核</span></li><li><b>164.2k</b><span>输出 token（含思考）</span></li><li><b>1221 秒</b><span>延迟</span></li><li><b>—</b><span>最慢测试的 CPU 时间</span></li><li><b>—</b><span>峰值内存</span></li><li><b>125</b><span>有效行</span></li><li><b>21</b><span>圈复杂度</span></li><li><b>35.4</b><span>可维护性指数</span></li><li><b>0</b><span>pyflakes 警告</span></li></ul></div></div>
+<p class="note">CPU 时间与内存只统计能区分性能的题（最慢答案扣除进程启动后仍 ≥ 0.1 秒），括号内为相对最快者的倍数（≥ 2 时标出）。静态指标只统计复核后通过的答案。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="flash">DS-Flash</button><button aria-pressed="false" data-value="pro">DS-Pro</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 256 行</span><button class="copy" data-src="code-kimi">复制代码</button></div><div id="code-kimi"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+
+<span class="c1"># Optional fast exact convolution using double FFT with 15-bit splitting.</span>
+<span class="c1"># A pure-modular NTT fallback is provided below.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">_np</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="n">_REV</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_ROOTS</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ntt</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">inverse</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+    <span class="n">rev</span> <span class="o">=</span> <span class="n">_REV</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rev</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+            <span class="n">rev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">i</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">half</span><span class="p">)</span>
+        <span class="n">_REV</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">rev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">inverse</span><span class="p">)</span>
+        <span class="n">roots</span> <span class="o">=</span> <span class="n">_ROOTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">roots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="n">MOD</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">length</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+                <span class="n">wlen</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">wlen</span><span class="p">,</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+            <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">roots</span><span class="p">)):</span>
+                <span class="n">roots</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">roots</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">wlen</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="n">_ROOTS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">roots</span>
+
+        <span class="n">half</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">half</span><span class="p">):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">j</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">half</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">*</span> <span class="n">roots</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="n">MOD</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">-=</span> <span class="n">MOD</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">v</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">d</span> <span class="o">+=</span> <span class="n">MOD</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">length</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">inverse</span><span class="p">:</span>
+        <span class="n">inv_n</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">inv_n</span> <span class="o">%</span> <span class="n">MOD</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ntt_convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">need</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">need</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+    <span class="n">fa</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">fb</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+    <span class="n">_ntt</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="n">_ntt</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">fa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">fb</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="n">MOD</span>
+    <span class="n">_ntt</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fa</span><span class="p">[:</span><span class="n">need</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_fft_convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">need</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">need</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+
+    <span class="n">aa</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">split</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">split</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">base</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">a0</span> <span class="o">=</span> <span class="n">aa</span> <span class="o">&amp;</span> <span class="n">mask</span>
+    <span class="n">a1</span> <span class="o">=</span> <span class="n">aa</span> <span class="o">&gt;&gt;</span> <span class="n">split</span>
+    <span class="n">b0</span> <span class="o">=</span> <span class="n">bb</span> <span class="o">&amp;</span> <span class="n">mask</span>
+    <span class="n">b1</span> <span class="o">=</span> <span class="n">bb</span> <span class="o">&gt;&gt;</span> <span class="n">split</span>
+
+    <span class="n">fa0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">a0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">fa1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">fb0</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">b0</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+    <span class="n">fb1</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">b1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="n">c00</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">fa0</span> <span class="o">*</span> <span class="n">fb0</span><span class="p">,</span> <span class="n">n</span><span class="p">)[:</span><span class="n">need</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">c01</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">fa0</span> <span class="o">*</span> <span class="n">fb1</span> <span class="o">+</span> <span class="n">fa1</span> <span class="o">*</span> <span class="n">fb0</span><span class="p">,</span> <span class="n">n</span><span class="p">)[:</span><span class="n">need</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="n">c11</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span>
+        <span class="n">_np</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">fa1</span> <span class="o">*</span> <span class="n">fb1</span><span class="p">,</span> <span class="n">n</span><span class="p">)[:</span><span class="n">need</span><span class="p">]</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+
+    <span class="n">base2</span> <span class="o">=</span> <span class="n">base</span> <span class="o">*</span> <span class="n">base</span> <span class="o">%</span> <span class="n">MOD</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">c00</span> <span class="o">%</span> <span class="n">MOD</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">c01</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">)</span> <span class="o">*</span> <span class="n">base</span>
+        <span class="o">+</span> <span class="p">(</span><span class="n">c11</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">)</span> <span class="o">*</span> <span class="n">base2</span>
+    <span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">_np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_fft_convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_ntt_convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># The first and last added backward edges can exist only in this case.</span>
+    <span class="k">if</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"B"</span> <span class="ow">or</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"W"</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">fact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">fact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="n">invfact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">invfact</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="n">n</span><span class="p">],</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">invfact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">invfact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="c1"># Compress the input to relevant ends of W-runs.</span>
+    <span class="c1"># An entry (b,w) means: after b black vertices and w white vertices,</span>
+    <span class="c1"># a nonempty W-run ends, and w &gt;= b.</span>
+    <span class="n">bs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ws</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">:</span>
+        <span class="c1"># s[i] is B here.</span>
+        <span class="n">b</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">old_w</span> <span class="o">=</span> <span class="n">w</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span> <span class="ow">and</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"W"</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">w</span> <span class="o">&gt;</span> <span class="n">old_w</span> <span class="ow">and</span> <span class="n">w</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="p">:</span>
+            <span class="n">bs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">ws</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">bs</span><span class="p">)</span>
+
+    <span class="c1"># If x[b] is the compressed value for group b, then, for a relevant</span>
+    <span class="c1"># group (b,w),</span>
+    <span class="c1">#</span>
+    <span class="c1"># x[b] = (w! - sum_{previous groups k} x[k] * (w-k)!) / (w-b)!.</span>
+    <span class="c1">#</span>
+    <span class="c1"># Compute this online convolution by CDQ divide and conquer.</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span>
+    <span class="n">incoming</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span>
+
+    <span class="n">small_limit</span> <span class="o">=</span> <span class="mi">30000</span> <span class="k">if</span> <span class="n">_np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">80000</span>
+    <span class="n">fft_factor</span> <span class="o">=</span> <span class="mi">6</span> <span class="k">if</span> <span class="n">_np</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">20</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cross</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">u</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span> <span class="k">if</span> <span class="n">values</span><span class="p">[</span><span class="n">u</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ids</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">bs</span><span class="p">[</span><span class="n">u</span><span class="p">],</span> <span class="n">values</span><span class="p">[</span><span class="n">u</span><span class="p">])</span> <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+        <span class="n">naive_cost</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">right</span> <span class="o">-</span> <span class="n">mid</span><span class="p">)</span>
+
+        <span class="n">bmin</span> <span class="o">=</span> <span class="n">bs</span><span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">bmax</span> <span class="o">=</span> <span class="n">bs</span><span class="p">[</span><span class="n">ids</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="n">wmin</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
+        <span class="n">wmax</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">right</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">plen</span> <span class="o">=</span> <span class="n">bmax</span> <span class="o">-</span> <span class="n">bmin</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">tmin</span> <span class="o">=</span> <span class="n">wmin</span> <span class="o">-</span> <span class="n">bmax</span>
+        <span class="n">tmax</span> <span class="o">=</span> <span class="n">wmax</span> <span class="o">-</span> <span class="n">bmin</span>
+        <span class="n">zlen</span> <span class="o">=</span> <span class="n">tmax</span> <span class="o">-</span> <span class="n">tmin</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">conv_size</span> <span class="o">=</span> <span class="n">plen</span> <span class="o">+</span> <span class="n">zlen</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">fft_size</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">conv_size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span>
+
+        <span class="n">use_naive</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">naive_cost</span> <span class="o">&lt;=</span> <span class="n">small_limit</span>
+            <span class="ow">or</span> <span class="n">fft_size</span> <span class="o">*</span> <span class="n">fft_factor</span> <span class="o">&gt;</span> <span class="n">naive_cost</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_naive</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+                <span class="n">wv</span> <span class="o">=</span> <span class="n">ws</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">incoming</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">bu</span><span class="p">,</span> <span class="n">au</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+                    <span class="n">total</span> <span class="o">+=</span> <span class="n">au</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">wv</span> <span class="o">-</span> <span class="n">bu</span><span class="p">]</span>
+                <span class="n">incoming</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">total</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="k">return</span>
+
+        <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">plen</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">:</span>
+            <span class="n">x</span><span class="p">[</span><span class="n">bs</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">-</span> <span class="n">bmin</span><span class="p">]</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">tmin</span><span class="p">:</span><span class="n">tmax</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">conv</span> <span class="o">=</span> <span class="n">_convolution</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+        <span class="n">offset</span> <span class="o">=</span> <span class="n">bmin</span> <span class="o">+</span> <span class="n">tmin</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+            <span class="n">add</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">conv</span><span class="p">[</span><span class="n">ws</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">offset</span><span class="p">])</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">incoming</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+</span> <span class="n">add</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="o">&gt;=</span> <span class="n">MOD</span><span class="p">:</span>
+                <span class="n">val</span> <span class="o">-=</span> <span class="n">MOD</span>
+            <span class="n">incoming</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdq</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">right</span> <span class="o">-</span> <span class="n">left</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">left</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="n">ws</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">-</span> <span class="n">incoming</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="o">*</span> <span class="n">invfact</span><span class="p">[</span><span class="n">ws</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">-</span> <span class="n">bs</span><span class="p">[</span><span class="n">t</span><span class="p">]]</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">left</span> <span class="o">+</span> <span class="n">right</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="n">cdq</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span>
+        <span class="n">cross</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">mid</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+        <span class="n">cdq</span><span class="p">(</span><span class="n">mid</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+
+    <span class="n">cdq</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="flash" hidden><div class="codehead"><span class="cap"><span class="dot flash"></span> DeepSeek-V4.1-Flash · 235 行</span><button class="copy" data-src="code-flash">复制代码</button></div><div id="code-flash"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+<span class="n">PRIMITIVE_ROOT</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">)</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="c1"># For strong connectivity, the first vertex must be black and the last white.</span>
+    <span class="k">if</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'B'</span> <span class="ow">or</span> <span class="n">S</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'W'</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">fact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">fact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="n">invfact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">invfact</span><span class="p">[</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">invfact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">invfact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="c1"># Important cuts: ends of W-runs immediately followed by B.</span>
+    <span class="c1"># Store (number of B before the cut, number of W before the cut).</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">b</span> <span class="o">=</span> <span class="n">w</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">prev</span> <span class="o">=</span> <span class="s1">''</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">S</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">'B'</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prev</span> <span class="o">==</span> <span class="s1">'W'</span> <span class="ow">and</span> <span class="n">w</span> <span class="o">-</span> <span class="n">b</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">C</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+                <span class="n">W</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w</span><span class="p">)</span>
+            <span class="n">b</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">prev</span> <span class="o">=</span> <span class="n">ch</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">C</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># &gt;= 0 for every stored cut</span>
+
+    <span class="c1"># For small M, the quadratic DP is faster.</span>
+    <span class="k">if</span> <span class="n">M</span> <span class="o">&lt;=</span> <span class="mi">3000</span><span class="p">:</span>
+        <span class="n">F</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">F</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">wi</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">wi</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+            <span class="n">s</span> <span class="o">%=</span> <span class="n">MOD</span>
+            <span class="n">F</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">s</span> <span class="o">*</span> <span class="n">invfact</span><span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">i</span><span class="p">]])</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">ans</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">N</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+            <span class="n">ans</span> <span class="o">%=</span> <span class="n">MOD</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># ---------- NTT preparation ----------</span>
+    <span class="n">max_size</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">max_size</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="n">max_size</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+    <span class="n">max_log</span> <span class="o">=</span> <span class="n">max_size</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">roots</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">inv_roots</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">roots</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">PRIMITIVE_ROOT</span><span class="p">,</span> <span class="p">(</span><span class="n">MOD</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">k</span><span class="p">),</span> <span class="n">MOD</span><span class="p">)</span>
+        <span class="n">inv_roots</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">roots</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+
+    <span class="n">inv_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">inv2</span> <span class="o">=</span> <span class="p">(</span><span class="n">MOD</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">inv_size</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">inv_size</span><span class="p">[</span><span class="n">k</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">inv2</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="n">rev_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">ntt</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">invert</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="n">rev</span> <span class="o">=</span> <span class="n">rev_cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rev</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bits</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">rev</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="n">rev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">rev</span><span class="p">[</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="p">((</span><span class="n">i</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">bits</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">rev_cache</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">rev</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">rev</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">used_roots</span> <span class="o">=</span> <span class="n">inv_roots</span> <span class="k">if</span> <span class="n">invert</span> <span class="k">else</span> <span class="n">roots</span>
+
+        <span class="k">while</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="n">used_roots</span><span class="p">[</span><span class="n">level</span><span class="p">]</span>
+            <span class="n">half</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+
+            <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">end</span> <span class="o">=</span> <span class="n">start</span> <span class="o">+</span> <span class="n">half</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">start</span>
+                <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">end</span><span class="p">:</span>
+                    <span class="n">u</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">half</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="o">%</span> <span class="n">MOD</span>
+
+                    <span class="n">x</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">v</span>
+                    <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;=</span> <span class="n">MOD</span><span class="p">:</span>
+                        <span class="n">x</span> <span class="o">-=</span> <span class="n">MOD</span>
+                    <span class="n">y</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">v</span>
+                    <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">y</span> <span class="o">+=</span> <span class="n">MOD</span>
+
+                    <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+                    <span class="n">a</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">half</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+
+                    <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">wlen</span> <span class="o">%</span> <span class="n">MOD</span>
+                    <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">length</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+            <span class="n">level</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+            <span class="n">inv_n</span> <span class="o">=</span> <span class="n">inv_size</span><span class="p">[</span><span class="n">n</span><span class="o">.</span><span class="n">bit_length</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">inv_n</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">m</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">n</span> <span class="o">*</span> <span class="n">m</span> <span class="o">&lt;=</span> <span class="mi">4096</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ai</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">ai</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">bj</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+                    <span class="n">res</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">ai</span> <span class="o">*</span> <span class="n">bj</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="k">return</span> <span class="n">res</span>
+
+        <span class="n">need</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="n">m</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="n">need</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+        <span class="n">fa</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">fb</span> <span class="o">=</span> <span class="n">b</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">size</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span>
+
+        <span class="n">ntt</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="n">ntt</span><span class="p">(</span><span class="n">fb</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">fa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fa</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">fb</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="n">ntt</span><span class="p">(</span><span class="n">fa</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fa</span><span class="p">[:</span><span class="n">need</span><span class="p">]</span>
+
+    <span class="n">F</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">F</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">acc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">cdq</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">F</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">acc</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">invfact</span><span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="n">l</span><span class="p">]])</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="k">return</span>
+
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="n">cdq</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span>
+
+        <span class="n">left_count</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">right_count</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="n">mid</span>
+
+        <span class="k">if</span> <span class="n">left_count</span> <span class="o">*</span> <span class="n">right_count</span> <span class="o">&lt;=</span> <span class="mi">12000</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">wi</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="n">total</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">wi</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+                <span class="n">acc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">total</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cmax</span> <span class="o">=</span> <span class="n">C</span><span class="p">[</span><span class="n">mid</span><span class="p">]</span>
+            <span class="n">wmin</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="n">base</span> <span class="o">=</span> <span class="n">wmin</span> <span class="o">-</span> <span class="n">cmax</span>
+
+            <span class="n">len_c</span> <span class="o">=</span> <span class="n">cmax</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">len_w</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">-</span> <span class="n">wmin</span> <span class="o">+</span> <span class="mi">1</span>
+
+            <span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">len_c</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">cmax</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">len_c</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">F</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+
+            <span class="n">blen</span> <span class="o">=</span> <span class="n">len_c</span> <span class="o">+</span> <span class="n">len_w</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="n">bpoly</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">blen</span>
+            <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">blen</span><span class="p">):</span>
+                <span class="n">bpoly</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">base</span> <span class="o">+</span> <span class="n">t</span><span class="p">]</span>
+
+            <span class="n">conv</span> <span class="o">=</span> <span class="n">convolution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">bpoly</span><span class="p">)</span>
+
+            <span class="n">offset</span> <span class="o">=</span> <span class="n">len_c</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">W</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">wmin</span>
+                <span class="n">acc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">acc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">conv</span><span class="p">[</span><span class="n">offset</span> <span class="o">+</span> <span class="n">v</span><span class="p">])</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="n">cdq</span><span class="p">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="n">cdq</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">ans</span> <span class="o">+=</span> <span class="n">F</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">N</span> <span class="o">-</span> <span class="n">C</span><span class="p">[</span><span class="n">j</span><span class="p">]]</span>
+        <span class="n">ans</span> <span class="o">%=</span> <span class="n">MOD</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div><div data-panel-group="code" data-panel="pro" hidden><div class="codehead"><span class="cap"><span class="dot pro"></span> DeepSeek-V4-Pro · 153 行</span><button class="copy" data-src="code-pro">复制代码</button></div><div id="code-pro"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">998244353</span>
+<span class="n">G</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ntt</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">invert</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">bit</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&amp;</span> <span class="n">bit</span><span class="p">:</span>
+            <span class="n">j</span> <span class="o">^=</span> <span class="n">bit</span>
+            <span class="n">bit</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+        <span class="n">j</span> <span class="o">^=</span> <span class="n">bit</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+    <span class="n">length</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="n">length</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">:</span>
+        <span class="n">wlen</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="p">(</span><span class="n">MOD</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="n">length</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">wlen</span><span class="p">,</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+        <span class="n">half</span> <span class="o">=</span> <span class="n">length</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="n">half</span><span class="p">):</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">half</span><span class="p">]</span> <span class="o">*</span> <span class="n">w</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span> <span class="o">+</span> <span class="n">v</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="n">a</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="n">half</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">v</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">wlen</span> <span class="o">%</span> <span class="n">MOD</span>
+        <span class="n">length</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+        <span class="n">inv_n</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">inv_n</span> <span class="o">%</span> <span class="n">MOD</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="nb">input</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">readline</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">input</span><span class="p">())</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">S</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'B'</span> <span class="ow">or</span> <span class="n">S</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">'W'</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">fact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">fact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="n">invfact</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">invfact</span><span class="p">[</span><span class="n">N</span><span class="p">]</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">fact</span><span class="p">[</span><span class="n">N</span><span class="p">],</span> <span class="n">MOD</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">MOD</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">invfact</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">invfact</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">i</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="c1"># c[i] for i=1..N-1: number of whites before the (i+1)-th black.</span>
+    <span class="c1"># c[0] = 0 is used for the empty prefix in the inclusion-exclusion.</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">bcnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">wcnt</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">S</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ch</span> <span class="o">==</span> <span class="s1">'B'</span><span class="p">:</span>
+            <span class="n">bcnt</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">bcnt</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">c</span><span class="p">[</span><span class="n">bcnt</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">wcnt</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">wcnt</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">)</span>
+
+    <span class="n">valid</span> <span class="o">=</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">N</span><span class="p">):</span>
+        <span class="n">valid</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">i</span><span class="p">)</span>
+
+    <span class="n">NAIVE_LIMIT</span> <span class="o">=</span> <span class="mi">60</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">&gt;</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">valid</span><span class="p">[</span><span class="n">l</span><span class="p">]:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="n">invfact</span><span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">-</span> <span class="n">l</span><span class="p">]</span> <span class="o">*</span> <span class="n">res</span><span class="p">[</span><span class="n">l</span><span class="p">])</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span>
+
+        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">l</span> <span class="o">+</span> <span class="n">r</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+        <span class="n">solve</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">mid</span><span class="p">)</span>
+
+        <span class="n">rv</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">valid</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="n">rv</span><span class="p">:</span>
+            <span class="n">n_min</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">rv</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">n_max</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">rv</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+            <span class="n">k_min</span> <span class="o">=</span> <span class="n">n_min</span> <span class="o">-</span> <span class="n">mid</span>
+            <span class="n">k_max</span> <span class="o">=</span> <span class="n">n_max</span> <span class="o">-</span> <span class="n">l</span>
+            <span class="k">if</span> <span class="n">k_min</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">k_min</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="n">k_max</span> <span class="o">&gt;=</span> <span class="n">k_min</span><span class="p">:</span>
+                <span class="n">L</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">-</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">A</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">l</span><span class="p">:</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="n">K_len</span> <span class="o">=</span> <span class="n">k_max</span> <span class="o">-</span> <span class="n">k_min</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">F</span> <span class="o">=</span> <span class="n">fact</span><span class="p">[</span><span class="n">k_min</span><span class="p">:</span><span class="n">k_min</span> <span class="o">+</span> <span class="n">K_len</span><span class="p">]</span>
+                <span class="n">need</span> <span class="o">=</span> <span class="n">L</span> <span class="o">+</span> <span class="n">K_len</span> <span class="o">-</span> <span class="mi">1</span>
+
+                <span class="k">if</span> <span class="n">need</span> <span class="o">&lt;=</span> <span class="n">NAIVE_LIMIT</span><span class="p">:</span>
+                    <span class="n">C</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">need</span>
+                    <span class="k">for</span> <span class="n">ai</span><span class="p">,</span> <span class="n">av</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="n">av</span><span class="p">:</span>
+                            <span class="n">base</span> <span class="o">=</span> <span class="n">ai</span>
+                            <span class="k">for</span> <span class="n">bi</span><span class="p">,</span> <span class="n">bv</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">F</span><span class="p">):</span>
+                                <span class="n">C</span><span class="p">[</span><span class="n">base</span> <span class="o">+</span> <span class="n">bi</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">C</span><span class="p">[</span><span class="n">base</span> <span class="o">+</span> <span class="n">bi</span><span class="p">]</span> <span class="o">+</span> <span class="n">av</span> <span class="o">*</span> <span class="n">bv</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">n</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">while</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="n">need</span><span class="p">:</span>
+                        <span class="n">n</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+                    <span class="n">arr1</span> <span class="o">=</span> <span class="n">A</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">L</span><span class="p">)</span>
+                    <span class="n">arr2</span> <span class="o">=</span> <span class="n">F</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">K_len</span><span class="p">)</span>
+                    <span class="n">ntt</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="n">ntt</span><span class="p">(</span><span class="n">arr2</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+                        <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">arr2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="n">MOD</span>
+                    <span class="n">ntt</span><span class="p">(</span><span class="n">arr1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+                    <span class="n">C</span> <span class="o">=</span> <span class="n">arr1</span>
+
+                <span class="n">base</span> <span class="o">=</span> <span class="n">l</span> <span class="o">+</span> <span class="n">k_min</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rv</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">base</span>
+                    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">idx</span> <span class="o">&lt;</span> <span class="n">need</span><span class="p">:</span>
+                        <span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">C</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="n">solve</span><span class="p">(</span><span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">N</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">solve</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="p">(</span><span class="n">ans</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">*</span> <span class="n">fact</span><span class="p">[</span><span class="n">N</span> <span class="o">-</span> <span class="n">j</span><span class="p">])</span> <span class="o">%</span> <span class="n">MOD</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">ans</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">"__main__"</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="arc196_b.html">‹ arc196_b</a><a href="arc196_d.html">arc196_d ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="../data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

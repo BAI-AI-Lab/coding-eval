@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>代码能力评测 · BAI AI Lab</title>
+<meta name="description" content="Kimi K3.1 Pro、DeepSeek-V4.1-Flash、DeepSeek-V4-Pro 在 LiveCodeBench 最新 35 题上的评测结果">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html">BAI AI Lab 代码评测</a><ul><li><a href="index.html" aria-current="page">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html">原理</a></li><li><a href="results.html">结果</a></li></ul></div></nav>
+<main>
+<section class="hero"><div class="wrap">
+<p class="eyebrow">LiveCodeBench · 最新 35 题 · 2026-10-23</p>
+<h1>代码能力评测</h1>
+<p class="lead"><span class="nw">Kimi K3.1 Pro</span>、<span class="nw">DeepSeek-V4.1-Flash</span>、<span class="nw">DeepSeek-V4-Pro</span>：正确率、速度、费用与代码性能。</p>
+<div class="ctas"><a class="btn" href="results.html">查看结果</a><a class="more" href="method.html">评测原理</a><a class="more" href="problems.html">全部题目</a></div>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>三个模型</h2>
+<p class="sub">LiveCodeBench release_v6 中最新的 35 道竞赛题（中等 10、困难 25），每题调用 1 次，判分经过复核。</p>
+<div class="compare" style="--rows:9"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">kimi-k3.1-pro</div></div>
+<div class="big">34/35</div><div class="cap">复核后通过</div>
+<ul class="specs"><li><b>30/35</b><span>LCB 原始判分</span></li><li><b>199 秒</b><span>延迟</span></li><li><b>65</b><span>输出 token/秒</span></li><li><b>$8.57</b><span>费用</span></li><li><b>$0.252</b><span>每道通过题费用</span></li><li><b>1.29×</b><span>代码耗时 / 最快者</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3><div class="id">deepseek-flash</div></div>
+<div class="big">35/35</div><div class="cap">复核后通过</div>
+<ul class="specs"><li><b>30/35</b><span>LCB 原始判分</span></li><li><b>64 秒</b><span>延迟</span></li><li><b>179</b><span>输出 token/秒</span></li><li><b>$0.39</b><span>费用</span></li><li><b>$0.011</b><span>每道通过题费用</span></li><li><b>2.00×</b><span>代码耗时 / 最快者</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3><div class="id">deepseek-v4-pro</div></div>
+<div class="big">35/35</div><div class="cap">复核后通过</div>
+<ul class="specs"><li><b>32/35</b><span>LCB 原始判分</span></li><li><b>285 秒</b><span>延迟</span></li><li><b>134</b><span>输出 token/秒</span></li><li><b>$3.33</b><span>费用</span></li><li><b>$0.095</b><span>每道通过题费用</span></li><li><b>2.74×</b><span>代码耗时 / 最快者</span></li></ul></div></div>
+<p class="note">延迟、输出速度为每题中位数；费用按 token 计；代码耗时为 13 道可比题上相对最快者的几何平均倍数。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<h2>要点</h2>
+<p class="sub">数字均来自本次评测记录，计算方法见“原理”。</p>
+<div class="tiles">
+<a class="card" href="method.html#rejudge"><p class="k">判分</p><p class="v">13 → 1</p>
+<p>LCB 原始判分共 13 个失败：11 个由判题程序或测试数据的问题造成，1 个是 API 返回了与题目无关的内容（人工复核正确），真正答错的只有 1 个（Kimi <code>abc398_g</code>）。</p><p class="more">复核方法</p></a>
+<a class="card" href="results.html#overall"><p class="k">速度</p><p class="v">64 秒</p>
+<p>DS-V4.1-Flash 每题延迟中位数；Kimi 199 秒，DS-V4-Pro 285 秒。输出速度中位数：Flash 179、Pro 134、Kimi 65 token/秒。</p></a>
+<a class="card" href="results.html#cost"><p class="k">费用</p><p class="v">$0.011</p>
+<p>DS-V4.1-Flash 每道通过题的费用；DS-V4-Pro $0.095，Kimi $0.252。总费用 $0.39 / $3.33 / $8.57。</p></a>
+<a class="card" href="results.html#perf"><p class="k">代码性能</p><p class="v">1.29×</p>
+<p>在 13 道能区分性能的题上，Kimi 代码的运行时间相对最快者的几何平均倍数；DS-V4.1-Flash 2.00×，DS-V4-Pro 2.74×。</p></a>
+<div class="card wide"><p class="k">选型</p>
+<p>只看通过率和成本，DS-V4.1-Flash 最优：满分，费用为 DS-V4-Pro 的 12%、Kimi 的 5%，延迟最低。看代码运行效率，Kimi K3.1 Pro 最好，但输出最慢、费用最高，且非流式长请求在余额不足时会挂起并照常扣费，须用流式加空闲超时调用。DS-V4-Pro 满分，但输出 token 最多、代码效率波动最大。</p></div>
+</div>
+</div></section>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
+<p>评测框架 LiveCodeBench release_v6（ICLR 2025），运行与复核用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
+<p>全部数据：<a href="data/lcb35.json">data/lcb35.json</a></p>
+</div></footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
