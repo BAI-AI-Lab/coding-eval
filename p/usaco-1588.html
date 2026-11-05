@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>usaco-1588 Strange Function · 代码能力阶梯评测</title>
+<meta name="description" content="usaco-1588 Strange Function：f(x)：若 x 含有 0、1 以外的数字，则把每位奇数变 1、偶数变 0；否则返回 x−1；对位数可达 2×10⁵ 的正整数 x，求反复应用 f 直到变为 0 的次数对 10⁹+7 取模的结果，共 T 组。">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1588</span></p>
+<h1 class="ptitle">Strange Function</h1>
+<p class="meta">USACO 2026 Third · 铜组 · 2026-02 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
+<p class="summary">f(x)：若 x 含有 0、1 以外的数字，则把每位奇数变 1、偶数变 0；否则返回 x−1；对位数可达 2×10⁵ 的正整数 x，求反复应用 f 直到变为 0 的次数对 10⁹+7 取模的结果，共 T 组。</p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1588" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>4.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>32.9</b><span>输出速度 tokens/s ↑</span></li><li><b>144 秒</b><span>延迟 ↓</span></li><li><b>0.26×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不确定</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.09</b><span>Pylint 得分 ↑</span></li><li><b>5</b><span>圈复杂度 ↓</span></li><li><b>78.1</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>11.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>207.2</b><span>输出速度 tokens/s ↑</span></li><li><b>53 秒</b><span>延迟 ↓</span></li><li><b>0.25×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不确定</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.35</b><span>Pylint 得分 ↑</span></li><li><b>7</b><span>圈复杂度 ↓</span></li><li><b>48.0</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>8.8k</b><span>平均输出 token（含思考） ↓</span></li><li><b>209.7</b><span>输出速度 tokens/s ↑</span></li><li><b>43 秒</b><span>延迟 ↓</span></li><li><b>0.26×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不确定</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.26</b><span>Pylint 得分 ↑</span></li><li><b>6</b><span>圈复杂度 ↓</span></li><li><b>73.7</b><span>可维护性指数 ↑</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。得分 0–100，按官方时限判定，所有测试点都满分才算解出。CPU 时间 / 官方解为解出的答案在官方解最慢的 3 个测试点上的 CPU 时间之比（几何平均），只比较官方解至少需要 0.05 秒的题；复杂度按增长幂次相对官方解分类。判题与计分见 <a href="../method.html#judge">原理</a>。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="ds">DeepSeek</button><button aria-pressed="false" data-value="mm">MiniMax</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div data-panel-group="s-kimi" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 采样 1 · 36 行</span><button class="copy" data-src="code-kimi-0">复制代码</button></div><div id="code-kimi-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">1_000_000_007</span>
+<span class="n">MOD2</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">MOD</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">transformed</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Interpreting the parity digits as a binary number gives n.</span>
+        <span class="c1"># If no transformation is needed, these digits equal the original ones.</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">49</span><span class="p">:</span>  <span class="c1"># A digit other than &#39;0&#39; or &#39;1&#39;</span>
+                <span class="n">transformed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="p">((</span><span class="n">n</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">c</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">%</span> <span class="n">MOD2</span>
+
+        <span class="c1"># The number of operations after obtaining n is floor(3*n/2).</span>
+        <span class="c1"># Using n modulo 2*MOD preserves both the result modulo MOD and parity.</span>
+        <span class="n">ans</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">n</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">))</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="k">if</span> <span class="n">transformed</span><span class="p">:</span>
+            <span class="n">ans</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ans</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="ds" hidden><div data-panel-group="s-ds" data-panel="0"><div class="codehead"><span class="cap"><span class="dot ds"></span> DeepSeek Flash V4.1-1017 · 采样 1 · 46 行</span><button class="copy" data-src="code-ds-0">复制代码</button></div><div id="code-ds-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">1_000_000_007</span>
+<span class="n">INV2</span> <span class="o">=</span> <span class="p">(</span><span class="n">MOD</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">b</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">has_non_binary_digit</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">ch</span> <span class="o">-</span> <span class="mi">48</span>
+            <span class="n">parity</span> <span class="o">=</span> <span class="n">d</span> <span class="o">&amp;</span> <span class="mi">1</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">parity</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+            <span class="k">if</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">has_non_binary_digit</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">last_parity</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">48</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">last_parity</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">)</span> <span class="o">*</span> <span class="n">INV2</span> <span class="o">%</span> <span class="n">MOD</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="n">b</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">)</span> <span class="o">*</span> <span class="n">INV2</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="k">if</span> <span class="n">has_non_binary_digit</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">h</span> <span class="o">%</span> <span class="n">MOD</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="mm" hidden><div data-panel-group="s-mm" data-panel="0"><div class="codehead"><span class="cap"><span class="dot mm"></span> MiniMax M3.1 Flash · 采样 1 · 48 行</span><button class="copy" data-src="code-mm-0">复制代码</button></div><div id="code-mm-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="n">MOD</span> <span class="o">=</span> <span class="mi">1_000_000_007</span>
+<span class="n">INV2</span> <span class="o">=</span> <span class="mi">500_000_004</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">b_mod</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">has_invalid_digit</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">digit</span> <span class="o">=</span> <span class="n">ch</span> <span class="o">-</span> <span class="mi">48</span>  <span class="c1"># ASCII digit to integer</span>
+
+            <span class="k">if</span> <span class="n">digit</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">has_invalid_digit</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="c1"># Parity of the original digit.</span>
+            <span class="n">bit</span> <span class="o">=</span> <span class="n">digit</span> <span class="o">&amp;</span> <span class="mi">1</span>
+
+            <span class="c1"># Interpret the parity digits as a binary number.</span>
+            <span class="n">b_mod</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">b_mod</span> <span class="o">+</span> <span class="n">bit</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="c1"># The parity of b is the parity of its last binary digit.</span>
+        <span class="n">parity</span> <span class="o">=</span> <span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">48</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">1</span>
+
+        <span class="c1"># floor(3b / 2) = (3b - (b mod 2)) / 2</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="p">((</span><span class="mi">3</span> <span class="o">*</span> <span class="n">b_mod</span> <span class="o">-</span> <span class="n">parity</span><span class="p">)</span> <span class="o">*</span> <span class="n">INV2</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="k">if</span> <span class="n">has_invalid_digit</span><span class="p">:</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="p">(</span><span class="n">answer</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="n">MOD</span>
+
+        <span class="n">answers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">answer</span><span class="p">))</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answers</span><span class="p">))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="usaco-1587.html">‹ usaco-1587</a><a href="usaco-1446.html">usaco-1446 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
+<p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>usaco-1469 Cow Checkups · 代码能力阶梯评测</title>
+<meta name="description" content="usaco-1469 Cow Checkups：给定长 N 的数组 a 和 b，恰好翻转 a 的一个区间 [l, r] 一次；对每个 c = 0…N，求使翻转后满足 aᵢ = bᵢ 的位置数恰为 c 的 (l, r) 个数。">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1469</span></p>
+<h1 class="ptitle">Cow Checkups</h1>
+<p class="meta">USACO 2025 January · 铜组 · 2025-01 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
+<p class="summary">给定长 N 的数组 a 和 b，恰好翻转 a 的一个区间 [l, r] 一次；对每个 c = 0…N，求使翻转后满足 aᵢ = bᵢ 的位置数恰为 c 的 (l, r) 个数。</p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1469" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ">0/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">46.2</span></b><span>采样 1 · 超时</span></li><li><b>11.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.0</b><span>输出速度 tokens/s ↑</span></li><li><b>426 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.00</b><span>Pylint 得分 ↑</span></li><li><b>4</b><span>圈复杂度 ↓</span></li><li><b>74.1</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
+<p class="verdict ">0/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">46.2</span></b><span>采样 1 · 超时</span></li><li><b>12.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>200.5</b><span>输出速度 tokens/s ↑</span></li><li><b>61 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>3</b><span>Pylint 问题 ↓</span></li><li><b>9.36</b><span>Pylint 得分 ↑</span></li><li><b>10</b><span>圈复杂度 ↓</span></li><li><b>54.8</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ">0/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">84.6</span></b><span>采样 1 · 超时</span></li><li><b>45.2k</b><span>平均输出 token（含思考） ↓</span></li><li><b>145.1</b><span>输出速度 tokens/s ↑</span></li><li><b>313 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>3</b><span>Pylint 问题 ↓</span></li><li><b>9.55</b><span>Pylint 得分 ↑</span></li><li><b>11</b><span>圈复杂度 ↓</span></li><li><b>62.3</b><span>可维护性指数 ↑</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。得分 0–100，按官方时限判定，所有测试点都满分才算解出。CPU 时间 / 官方解为解出的答案在官方解最慢的 3 个测试点上的 CPU 时间之比（几何平均），只比较官方解至少需要 0.05 秒的题；复杂度按增长幂次相对官方解分类。判题与计分见 <a href="../method.html#judge">原理</a>。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="ds">DeepSeek</button><button aria-pressed="false" data-value="mm">MiniMax</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div data-panel-group="s-kimi" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 采样 1 · 39 行</span><button class="copy" data-src="code-kimi-0">复制代码</button></div><div id="code-kimi-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">original_match</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">original_match</span><span class="p">)</span>
+
+    <span class="n">answer</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># All n operations with l == r leave the line unchanged.</span>
+    <span class="n">answer</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span>
+
+    <span class="c1"># Operations with l &lt; r are grouped by l + r. On each such diagonal,</span>
+    <span class="c1"># successive operations expand the previous reversed interval by one cow</span>
+    <span class="c1"># on each side, so only the two new endpoints change the match count.</span>
+    <span class="k">for</span> <span class="n">diagonal</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="p">(</span><span class="n">diagonal</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">diagonal</span> <span class="o">-</span> <span class="n">left</span>
+        <span class="n">checked</span> <span class="o">=</span> <span class="n">base</span>
+
+        <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="n">n</span><span class="p">)):</span>
+            <span class="n">checked</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">==</span> <span class="n">b</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">b</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
+                <span class="o">-</span> <span class="n">original_match</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                <span class="o">-</span> <span class="n">original_match</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">answer</span><span class="p">[</span><span class="n">checked</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">answer</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="ds" hidden><div data-panel-group="s-ds" data-panel="0"><div class="codehead"><span class="cap"><span class="dot ds"></span> DeepSeek Flash V4.1-1017 · 采样 1 · 76 行</span><button class="copy" data-src="code-ds-0">复制代码</button></div><div id="code-ds-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">:</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span><span class="p">]</span>
+
+    <span class="n">orig</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">matches</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">b</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+            <span class="n">orig</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">matches</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># Reversing a length-1 interval changes nothing.</span>
+    <span class="n">ans</span><span class="p">[</span><span class="n">matches</span><span class="p">]</span> <span class="o">+=</span> <span class="n">n</span>
+
+    <span class="n">aa</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="n">bb</span> <span class="o">=</span> <span class="n">b</span>
+    <span class="n">oo</span> <span class="o">=</span> <span class="n">orig</span>
+    <span class="n">an</span> <span class="o">=</span> <span class="n">ans</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">matches</span>
+
+    <span class="c1"># Odd-length intervals with length &gt;= 3, centered at c.</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">c</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="n">c</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">right</span> <span class="k">else</span> <span class="n">right</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="n">c</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+            <span class="n">cur</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">aa</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">==</span> <span class="n">bb</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">aa</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">bb</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
+                <span class="o">-</span> <span class="n">oo</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                <span class="o">-</span> <span class="n">oo</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">an</span><span class="p">[</span><span class="n">base</span> <span class="o">+</span> <span class="n">cur</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">l</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Even-length intervals, centered between c and c + 1.</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">left_steps</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">right_steps</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="n">c</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">steps</span> <span class="o">=</span> <span class="n">left_steps</span> <span class="k">if</span> <span class="n">left_steps</span> <span class="o">&lt;</span> <span class="n">right_steps</span> <span class="k">else</span> <span class="n">right_steps</span>
+
+        <span class="n">l</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+            <span class="n">cur</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">aa</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">==</span> <span class="n">bb</span><span class="p">[</span><span class="n">l</span><span class="p">])</span>
+                <span class="o">+</span> <span class="p">(</span><span class="n">aa</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">==</span> <span class="n">bb</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
+                <span class="o">-</span> <span class="n">oo</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+                <span class="o">-</span> <span class="n">oo</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="n">an</span><span class="p">[</span><span class="n">base</span> <span class="o">+</span> <span class="n">cur</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">l</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ans</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="mm" hidden><div data-panel-group="s-mm" data-panel="0"><div class="codehead"><span class="cap"><span class="dot mm"></span> MiniMax M3.1 Flash · 采样 1 · 147 行</span><button class="copy" data-src="code-mm-0">复制代码</button></div><div id="code-mm-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">array</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">accumulate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">struct</span><span class="w"> </span><span class="kn">import</span> <span class="n">pack</span> <span class="k">as</span> <span class="n">struct_pack</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Fast C implementation used by collections.Counter.update.</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">_collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">_count_elements</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_count_elements</span><span class="p">(</span><span class="n">mapping</span><span class="p">,</span> <span class="n">iterable</span><span class="p">):</span>
+        <span class="n">get</span> <span class="o">=</span> <span class="n">mapping</span><span class="o">.</span><span class="n">get</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+            <span class="n">mapping</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="c1"># Maps an unsigned value 0,1,2,3,4 to a signed byte with value -2,-1,0,1,2.</span>
+<span class="n">SIGNED_TABLE</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">((</span><span class="mi">254</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="nb">bytes</span><span class="p">(</span><span class="mi">251</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">same</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)]</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">same</span><span class="p">)</span>
+    <span class="n">mismatch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">if</span> <span class="n">x</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">same</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">pack_fields</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pack integers as little-endian unsigned 16-bit fields.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">struct_pack</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2">H&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">values</span><span class="p">)</span>
+
+    <span class="n">a_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">b_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+    <span class="n">a_rev_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">b_rev_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">b</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="n">mismatch_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">mismatch</span><span class="p">))</span>
+    <span class="n">mismatch_rev_view</span> <span class="o">=</span> <span class="nb">memoryview</span><span class="p">(</span><span class="n">pack_fields</span><span class="p">(</span><span class="n">mismatch</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="c1"># A 1 in the lowest bit of every 16-bit field.</span>
+    <span class="n">field_ones</span> <span class="o">=</span> <span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">65535</span>
+    <span class="n">all_low</span> <span class="o">=</span> <span class="n">field_ones</span> <span class="o">*</span> <span class="mh">0x7FFF</span>
+    <span class="n">all_high</span> <span class="o">=</span> <span class="n">field_ones</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">segment</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">count</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extract count consecutive 16-bit fields.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span>
+            <span class="n">view</span><span class="p">[</span><span class="mi">2</span> <span class="o">*</span> <span class="n">start</span><span class="p">:</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="n">count</span><span class="p">)],</span> <span class="s2">&quot;little&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">equal_fields</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return one bit per 16-bit field, indicating whether x and y</span>
+<span class="sd">        are equal in that field.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">different</span> <span class="o">=</span> <span class="p">((</span><span class="n">x</span> <span class="o">^</span> <span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="n">low</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">high</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">high</span> <span class="o">^</span> <span class="n">different</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">15</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">make_deltas</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">left_rev_start</span><span class="p">,</span> <span class="n">right_start</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return signed changes for k symmetric endpoint pairs.</span>
+
+<span class="sd">        The left endpoints are read in decreasing order from the</span>
+<span class="sd">        reversed buffers, and the right endpoints in increasing order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">k</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">low</span> <span class="o">=</span> <span class="n">all_low</span> <span class="o">&amp;</span> <span class="n">mask</span>
+        <span class="n">high</span> <span class="o">=</span> <span class="n">all_high</span> <span class="o">&amp;</span> <span class="n">mask</span>
+
+        <span class="c1"># [a[right] == b[left]]</span>
+        <span class="n">equal1</span> <span class="o">=</span> <span class="n">equal_fields</span><span class="p">(</span>
+            <span class="n">segment</span><span class="p">(</span><span class="n">a_view</span><span class="p">,</span> <span class="n">right_start</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="n">segment</span><span class="p">(</span><span class="n">b_rev_view</span><span class="p">,</span> <span class="n">left_rev_start</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="n">low</span><span class="p">,</span>
+            <span class="n">high</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># [a[left] == b[right]]</span>
+        <span class="n">equal2</span> <span class="o">=</span> <span class="n">equal_fields</span><span class="p">(</span>
+            <span class="n">segment</span><span class="p">(</span><span class="n">a_rev_view</span><span class="p">,</span> <span class="n">left_rev_start</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="n">segment</span><span class="p">(</span><span class="n">b_view</span><span class="p">,</span> <span class="n">right_start</span><span class="p">,</span> <span class="n">k</span><span class="p">),</span>
+            <span class="n">low</span><span class="p">,</span>
+            <span class="n">high</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">left_mismatch</span> <span class="o">=</span> <span class="n">segment</span><span class="p">(</span>
+            <span class="n">mismatch_rev_view</span><span class="p">,</span> <span class="n">left_rev_start</span><span class="p">,</span> <span class="n">k</span>
+        <span class="p">)</span>
+        <span class="n">right_mismatch</span> <span class="o">=</span> <span class="n">segment</span><span class="p">(</span>
+            <span class="n">mismatch_view</span><span class="p">,</span> <span class="n">right_start</span><span class="p">,</span> <span class="n">k</span>
+        <span class="p">)</span>
+
+        <span class="c1"># In each field:</span>
+        <span class="c1"># delta + 2 = equal1 + equal2 + mismatch_left + mismatch_right.</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">equal1</span>
+            <span class="o">+</span> <span class="n">equal2</span>
+            <span class="o">+</span> <span class="n">left_mismatch</span>
+            <span class="o">+</span> <span class="n">right_mismatch</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Every field is between 0 and 4, so its high byte is zero.</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">packed</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">)[::</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;b&quot;</span><span class="p">)</span>
+        <span class="n">delta</span><span class="o">.</span><span class="n">frombytes</span><span class="p">(</span><span class="n">encoded</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">SIGNED_TABLE</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">delta</span>
+
+    <span class="n">counts</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Odd-length intervals: [center - radius, center + radius].</span>
+    <span class="k">for</span> <span class="n">center</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">center</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># The singleton interval leaves the entire line unchanged.</span>
+            <span class="n">counts</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">make_deltas</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">center</span><span class="p">,</span> <span class="n">center</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># The initial value accounts for the singleton interval.</span>
+        <span class="n">_count_elements</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">base</span><span class="p">))</span>
+
+    <span class="c1"># Even-length intervals:</span>
+    <span class="c1"># [gap - 1 - radius, gap + radius].</span>
+    <span class="k">for</span> <span class="n">gap</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">gap</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">gap</span><span class="p">)</span>
+        <span class="n">delta</span> <span class="o">=</span> <span class="n">make_deltas</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">gap</span><span class="p">,</span> <span class="n">gap</span><span class="p">)</span>
+
+        <span class="c1"># The initial value is a placeholder for this center.</span>
+        <span class="n">_count_elements</span><span class="p">(</span><span class="n">counts</span><span class="p">,</span> <span class="n">accumulate</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="n">initial</span><span class="o">=</span><span class="n">base</span><span class="p">))</span>
+
+    <span class="c1"># Remove the placeholder inserted for each of the n - 1 even centers.</span>
+    <span class="n">counts</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+        <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="usaco-1468.html">‹ usaco-1468</a><a href="usaco-1491.html">usaco-1491 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
+<p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

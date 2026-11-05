@@ -3,53 +3,53 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>代码能力评测 · BAI AI Lab</title>
-<meta name="description" content="Kimi K3.1 Pro、DeepSeek-V4.1-Flash、DeepSeek-V4-Pro 在 LiveCodeBench 上的评测结果">
+<title>代码能力阶梯评测 · BAI AI Lab</title>
+<meta name="description" content="Kimi K3.1 Pro、DeepSeek Flash V4.1-1017、MiniMax M3.1 Flash 在 codingBench 阶梯评测（L1–L5，112 题）上的结果">
 <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html" aria-current="page">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html">自定义评测</a></li><li><a href="report-2026-10-23.pdf">报告</a></li></ul></div></nav>
+<nav class="nav"><div class="nav-in"><a class="brand" href="index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="index.html" aria-current="page">概览</a></li><li><a href="problems.html">题目</a></li><li><a href="method.html">原理</a></li><li><a href="results.html">结果</a></li><li><a href="custom.html">自定义评测</a></li><li><a href="report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="hero"><div class="wrap">
-<p class="eyebrow">LiveCodeBench · 2026-10-23</p>
-<h1>代码能力评测</h1>
-<p class="lead"><span class="nw">Kimi K3.1 Pro</span>、<span class="nw">DeepSeek-V4.1-Flash</span>、<span class="nw">DeepSeek-V4-Pro</span>：<span class="nw">正确率、速度、费用与代码性能。</span></p>
-<div class="ctas"><a class="btn" href="results.html">查看结果</a><a class="more" href="report-2026-10-23.pdf">下载报告（PDF）</a><a class="more" href="custom.html">自定义评测</a></div>
+<p class="eyebrow">codingBench 阶梯评测 · 2026-11-03</p>
+<h1>代码能力阶梯评测</h1>
+<p class="lead">以人类竞赛组别为难度标尺的五档、112 道题：<span class="nw">Kimi K3.1 Pro</span>、<span class="nw">DeepSeek Flash V4.1-1017</span> 与 <span class="nw">MiniMax M3.1 Flash</span> 的正确率、思考强度、运行效率与费用。</p>
+<div class="ctas"><a class="btn" href="results.html">查看结果</a><a class="more" href="report-2026-11-03.pdf">技术报告（PDF）</a><a class="more" href="custom.html">自定义评测</a></div>
 </div></section>
 <section class="section alt"><div class="wrap">
 <h2>三个模型</h2>
-<p class="sub">LiveCodeBench 竞赛题，每题调用 1 次。题目范围与设置见“结果”。</p>
-<div class="compare" style="--rows:8"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">kimi-k3.1-pro</div></div>
-<div class="big">34/35</div><div class="cap">通过 ↑</div>
-<ul class="specs"><li><b>199 秒</b><span>延迟 ↓</span></li><li><b>65</b><span>输出 token/秒 ↑</span></li><li><b>$8.57</b><span>费用 ↓</span></li><li><b>$0.252</b><span>每道通过题费用 ↓</span></li><li><b>1.29×</b><span>代码耗时 / 最快者 ↓</span></li></ul></div><div class="model"><div><span class="dot flash"></span><h3><span class="long">DeepSeek-V4.1-Flash</span><span class="short">DS-Flash</span></h3><div class="id">deepseek-flash</div></div>
-<div class="big">35/35</div><div class="cap">通过 ↑</div>
-<ul class="specs"><li><b>64 秒</b><span>延迟 ↓</span></li><li><b>179</b><span>输出 token/秒 ↑</span></li><li><b>$0.39</b><span>费用 ↓</span></li><li><b>$0.011</b><span>每道通过题费用 ↓</span></li><li><b>2.00×</b><span>代码耗时 / 最快者 ↓</span></li></ul></div><div class="model"><div><span class="dot pro"></span><h3><span class="long">DeepSeek-V4-Pro</span><span class="short">DS-Pro</span></h3><div class="id">deepseek-v4-pro</div></div>
-<div class="big">35/35</div><div class="cap">通过 ↑</div>
-<ul class="specs"><li><b>285 秒</b><span>延迟 ↓</span></li><li><b>134</b><span>输出 token/秒 ↑</span></li><li><b>$3.33</b><span>费用 ↓</span></li><li><b>$0.095</b><span>每道通过题费用 ↓</span></li><li><b>2.74×</b><span>代码耗时 / 最快者 ↓</span></li></ul></div></div>
-<p class="note">↑ 越大越好，↓ 越小越好。延迟、输出速度为每题中位数；费用按 token 计；代码耗时为 13 道可比题上相对最快者的几何平均倍数。</p>
+<p class="sub">L1–L4 为 USACO 铜、银、金、铂金组与 EGOI 2026，按官方时限判题；L5 为 FrontierCS 开放式难题，按 0–100 连续计分。Kimi K3.1 Pro 在 L1–L3 为 auto，L4–L5 为 max。</p>
+<div class="compare" style="--rows:10"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">kimi-k3.1-pro</div></div>
+<div class="big">94.8%</div><div class="cap">L1–L4 pass@1 ↑</div>
+<ul class="specs"><li><b>92.6%</b><span>L4 pass@1 ↑</span></li><li><b>37.6</b><span>L5 平均得分（参考解 60） ↑</span></li><li><b>25.6</b><span>输出速度 tokens/s ↑</span></li><li><b>2.3 秒</b><span>首个 token ↓</span></li><li><b>675 秒</b><span>延迟中位数 ↓</span></li><li><b>$50.12</b><span>全部 202 个采样的费用 ↓</span></li><li><b>$0.244</b><span>每份解出答案（L1–L4） ↓</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">deepseek-flash</div></div>
+<div class="big">86.0%</div><div class="cap">L1–L4 pass@1 ↑</div>
+<ul class="specs"><li><b>72.2%</b><span>L4 pass@1 ↑</span></li><li><b>28.6</b><span>L5 平均得分（参考解 60） ↑</span></li><li><b>195.3</b><span>输出速度 tokens/s ↑</span></li><li><b>0.6 秒</b><span>首个 token ↓</span></li><li><b>162 秒</b><span>延迟中位数 ↓</span></li><li><b>$5.79</b><span>全部 202 个采样的费用 ↓</span></li><li><b>$0.033</b><span>每份解出答案（L1–L4） ↓</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">MiniMax-M3.1-Flash</div></div>
+<div class="big">75.6%</div><div class="cap">L1–L4 pass@1 ↑</div>
+<ul class="specs"><li><b>55.6%</b><span>L4 pass@1 ↑</span></li><li><b>24.5</b><span>L5 平均得分（参考解 60） ↑</span></li><li><b>144.8</b><span>输出速度 tokens/s ↑</span></li><li><b>0.9 秒</b><span>首个 token ↓</span></li><li><b>324 秒</b><span>延迟中位数 ↓</span></li><li><b>$6.30</b><span>全部 202 个采样的费用 ↓</span></li><li><b>$0.037</b><span>每份解出答案（L1–L4） ↓</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。输出速度、首个 token 与延迟为每次调用的中位数；费用按各家官方美元标价计算；每份解出答案的费用为 L1–L4 的费用除以解出的采样数。</p>
 </div></section>
 <section class="section"><div class="wrap">
 <h2>要点</h2>
-<p class="sub">数字均来自本次评测记录，计算方法见“原理”。</p>
+<p class="sub">数字均来自本次评测记录，计算方法见“原理”，完整分析见技术报告。</p>
 <div class="tiles">
-<a class="card" href="results.html#matrix"><p class="k">正确率</p><p class="v">只错 1 题</p>
-<p>DS-V4.1-Flash 与 DS-V4-Pro 全部通过；Kimi 唯一的错误是 <code>abc398_g</code>（博弈题），思考 11.9 万 token 后在 4/43 个测试上答案错误。</p></a>
-<a class="card" href="results.html#overall"><p class="k">速度</p><p class="v">64 秒</p>
-<p>DS-V4.1-Flash 每题延迟中位数；Kimi 199 秒，DS-V4-Pro 285 秒。输出速度中位数：Flash 179、Pro 134、Kimi 65 token/秒。</p></a>
-<a class="card" href="results.html#overall"><p class="k">费用</p><p class="v">$0.011</p>
-<p>DS-V4.1-Flash 每道通过题的费用；DS-V4-Pro $0.095，Kimi $0.252。总费用 $0.39 / $3.33 / $8.57。</p></a>
-<a class="card" href="results.html#perf"><p class="k">代码性能</p><p class="v">1.29×</p>
-<p>在 13 道能区分性能的题上，Kimi 代码的运行时间相对最快者的几何平均倍数；DS-V4.1-Flash 2.00×，DS-V4-Pro 2.74×。</p></a>
-<div class="card wide"><p class="k">选型</p>
-<p>只看通过率和成本，DS-V4.1-Flash 最优：满分，费用为 DS-V4-Pro 的 12%、Kimi 的 5%，延迟最低。看代码运行效率，Kimi K3.1 Pro 最好，但输出最慢、费用最高。DS-V4-Pro 满分，但输出 token 最多、代码效率波动最大。</p></div>
+<a class="card" href="results.html#main"><p class="k">差距集中在 L4</p><p class="v">92.6%</p>
+<p>Kimi 的 L4 pass@1；DeepSeek 72.2%，MiniMax 55.6%。L1–L4 合计 94.8%、86.0% 与 75.6%，三组两两差值都显著。</p></a>
+<a class="card" href="results.html#effort"><p class="k">思考强度</p><p class="v">+27.8 个百分点</p>
+<p>Kimi 由 high 改为 max，L4 的 pass@1 由 64.8% 升至 92.6%（95% 区间 [14.8, 42.6]）；L5 的平均得分只变化 +2.0 分（区间 [−6.0, 10.4]）。</p></a>
+<a class="card" href="results.html#main"><p class="k">L5 开放式难题</p><p class="v">37.6 分</p>
+<p>Kimi 的 L5 平均得分；DeepSeek 28.6，MiniMax 24.5。官方参考解为 60 分，没有一个答案在全部测试点上取得满分。</p></a>
+<a class="card" href="results.html#cost"><p class="k">速度与费用</p><p class="v">25.6 tokens/s</p>
+<p>Kimi 的输出速度中位数，DeepSeek 195.3、MiniMax 144.8。完成全部评测的费用为 $50.12、$5.79 与 $6.30。</p></a>
+<div class="card wide"><p class="k">结论</p>
+<p>Kimi K3.1 Pro 与 DeepSeek Flash V4.1-1017 在 L3 上的 pass@1 都在 95% 以上，模型之间的差距从 L4 开始拉开。Kimi 的领先依赖 max 思考强度：high 下它的 L4 pass@1 为 64.8%，低于 DeepSeek。它的领先也以速度与费用为代价，输出速度不到另外两个模型的五分之一，每份解出答案的费用约为它们的 7 倍。三个模型在 L5 上都远低于官方参考解。</p></div>
 </div>
 </div></section>
 </main>
 <footer><div class="wrap">
-<p>BAI AI Lab 代码能力评测 · 数据截至 2026-10-23（UTC）</p>
-<p>评测框架 LiveCodeBench release_v6 <a href="method.html#ref-1">[1]</a>，运行与判分用 codingBench。题面版权归 AtCoder 与 LeetCode，本站只给出概述与原题链接。</p>
-<p>全部数据：<a href="data/lcb.json">data/lcb.json</a></p>
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>
 <script src="assets/app.js"></script>

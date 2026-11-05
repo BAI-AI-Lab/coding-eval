@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>usaco-1448 2D Conveyor Belt · 代码能力阶梯评测</title>
+<meta name="description" content="usaco-1448 2D Conveyor Belt：N×N 网格初始全为空格，Q 次依次在某空格放置方向为 L/R/U/D 的传送带，物品从某格出发若永远离不开网格则该格不可用；每次放置后，求剩余空格最优放置时不可用格的最少数目。">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1448</span></p>
+<h1 class="ptitle">2D Conveyor Belt</h1>
+<p class="meta">USACO 2024 December · 银组 · 2024-12 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
+<p class="summary">N×N 网格初始全为空格，Q 次依次在某空格放置方向为 L/R/U/D 的传送带，物品从某格出发若永远离不开网格则该格不可用；每次放置后，求剩余空格最优放置时不可用格的最少数目。</p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1448" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>30.6k</b><span>平均输出 token（含思考） ↓</span></li><li><b>25.6</b><span>输出速度 tokens/s ↑</span></li><li><b>1197 秒</b><span>延迟 ↓</span></li><li><b>1.53×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>6</b><span>Pylint 问题 ↓</span></li><li><b>9.70</b><span>Pylint 得分 ↑</span></li><li><b>38</b><span>圈复杂度 ↓</span></li><li><b>39.0</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>34.5k</b><span>平均输出 token（含思考） ↓</span></li><li><b>197.8</b><span>输出速度 tokens/s ↑</span></li><li><b>175 秒</b><span>延迟 ↓</span></li><li><b>1.00×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>20</b><span>Pylint 问题 ↓</span></li><li><b>8.73</b><span>Pylint 得分 ↑</span></li><li><b>44</b><span>圈复杂度 ↓</span></li><li><b>40.8</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>28.6k</b><span>平均输出 token（含思考） ↓</span></li><li><b>145.1</b><span>输出速度 tokens/s ↑</span></li><li><b>198 秒</b><span>延迟 ↓</span></li><li><b>0.32×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>13</b><span>Pylint 问题 ↓</span></li><li><b>8.82</b><span>Pylint 得分 ↑</span></li><li><b>39</b><span>圈复杂度 ↓</span></li><li><b>49.4</b><span>可维护性指数 ↑</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。得分 0–100，按官方时限判定，所有测试点都满分才算解出。CPU 时间 / 官方解为解出的答案在官方解最慢的 3 个测试点上的 CPU 时间之比（几何平均），只比较官方解至少需要 0.05 秒的题；复杂度按增长幂次相对官方解分类。判题与计分见 <a href="../method.html#judge">原理</a>。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="ds">DeepSeek</button><button aria-pressed="false" data-value="mm">MiniMax</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div data-panel-group="s-kimi" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 采样 1 · 249 行</span><button class="copy" data-src="code-kimi-0">复制代码</button></div><div id="code-kimi-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">array</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="c1"># 0 = unknown, 1 = L, 2 = R, 3 = U, 4 = D</span>
+    <span class="n">direction</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">positions</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="n">q</span>
+    <span class="n">type_to_direction</span> <span class="o">=</span> <span class="p">{</span><span class="sa">b</span><span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">c</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_to_direction</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="n">k</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]]</span>
+        <span class="n">k</span> <span class="o">+=</span> <span class="mi">3</span>
+    <span class="k">del</span> <span class="n">data</span>
+
+    <span class="c1"># DSU for connected components of unknown cells.</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">m</span>
+
+    <span class="c1"># Each component also maintains a linked list of its cells.</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+    <span class="n">tail</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+    <span class="n">nxt</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">m</span>
+
+    <span class="n">component_good</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="n">fixed_good</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">find</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">while</span> <span class="n">p</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">!=</span> <span class="n">x</span><span class="p">:</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="n">x</span><span class="p">]]</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">x</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">a</span> <span class="o">==</span> <span class="n">b</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">a</span>
+        <span class="k">if</span> <span class="n">size</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">[</span><span class="n">b</span><span class="p">]:</span>
+            <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="n">size</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">+=</span> <span class="n">size</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">component_good</span><span class="p">[</span><span class="n">b</span><span class="p">]:</span>
+            <span class="n">component_good</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">nxt</span><span class="p">[</span><span class="n">tail</span><span class="p">[</span><span class="n">a</span><span class="p">]]</span> <span class="o">=</span> <span class="n">head</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+        <span class="n">tail</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">tail</span><span class="p">[</span><span class="n">b</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">a</span>
+
+    <span class="c1"># Build the components in the final configuration.</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">base</span> <span class="o">+</span> <span class="n">c</span>
+            <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">union</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">and</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">union</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+
+    <span class="n">bad_count</span> <span class="o">=</span> <span class="n">m</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">last_row_start</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">n</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">mark_fixed_good</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">bad_count</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fixed_good</span><span class="p">[</span><span class="n">v</span><span class="p">]:</span>
+            <span class="n">fixed_good</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">bad_count</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">nonlocal</span> <span class="n">bad_count</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">component_good</span><span class="p">[</span><span class="n">root</span><span class="p">]:</span>
+            <span class="k">return</span>
+
+        <span class="n">component_good</span><span class="p">[</span><span class="n">root</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">bad_count</span> <span class="o">-=</span> <span class="n">size</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+
+        <span class="c1"># Every fixed belt pointing into this component now leads to an exit.</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">head</span><span class="p">[</span><span class="n">root</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">cur</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">cur</span> <span class="o">%</span> <span class="n">n</span>
+
+            <span class="k">if</span> <span class="n">col</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">cur</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>       <span class="c1"># R</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">col</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">cur</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>       <span class="c1"># L</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">cur</span> <span class="o">-</span> <span class="n">n</span>
+                <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>       <span class="c1"># D</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">cur</span> <span class="o">&lt;</span> <span class="n">last_row_start</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">cur</span> <span class="o">+</span> <span class="n">n</span>
+                <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>       <span class="c1"># U</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+            <span class="n">cur</span> <span class="o">=</span> <span class="n">nxt</span><span class="p">[</span><span class="n">cur</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">drain_stack</span><span class="p">():</span>
+        <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">col</span> <span class="o">=</span> <span class="n">v</span> <span class="o">%</span> <span class="n">n</span>
+
+            <span class="c1"># Fixed predecessors become good. Adjacent unknown components</span>
+            <span class="c1"># become good because they may choose to move into v.</span>
+            <span class="k">if</span> <span class="n">col</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="mi">1</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">activate_component</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">col</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">activate_component</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">v</span> <span class="o">-</span> <span class="n">n</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">activate_component</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">last_row_start</span><span class="p">:</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">v</span> <span class="o">+</span> <span class="n">n</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">activate_component</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+    <span class="c1"># Initial sources of goodness: direct exits from the grid.</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>             <span class="c1"># U on top row</span>
+            <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="n">last_row_start</span> <span class="o">+</span> <span class="n">c</span>
+        <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>             <span class="c1"># D on bottom row</span>
+            <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">n</span>
+        <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>             <span class="c1"># L on left column</span>
+            <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">n</span> <span class="o">+</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>             <span class="c1"># R on right column</span>
+            <span class="n">mark_fixed_good</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="n">drain_stack</span><span class="p">()</span>
+
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">answers</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">bad_count</span>
+
+    <span class="c1"># Remove belts in reverse order. Unknown components then only merge,</span>
+    <span class="c1"># and the good set only grows.</span>
+    <span class="k">for</span> <span class="n">day</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">day</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">old_good</span> <span class="o">=</span> <span class="n">fixed_good</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+
+        <span class="c1"># Temporarily regard v as a bad singleton unknown component.</span>
+        <span class="k">if</span> <span class="n">old_good</span><span class="p">:</span>
+            <span class="n">bad_count</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">fixed_good</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">direction</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">parent</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">size</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">head</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">tail</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">nxt</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">component_good</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">col</span> <span class="o">=</span> <span class="n">v</span> <span class="o">%</span> <span class="n">n</span>
+        <span class="n">neighbors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">col</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">col</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">last_row_start</span><span class="p">:</span>
+            <span class="n">neighbors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="n">will_be_good</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">old_good</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="ow">or</span> <span class="n">v</span> <span class="o">&gt;=</span> <span class="n">last_row_start</span> <span class="ow">or</span> <span class="n">col</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">col</span> <span class="o">==</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">will_be_good</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">roots</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">direction</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">root</span> <span class="o">=</span> <span class="n">find</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">component_good</span><span class="p">[</span><span class="n">root</span><span class="p">]:</span>
+                    <span class="n">will_be_good</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="k">if</span> <span class="n">root</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+                    <span class="n">roots</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">fixed_good</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">will_be_good</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">will_be_good</span><span class="p">:</span>
+            <span class="n">activate_component</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+                <span class="n">activate_component</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+            <span class="n">drain_stack</span><span class="p">()</span>
+
+        <span class="n">current</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">for</span> <span class="n">root</span> <span class="ow">in</span> <span class="n">roots</span><span class="p">:</span>
+            <span class="n">current</span> <span class="o">=</span> <span class="n">union</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+
+        <span class="n">answers</span><span class="p">[</span><span class="n">day</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">bad_count</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">answers</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+
+
+<span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="ds" hidden><div data-panel-group="s-ds" data-panel="0"><div class="codehead"><span class="cap"><span class="dot ds"></span> DeepSeek Flash V4.1-1017 · 采样 1 · 179 行</span><button class="copy" data-src="code-ds-0">复制代码</button></div><div id="code-ds-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">array</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">it</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
+    <span class="n">Q</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span>
+
+    <span class="n">M</span> <span class="o">=</span> <span class="n">N</span> <span class="o">*</span> <span class="n">N</span>
+    <span class="n">outside</span> <span class="o">=</span> <span class="n">M</span>
+
+    <span class="n">fixed_dir</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+    <span class="n">updates_u</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">Q</span>
+    <span class="n">updates_d</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">Q</span><span class="p">)</span>
+
+    <span class="c1"># Directions: 1 = L, 2 = R, 3 = U, 4 = D</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">it</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="n">c</span>
+
+        <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">76</span><span class="p">:</span>       <span class="c1"># L</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">82</span><span class="p">:</span>     <span class="c1"># R</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="k">elif</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">85</span><span class="p">:</span>     <span class="c1"># U</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="k">else</span><span class="p">:</span>             <span class="c1"># D</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="n">updates_u</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">idx</span>
+        <span class="n">updates_d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+        <span class="n">fixed_dir</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+
+    <span class="k">del</span> <span class="n">data</span><span class="p">,</span> <span class="n">it</span>
+
+    <span class="c1"># Reverse graph representation:</span>
+    <span class="c1"># head[v] is the first incoming edge u -&gt; v stored in linked-list form.</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">to</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span>
+    <span class="n">nxt</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;i&#39;</span><span class="p">)</span>
+
+    <span class="n">ta</span> <span class="o">=</span> <span class="n">to</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="n">nxt</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">head</span>
+    <span class="n">ec</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="n">Nn</span> <span class="o">=</span> <span class="n">N</span>
+    <span class="n">Mm</span> <span class="o">=</span> <span class="n">M</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">fixed_dir</span>
+
+    <span class="c1"># Build the graph after all Q updates.</span>
+    <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nn</span><span class="p">):</span>
+        <span class="n">base</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Nn</span>
+        <span class="n">up_ok</span> <span class="o">=</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="n">down_ok</span> <span class="o">=</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">Nn</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">base</span>
+
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Nn</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="n">fd</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+            <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># Still &#39;?&#39;: all four outgoing edges are possible.</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="n">ta</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">Nn</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="n">ta</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">-</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">up_ok</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="n">ta</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">down_ok</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="n">ta</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># Fixed conveyor belt: one outgoing edge.</span>
+                <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">Nn</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="k">elif</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">-</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">up_ok</span> <span class="k">else</span> <span class="n">Mm</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="n">idx</span> <span class="o">+</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">down_ok</span> <span class="k">else</span> <span class="n">Mm</span>
+
+                <span class="n">ta</span><span class="p">(</span><span class="n">idx</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># reach[v] means v can reach outside in the original graph.</span>
+    <span class="n">reach</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">M</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">reach</span><span class="p">[</span><span class="n">Mm</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">queue</span> <span class="o">=</span> <span class="p">[</span><span class="n">Mm</span><span class="p">]</span>
+    <span class="n">qpos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">reach_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Initial reverse BFS from outside.</span>
+    <span class="k">while</span> <span class="n">qpos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">queue</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">queue</span><span class="p">[</span><span class="n">qpos</span><span class="p">]</span>
+        <span class="n">qpos</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">e</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+        <span class="k">while</span> <span class="n">e</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">u</span> <span class="o">=</span> <span class="n">to</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">nxt</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">Q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ans</span><span class="p">[</span><span class="n">Q</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mm</span> <span class="o">-</span> <span class="n">reach_count</span>
+
+    <span class="c1"># Process updates backwards, adding removed edges.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">updates_u</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">updates_d</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="n">r</span> <span class="o">=</span> <span class="n">u</span> <span class="o">//</span> <span class="n">Nn</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">Nn</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Mm</span>
+            <span class="n">ta</span><span class="p">(</span><span class="n">u</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">c</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">Nn</span> <span class="k">else</span> <span class="n">Mm</span>
+            <span class="n">ta</span><span class="p">(</span><span class="n">u</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">u</span> <span class="o">-</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Mm</span>
+            <span class="n">ta</span><span class="p">(</span><span class="n">u</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">d</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">u</span> <span class="o">+</span> <span class="n">Nn</span> <span class="k">if</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">Nn</span> <span class="k">else</span> <span class="n">Mm</span>
+            <span class="n">ta</span><span class="p">(</span><span class="n">u</span><span class="p">);</span> <span class="n">na</span><span class="p">(</span><span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]);</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="n">ec</span><span class="p">;</span> <span class="n">ec</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+                <span class="n">reach</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">qpos</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">queue</span><span class="p">):</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">queue</span><span class="p">[</span><span class="n">qpos</span><span class="p">]</span>
+            <span class="n">qpos</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">e</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="n">v</span><span class="p">]</span>
+            <span class="k">while</span> <span class="n">e</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="n">u2</span> <span class="o">=</span> <span class="n">to</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">reach</span><span class="p">[</span><span class="n">u2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">reach</span><span class="p">[</span><span class="n">u2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">reach_count</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">u2</span><span class="p">)</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">nxt</span><span class="p">[</span><span class="n">e</span><span class="p">]</span>
+
+        <span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">Mm</span> <span class="o">-</span> <span class="n">reach_count</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Q</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="mm" hidden><div data-panel-group="s-mm" data-panel="0"><div class="codehead"><span class="cap"><span class="dot mm"></span> MiniMax M3.1 Flash · 采样 1 · 172 行</span><button class="copy" data-src="code-mm-0">复制代码</button></div><div id="code-mm-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flood</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">good</span><span class="p">,</span> <span class="n">belt</span><span class="p">,</span> <span class="n">width</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Mark newly good predecessors of cells already in the stack.&quot;&quot;&quot;</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">push</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">pop</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span>
+
+    <span class="c1"># Directions: 0 = ?, 1 = L, 2 = R, 3 = U, 4 = D.</span>
+    <span class="k">while</span> <span class="n">stack</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">pop</span><span class="p">()</span>
+
+        <span class="c1"># Cell immediately to the left reaches target if it is ? or R.</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">push</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Cell immediately to the right reaches target if it is ? or L.</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">target</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">push</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Cell immediately above reaches target if it is ? or D.</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">target</span> <span class="o">-</span> <span class="n">width</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">push</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="c1"># Cell immediately below reaches target if it is ? or U.</span>
+        <span class="n">source</span> <span class="o">=</span> <span class="n">target</span> <span class="o">+</span> <span class="n">width</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">source</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">added</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">push</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">added</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">read</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">readline</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">first</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span><span class="p">,</span> <span class="n">q</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">first</span><span class="p">)</span>
+
+    <span class="c1"># Use a one-cell padded border to represent the outside of the grid.</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">width</span> <span class="o">*</span> <span class="n">width</span>
+
+    <span class="c1"># Border cells cannot be grid sources.</span>
+    <span class="c1"># Directions: 0 = ?, 1 = L, 2 = R, 3 = U, 4 = D, 5 = border.</span>
+    <span class="n">belt</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">5</span><span class="p">])</span> <span class="o">*</span> <span class="n">size</span>
+
+    <span class="c1"># The outside is reachable, while interior cells initially are not.</span>
+    <span class="n">good</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">([</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="n">size</span>
+
+    <span class="n">zero_row</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">belt</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero_row</span>
+        <span class="n">good</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">zero_row</span>
+
+    <span class="n">direction_code</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="sa">b</span><span class="s2">&quot;L&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;R&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;U&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+        <span class="sa">b</span><span class="s2">&quot;D&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="n">positions</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">q</span>
+
+    <span class="c1"># Construct the configuration after all q days.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+        <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">direction</span> <span class="o">=</span> <span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">col</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">col</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">col</span>
+        <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">position</span>
+        <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="n">direction_code</span><span class="p">[</span><span class="n">direction</span><span class="p">]</span>
+
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">usable</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Seed cells that can move directly outside.</span>
+    <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Top row: U or ?.</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">width</span> <span class="o">+</span> <span class="n">col</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+        <span class="c1"># Bottom row: D or ?.</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">col</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># Left column: L or ?.</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+        <span class="c1"># Right column: R or ?.</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="n">width</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="n">direction</span> <span class="o">=</span> <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">direction</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+
+    <span class="c1"># Propagate reachability backward through the grid.</span>
+    <span class="n">usable</span> <span class="o">+=</span> <span class="n">flood</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">good</span><span class="p">,</span> <span class="n">belt</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+
+    <span class="n">total_cells</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="n">answers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">q</span>
+    <span class="n">answers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_cells</span> <span class="o">-</span> <span class="n">usable</span>
+
+    <span class="c1"># Undo the days in reverse order. Replacing a fixed belt by ?</span>
+    <span class="c1"># only adds possible moves, so the set of good cells only grows.</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">positions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">belt</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]:</span>
+            <span class="c1"># For a boundary cell, one neighbor is the padded outside.</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="ow">or</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="ow">or</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span> <span class="o">-</span> <span class="n">width</span><span class="p">]</span>
+                <span class="ow">or</span> <span class="n">good</span><span class="p">[</span><span class="n">position</span> <span class="o">+</span> <span class="n">width</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="n">good</span><span class="p">[</span><span class="n">position</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">position</span><span class="p">)</span>
+                <span class="n">usable</span> <span class="o">+=</span> <span class="n">flood</span><span class="p">(</span><span class="n">stack</span><span class="p">,</span> <span class="n">good</span><span class="p">,</span> <span class="n">belt</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+
+        <span class="c1"># After undoing day i+1, this is the configuration after day i.</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">answers</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">total_cells</span> <span class="o">-</span> <span class="n">usable</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">answers</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="usaco-1447.html">‹ usaco-1447</a><a href="usaco-1470.html">usaco-1470 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
+<p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

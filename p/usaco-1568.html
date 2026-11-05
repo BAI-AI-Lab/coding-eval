@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>usaco-1568 Farmer John Loves Rotations · 代码能力阶梯评测</title>
+<meta name="description" content="usaco-1568 Farmer John Loves Rotations：给定长 N 的数组 A，选定下标 j，每次操作把 A 循环左移或右移一位并记下当前的 A_j；对每个 j = 1…N，求使记下的数（含初始 A_j）覆盖 A 中全部不同取值的最少操作次数。">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1568</span></p>
+<h1 class="ptitle">Farmer John Loves Rotations</h1>
+<p class="meta">USACO 2026 Second · 银组 · 2026-01 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
+<p class="summary">给定长 N 的数组 A，选定下标 j，每次操作把 A 循环左移或右移一位并记下当前的 A_j；对每个 j = 1…N，求使记下的数（含初始 A_j）覆盖 A 中全部不同取值的最少操作次数。</p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1568" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>29.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.3</b><span>输出速度 tokens/s ↑</span></li><li><b>1052 秒</b><span>延迟 ↓</span></li><li><b>0.85×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>6</b><span>Pylint 问题 ↓</span></li><li><b>9.42</b><span>Pylint 得分 ↑</span></li><li><b>37</b><span>圈复杂度 ↓</span></li><li><b>45.7</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
+<p class="verdict ">0/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">64.7</span></b><span>采样 1 · 超时</span></li><li><b>37.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>206.8</b><span>输出速度 tokens/s ↑</span></li><li><b>183 秒</b><span>延迟 ↓</span></li><li><b>1.19×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>19</b><span>Pylint 问题 ↓</span></li><li><b>7.71</b><span>Pylint 得分 ↑</span></li><li><b>26</b><span>圈复杂度 ↓</span></li><li><b>48.1</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict ">0/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">5.9</span></b><span>采样 1 · 答案错误</span></li><li><b>39.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>160.3</b><span>输出速度 tokens/s ↑</span></li><li><b>248 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>—</b><span>时间复杂度（相对官方解）</span></li><li><b>3</b><span>Pylint 问题 ↓</span></li><li><b>9.50</b><span>Pylint 得分 ↑</span></li><li><b>18</b><span>圈复杂度 ↓</span></li><li><b>61.4</b><span>可维护性指数 ↑</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。得分 0–100，按官方时限判定，所有测试点都满分才算解出。CPU 时间 / 官方解为解出的答案在官方解最慢的 3 个测试点上的 CPU 时间之比（几何平均），只比较官方解至少需要 0.05 秒的题；复杂度按增长幂次相对官方解分类。判题与计分见 <a href="../method.html#judge">原理</a>。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="ds">DeepSeek</button><button aria-pressed="false" data-value="mm">MiniMax</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div data-panel-group="s-kimi" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 采样 1 · 139 行</span><button class="copy" data-src="code-kimi-0">复制代码</button></div><div id="code-kimi-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">forward_ends</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;For each start l, find the shortest complete circular interval [l, r].&quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">a</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">ends</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="n">have</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">have</span> <span class="o">&lt;</span> <span class="n">k</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">count</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">have</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">count</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">ends</span><span class="p">[</span><span class="n">l</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">v</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="n">count</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">count</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">have</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">return</span> <span class="n">ends</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">]))</span>
+    <span class="k">del</span> <span class="n">data</span>
+
+    <span class="n">k</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;0&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">))</span>
+        <span class="k">return</span>
+
+    <span class="n">ends</span> <span class="o">=</span> <span class="n">forward_ends</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+    <span class="c1"># Answers using only one direction.</span>
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[</span><span class="n">ends</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
+
+    <span class="c1"># Enumerate all inclusion-minimal complete intervals. Full-circle intervals</span>
+    <span class="c1"># are unnecessary because one-directional answers already cover them.</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">rs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">full_span</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">ends</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="n">next_r</span> <span class="o">=</span> <span class="n">ends</span><span class="p">[</span><span class="n">l</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">l</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="k">else</span> <span class="n">ends</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">n</span>
+        <span class="k">if</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">next_r</span> <span class="ow">and</span> <span class="n">r</span> <span class="o">-</span> <span class="n">l</span> <span class="o">&lt;</span> <span class="n">full_span</span><span class="p">:</span>
+            <span class="n">ls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+            <span class="n">rs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">ends</span>
+
+    <span class="c1"># Repeat in the opposite direction.</span>
+    <span class="n">rev</span> <span class="o">=</span> <span class="n">a</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rev_ends</span> <span class="o">=</span> <span class="n">forward_ends</span><span class="p">(</span><span class="n">rev</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">del</span> <span class="n">rev</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">j</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">rev_ends</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">i</span>
+        <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">ans</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+            <span class="n">ans</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d</span>
+    <span class="k">del</span> <span class="n">rev_ends</span>
+
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+        <span class="c1"># For an interval [l,r] and a starting coordinate x inside it, the cost</span>
+        <span class="c1"># is (r-l) + min(x-l, r-x).</span>
+        <span class="c1">#</span>
+        <span class="c1"># On the left half this equals x + (r-2l), and on the right half it</span>
+        <span class="c1"># equals (2r-l) - x. Sweep coordinates while maintaining the minimum</span>
+        <span class="c1"># constant among active intervals with two monotone deques.</span>
+        <span class="n">dq_left</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">dq_right</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+        <span class="n">add_l</span> <span class="o">=</span> <span class="n">expire_l</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">add_r</span> <span class="o">=</span> <span class="n">expire_r</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">inf</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">add_l</span> <span class="o">&lt;</span> <span class="n">m</span> <span class="ow">and</span> <span class="n">ls</span><span class="p">[</span><span class="n">add_l</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">add_l</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">rs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">while</span> <span class="n">dq_left</span><span class="p">:</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">dq_left</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">rs</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ls</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">dq_left</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="n">dq_left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">add_l</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">while</span> <span class="p">(</span><span class="n">expire_l</span> <span class="o">&lt;</span> <span class="n">add_l</span> <span class="ow">and</span>
+                   <span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">expire_l</span><span class="p">]</span> <span class="o">+</span> <span class="n">rs</span><span class="p">[</span><span class="n">expire_l</span><span class="p">])</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">):</span>
+                <span class="n">expire_l</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">dq_left</span> <span class="ow">and</span> <span class="n">dq_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">expire_l</span><span class="p">:</span>
+                <span class="n">dq_left</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="k">while</span> <span class="p">(</span><span class="n">add_r</span> <span class="o">&lt;</span> <span class="n">m</span> <span class="ow">and</span>
+                   <span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="n">add_r</span><span class="p">]</span> <span class="o">+</span> <span class="n">rs</span><span class="p">[</span><span class="n">add_r</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">):</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">add_r</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">while</span> <span class="n">dq_right</span><span class="p">:</span>
+                    <span class="n">b</span> <span class="o">=</span> <span class="n">dq_right</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rs</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">-</span> <span class="n">ls</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">c</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="n">dq_right</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="n">dq_right</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">add_r</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">while</span> <span class="n">expire_r</span> <span class="o">&lt;</span> <span class="n">add_r</span> <span class="ow">and</span> <span class="n">rs</span><span class="p">[</span><span class="n">expire_r</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">x</span><span class="p">:</span>
+                <span class="n">expire_r</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">while</span> <span class="n">dq_right</span> <span class="ow">and</span> <span class="n">dq_right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">expire_r</span><span class="p">:</span>
+                <span class="n">dq_right</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+            <span class="n">best</span> <span class="o">=</span> <span class="n">inf</span>
+            <span class="k">if</span> <span class="n">expire_l</span> <span class="o">&lt;</span> <span class="n">add_l</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">dq_left</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">rs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">expire_r</span> <span class="o">&lt;</span> <span class="n">add_r</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="n">dq_right</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">:</span>
+                    <span class="n">best</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="n">j</span> <span class="o">=</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="k">else</span> <span class="n">x</span> <span class="o">-</span> <span class="n">n</span>
+            <span class="k">if</span> <span class="n">best</span> <span class="o">&lt;</span> <span class="n">ans</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+                <span class="n">ans</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">best</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ans</span><span class="p">)))</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="ds" hidden><div data-panel-group="s-ds" data-panel="0"><div class="codehead"><span class="cap"><span class="dot ds"></span> DeepSeek Flash V4.1-1017 · 采样 1 · 119 行</span><button class="copy" data-src="code-ds-0">复制代码</button></div><div id="code-ds-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_left</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">K</span><span class="p">):</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">K</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="n">B</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="mi">3</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>  <span class="c1"># 2 * n</span>
+
+    <span class="c1"># c[L] = smallest R such that B[L..R] contains all K distinct values</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">M</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">covered</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="k">for</span> <span class="n">L</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">total</span> <span class="ow">and</span> <span class="n">covered</span> <span class="o">&lt;</span> <span class="n">K</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">covered</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">freq</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">r</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">c</span><span class="p">[</span><span class="n">L</span><span class="p">]</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">L</span><span class="p">]</span>
+        <span class="n">freq</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">val</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">covered</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="c1"># Monotonic queue implemented with a list and head pointer.</span>
+    <span class="n">dq</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># Initial indices needed for s = n: L in [1, n]</span>
+    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">dq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">head</span><span class="p">:</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="n">dq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">last</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">dq</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">dq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+
+    <span class="n">p</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">INF</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="mi">18</span>
+
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">dq</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">head</span><span class="p">:</span>
+                <span class="n">last</span> <span class="o">=</span> <span class="n">dq</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">c</span><span class="p">[</span><span class="n">last</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">last</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">dq</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+            <span class="n">dq</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="n">M</span> <span class="ow">and</span> <span class="n">c</span><span class="p">[</span><span class="n">p</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">lower</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">p</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">left</span> <span class="o">&lt;</span> <span class="n">lower</span><span class="p">:</span>
+            <span class="n">left</span> <span class="o">=</span> <span class="n">lower</span>
+
+        <span class="k">while</span> <span class="n">head</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">dq</span><span class="p">)</span> <span class="ow">and</span> <span class="n">dq</span><span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">left</span><span class="p">:</span>
+            <span class="n">head</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">best</span> <span class="o">=</span> <span class="n">INF</span>
+
+        <span class="c1"># Case c[L] &lt;= s: best uses the largest such L, namely p.</span>
+        <span class="k">if</span> <span class="n">p</span> <span class="o">&gt;=</span> <span class="n">lower</span><span class="p">:</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Case c[L] &gt; s: minimize c[L] - 2L.</span>
+        <span class="k">if</span> <span class="n">head</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">dq</span><span class="p">):</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">dq</span><span class="p">[</span><span class="n">head</span><span class="p">]</span>
+            <span class="n">val2</span> <span class="o">=</span> <span class="n">c</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">-</span> <span class="p">(</span><span class="n">idx</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">val2</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">:</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="n">val2</span>
+
+        <span class="n">res</span><span class="p">[</span><span class="n">s</span> <span class="o">-</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span> <span class="o">+</span> <span class="n">best</span>
+
+    <span class="k">return</span> <span class="n">res</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">data</span>
+
+    <span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">A</span><span class="p">))</span>
+
+    <span class="n">leftA</span> <span class="o">=</span> <span class="n">compute_left</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+
+    <span class="n">Arev</span> <span class="o">=</span> <span class="n">A</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">leftRev</span> <span class="o">=</span> <span class="n">compute_left</span><span class="p">(</span><span class="n">Arev</span><span class="p">,</span> <span class="n">K</span><span class="p">)</span>
+
+    <span class="n">ans</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">v1</span> <span class="o">=</span> <span class="n">leftA</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">v2</span> <span class="o">=</span> <span class="n">leftRev</span><span class="p">[</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span>
+        <span class="n">ans</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">v1</span> <span class="k">if</span> <span class="n">v1</span> <span class="o">&lt;</span> <span class="n">v2</span> <span class="k">else</span> <span class="n">v2</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">ans</span><span class="p">))</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="mm" hidden><div data-panel-group="s-mm" data-panel="0"><div class="codehead"><span class="cap"><span class="dot mm"></span> MiniMax M3.1 Flash · 采样 1 · 92 行</span><button class="copy" data-src="code-mm-0">复制代码</button></div><div id="code-mm-0"><div class="code"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">deque</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdin</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()))</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">n</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">del</span> <span class="n">data</span>
+
+    <span class="n">distinct</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+    <span class="n">doubled</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">a</span>
+
+    <span class="c1"># right_end[left] is the smallest r such that doubled[left:r+1]</span>
+    <span class="c1"># contains every distinct value.</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">have</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">right_end</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="k">for</span> <span class="n">left</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">have</span> <span class="o">&lt;</span> <span class="n">distinct</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">doubled</span><span class="p">[</span><span class="n">right</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">have</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">freq</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">right</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="n">right_end</span><span class="p">[</span><span class="n">left</span><span class="p">]</span> <span class="o">=</span> <span class="n">right</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="n">value</span> <span class="o">=</span> <span class="n">doubled</span><span class="p">[</span><span class="n">left</span><span class="p">]</span>
+        <span class="n">freq</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">freq</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">have</span> <span class="o">-=</span> <span class="mi">1</span>
+
+    <span class="k">del</span> <span class="n">a</span><span class="p">,</span> <span class="n">doubled</span><span class="p">,</span> <span class="n">freq</span>
+
+    <span class="c1"># The array is periodic, so R[left+n] = R[left] + n.</span>
+    <span class="n">right_end</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">r</span> <span class="o">+</span> <span class="n">n</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">right_end</span><span class="p">])</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="c1"># For a complete interval [l, R_l], the two possible route costs</span>
+    <span class="c1"># at position j are:</span>
+    <span class="c1">#   j + x[l], where x[l] = R_l - 2*l</span>
+    <span class="c1">#   y[l] - j, where y[l] = 2*R_l - l</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span>
+
+    <span class="n">qx</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">qy</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span>
+
+    <span class="c1"># Evaluate the second copy of the array so circular intervals</span>
+    <span class="c1"># can be handled as ordinary linear intervals.</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">right_end</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="n">xv</span> <span class="o">=</span> <span class="n">r</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">j</span>
+        <span class="n">yv</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">r</span> <span class="o">-</span> <span class="n">j</span>
+        <span class="n">x</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">xv</span>
+        <span class="n">y</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">yv</span>
+
+        <span class="c1"># Remove intervals that no longer contain j.</span>
+        <span class="k">while</span> <span class="n">qx</span> <span class="ow">and</span> <span class="n">right_end</span><span class="p">[</span><span class="n">qx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">qx</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="k">while</span> <span class="n">qy</span> <span class="ow">and</span> <span class="n">right_end</span><span class="p">[</span><span class="n">qy</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">:</span>
+            <span class="n">qy</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
+
+        <span class="c1"># Maintain increasing values in the two monotonic deques.</span>
+        <span class="k">while</span> <span class="n">qx</span> <span class="ow">and</span> <span class="n">x</span><span class="p">[</span><span class="n">qx</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="n">xv</span><span class="p">:</span>
+            <span class="n">qx</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">qx</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="n">qy</span> <span class="ow">and</span> <span class="n">y</span><span class="p">[</span><span class="n">qy</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">&gt;=</span> <span class="n">yv</span><span class="p">:</span>
+            <span class="n">qy</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">qy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">go_left_first</span> <span class="o">=</span> <span class="n">j</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="n">qx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+            <span class="n">go_right_first</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="n">qy</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">-</span> <span class="n">j</span>
+            <span class="n">best</span> <span class="o">=</span> <span class="n">go_left_first</span> <span class="k">if</span> <span class="n">go_left_first</span> <span class="o">&lt;</span> <span class="n">go_right_first</span> <span class="k">else</span> <span class="n">go_right_first</span>
+            <span class="n">answer</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">best</span><span class="p">)</span>
+
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answer</span><span class="p">))</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">solve</span><span class="p">()</span>
+</pre></div>
+</div></div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="usaco-1567.html">‹ usaco-1567</a><a href="usaco-1590.html">usaco-1590 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
+<p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>

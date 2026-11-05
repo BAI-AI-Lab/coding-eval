@@ -1,0 +1,387 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fcs-23 FrontierCS 第 23 题 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-23 FrontierCS 第 23 题：用每条规则两侧长度均 ≤ 3 的 A=B 字符串替换语言编写程序，读入 sSt 形式的串，判断 t 是否为 s 的子串并返回 1 或 0；须满足执行步数、串长和指令条数上限，执行的指令次数越少得分越高。">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+</head>
+<body>
+<nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
+<main>
+<section class="section tight"><div class="wrap">
+<p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-23</span></p>
+<h1 class="ptitle">FrontierCS 第 23 题</h1>
+<p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
+<p class="summary">用每条规则两侧长度均 ≤ 3 的 A=B 字符串替换语言编写程序，读入 sSt 形式的串，判断 t 是否为 s 的子串并返回 1 或 0；须满足执行步数、串长和指令条数上限，执行的指令次数越少得分越高。</p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/23" target="_blank" rel="noopener">查看原题</a></p>
+</div></section>
+<section class="section alt"><div class="wrap">
+<h2>结果</h2>
+<div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
+<p class="verdict ">61.4</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">61.4</span></b><span>采样 1 · 部分分</span></li><li><b>23.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.5</b><span>输出速度 tokens/s ↑</span></li><li><b>1011 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
+<p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 答案错误</span></li><li><b>22.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>22.7</b><span>输出速度 tokens/s ↑</span></li><li><b>975 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
+<p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 答案错误</span></li><li><b>69.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>180.3</b><span>输出速度 tokens/s ↑</span></li><li><b>383 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot mm"></span><h3><span class="long">MiniMax M3.1 Flash</span><span class="short">MiniMax</span></h3><div class="id">auto（max）</div></div>
+<p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 答案错误</span></li><li><b>70.3k</b><span>平均输出 token（含思考） ↓</span></li><li><b>78.9</b><span>输出速度 tokens/s ↑</span></li><li><b>892 秒</b><span>延迟 ↓</span></li></ul></div></div>
+<p class="note">↑ 越大越好，↓ 越小越好。得分 0–100，按官方时限判定，所有测试点都满分才算解出。CPU 时间 / 官方解为解出的答案在官方解最慢的 3 个测试点上的 CPU 时间之比（几何平均），只比较官方解至少需要 0.05 秒的题；复杂度按增长幂次相对官方解分类。判题与计分见 <a href="../method.html#judge">原理</a>。</p>
+</div></section>
+<section class="section"><div class="wrap">
+<div class="codehead"><h2>代码</h2><div class="seg" data-tabs="code"><button aria-pressed="true" data-value="kimi">Kimi</button><button aria-pressed="false" data-value="kimih">Kimi high</button><button aria-pressed="false" data-value="ds">DeepSeek</button><button aria-pressed="false" data-value="mm">MiniMax</button></div></div>
+<div data-panel-group="code" data-panel="kimi"><div data-panel-group="s-kimi" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimi"></span> Kimi K3.1 Pro · 采样 1 · 77 行</span><button class="copy" data-src="code-kimi-0">复制代码</button></div><div id="code-kimi-0"><div class="code"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span><span class="s">Sa=XR</span>
+<span class="s">Sb=YR</span>
+<span class="s">Sc=ZR</span>
+<span class="s">aX=XMa</span>
+<span class="s">bX=XMb</span>
+<span class="s">cX=XMc</span>
+<span class="s">aY=YMa</span>
+<span class="s">bY=YMb</span>
+<span class="s">cY=YMc</span>
+<span class="s">aZ=ZMa</span>
+<span class="s">bZ=ZMb</span>
+<span class="s">cZ=ZMc</span>
+<span class="s">X=BU</span>
+<span class="s">Y=BV</span>
+<span class="s">Z=BW</span>
+<span class="s">MR=R</span>
+<span class="s">UMa=aNU</span>
+<span class="s">UMb=bU</span>
+<span class="s">UMc=cU</span>
+<span class="s">VMa=aV</span>
+<span class="s">VMb=bNV</span>
+<span class="s">VMc=cV</span>
+<span class="s">WMa=aW</span>
+<span class="s">WMb=bW</span>
+<span class="s">WMc=cNW</span>
+<span class="s">Ua=aU</span>
+<span class="s">Ub=bU</span>
+<span class="s">Uc=cU</span>
+<span class="s">Va=aV</span>
+<span class="s">Vb=bV</span>
+<span class="s">Vc=cV</span>
+<span class="s">Wa=aW</span>
+<span class="s">Wb=bW</span>
+<span class="s">Wc=cW</span>
+<span class="s">URa=IR</span>
+<span class="s">URb=JR</span>
+<span class="s">URc=KR</span>
+<span class="s">VRa=IR</span>
+<span class="s">VRb=JR</span>
+<span class="s">VRc=KR</span>
+<span class="s">WRa=IR</span>
+<span class="s">WRb=JR</span>
+<span class="s">WRc=KR</span>
+<span class="s">UR=F</span>
+<span class="s">VR=F</span>
+<span class="s">WR=F</span>
+<span class="s">aI=Ia</span>
+<span class="s">bI=Ib</span>
+<span class="s">cI=Ic</span>
+<span class="s">aJ=Ja</span>
+<span class="s">bJ=Jb</span>
+<span class="s">cJ=Jc</span>
+<span class="s">aK=Ka</span>
+<span class="s">bK=Kb</span>
+<span class="s">cK=Kc</span>
+<span class="s">NI=IM</span>
+<span class="s">NJ=JM</span>
+<span class="s">NK=KM</span>
+<span class="s">BI=BU</span>
+<span class="s">BJ=BV</span>
+<span class="s">BK=BW</span>
+<span class="s">NF=(return)1</span>
+<span class="s">BF=(return)0</span>
+<span class="s">aF=Fa</span>
+<span class="s">bF=Fb</span>
+<span class="s">cF=Fc</span>
+<span class="s">=(return)0</span>
+<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="kimih" hidden><div data-panel-group="s-kimih" data-panel="0"><div class="codehead"><span class="cap"><span class="dot kimih"></span> Kimi K3.1 Pro（high） · 采样 1 · 97 行</span><button class="copy" data-src="code-kimih-0">复制代码</button></div><div id="code-kimih-0"><div class="code"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sa">R</span><span class="s">&quot;</span><span class="dl">(</span><span class="s">Ia=XaI</span>
+<span class="s">Ib=XbI</span>
+<span class="s">Ic=XcI</span>
+<span class="s">IS=ZP</span>
+<span class="s">Paa=Aa</span>
+<span class="s">Pab=Ab</span>
+<span class="s">Pac=Ac</span>
+<span class="s">Pba=Ba</span>
+<span class="s">Pbb=Bb</span>
+<span class="s">Pbc=Bc</span>
+<span class="s">Pca=Ca</span>
+<span class="s">Pcb=Cb</span>
+<span class="s">Pcc=Cc</span>
+<span class="s">Taa=Da</span>
+<span class="s">Tab=Db</span>
+<span class="s">Tac=Dc</span>
+<span class="s">Tba=Ea</span>
+<span class="s">Tbb=Eb</span>
+<span class="s">Tbc=Ec</span>
+<span class="s">Tca=Fa</span>
+<span class="s">Tcb=Fb</span>
+<span class="s">Tcc=Fc</span>
+<span class="s">Pa=G</span>
+<span class="s">Pb=H</span>
+<span class="s">Pc=J</span>
+<span class="s">Ta=G</span>
+<span class="s">Tb=H</span>
+<span class="s">Tc=J</span>
+<span class="s">Xa=aY</span>
+<span class="s">Xb=b</span>
+<span class="s">Xc=c</span>
+<span class="s">XZ=Z</span>
+<span class="s">A=T</span>
+<span class="s">Xa=a</span>
+<span class="s">Xb=bY</span>
+<span class="s">Xc=c</span>
+<span class="s">XZ=Z</span>
+<span class="s">B=T</span>
+<span class="s">Xa=a</span>
+<span class="s">Xb=b</span>
+<span class="s">Xc=cY</span>
+<span class="s">XZ=Z</span>
+<span class="s">C=T</span>
+<span class="s">Ya=aX</span>
+<span class="s">Yb=b</span>
+<span class="s">Yc=c</span>
+<span class="s">YZ=Z</span>
+<span class="s">D=P</span>
+<span class="s">Ya=a</span>
+<span class="s">Yb=bX</span>
+<span class="s">Yc=c</span>
+<span class="s">YZ=Z</span>
+<span class="s">E=P</span>
+<span class="s">Ya=a</span>
+<span class="s">Yb=b</span>
+<span class="s">Yc=cX</span>
+<span class="s">YZ=Z</span>
+<span class="s">F=P</span>
+<span class="s">Xa=(return)1</span>
+<span class="s">Ya=(return)1</span>
+<span class="s">Xb=b</span>
+<span class="s">Yb=b</span>
+<span class="s">Xc=c</span>
+<span class="s">Yc=c</span>
+<span class="s">XZ=Z</span>
+<span class="s">YZ=Z</span>
+<span class="s">G=U</span>
+<span class="s">Xb=(return)1</span>
+<span class="s">Yb=(return)1</span>
+<span class="s">Xa=a</span>
+<span class="s">Ya=a</span>
+<span class="s">Xc=c</span>
+<span class="s">Yc=c</span>
+<span class="s">XZ=Z</span>
+<span class="s">YZ=Z</span>
+<span class="s">H=U</span>
+<span class="s">Xc=(return)1</span>
+<span class="s">Yc=(return)1</span>
+<span class="s">Xa=a</span>
+<span class="s">Ya=a</span>
+<span class="s">Xb=b</span>
+<span class="s">Yb=b</span>
+<span class="s">XZ=Z</span>
+<span class="s">YZ=Z</span>
+<span class="s">J=U</span>
+<span class="s">U=(return)0</span>
+<span class="s">=I</span>
+<span class="dl">)</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="ds" hidden><div data-panel-group="s-ds" data-panel="0"><div class="codehead"><span class="cap"><span class="dot ds"></span> DeepSeek Flash V4.1-1017 · 采样 1 · 75 行</span><button class="copy" data-src="code-ds-0">复制代码</button></div><div id="code-ds-0"><div class="code"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="c1">// Read Tid (ignored)</span>
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Tid</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
+
+<span class="w">    </span><span class="n">vector</span><span class="o">&lt;</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">rules</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s">&quot;S=X S Z E&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;a X=X a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;b X=X b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;c X=X c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;X a=X Y a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;X b=X Y b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;X c=X Y c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;E a=a E&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;E b=b E&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;E c=c E&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;E=$&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z $=(return)1&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y S=(return)0&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y a=Y A a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y b=Y B b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y c=Y C c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A a=a A&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A b=b A&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A c=c A&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A S=S A&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B a=a B&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B b=b B&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B c=c B&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B S=S B&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C a=a C&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C b=b C&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C c=c C&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C S=S C&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A Z=Z A&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B Z=Z B&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C Z=Z C&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;A a=a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;B b=b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;C c=c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y a=a Y&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y b=b Y&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y c=c Y&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z a=a Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z b=b Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z c=c Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z A=Z&#39; M&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z B=Z&#39; M&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z C=Z&#39; M&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;a Z&#39;=Z&#39; a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;b Z&#39;=Z&#39; b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;c Z&#39;=Z&#39; c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;S Z&#39;=S Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;a M=M a&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;b M=M b&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;c M=M c&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;S M=M S&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Z M=M Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y M a=Y&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y M b=Y&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Y M c=Y&quot;</span>
+<span class="w">    </span><span class="p">};</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rules</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div></div></div><div data-panel-group="code" data-panel="mm" hidden><div data-panel-group="s-mm" data-panel="0"><div class="codehead"><span class="cap"><span class="dot mm"></span> MiniMax M3.1 Flash · 采样 1 · 90 行</span><button class="copy" data-src="code-mm-0">复制代码</button></div><div id="code-mm-0"><div class="code"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;bits/stdc++.h&gt;</span>
+<span class="k">using</span><span class="w"> </span><span class="k">namespace</span><span class="w"> </span><span class="nn">std</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">ios</span><span class="o">::</span><span class="n">sync_with_stdio</span><span class="p">(</span><span class="nb">false</span><span class="p">);</span>
+<span class="w">    </span><span class="n">cin</span><span class="p">.</span><span class="n">tie</span><span class="p">(</span><span class="k">nullptr</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">Tid</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">cin</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">Tid</span><span class="p">))</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;DY=(return)1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;EY=(return)1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;FY=(return)1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;WZ=(return)0</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;S=XYZ</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;abc&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;XY=XY&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;ABC&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;abc&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;K=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;K&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">c</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;ABC&quot;</span><span class="p">))</span>
+<span class="w">        </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Y&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;K=&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Y</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Za=AKZ</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Zb=BKZ</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Zc=CKZ</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Ya=Yg</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Yb=Yh</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Yc=Yi</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Wa=g</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Wb=h</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Wc=i</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Yg=gY</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Yh=hY</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Yi=iY</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;ghi&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">string</span><span class="p">(</span><span class="s">&quot;ABCDEF&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;=&#39;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">v</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Xg=X3</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Xh=X4</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;Xi=X5</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">string</span><span class="w"> </span><span class="n">states</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ABCDEF&quot;</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">oldActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">newActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">text</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">newIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newActive</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">expected</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">newState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">states</span><span class="p">[</span><span class="n">newIndex</span><span class="p">];</span>
+
+<span class="w">            </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="kt">char</span><span class="p">(</span><span class="sc">&#39;0&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">states</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;Y&#39;</span>
+<span class="w">                 </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;=&#39;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">newState</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;YW</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">        </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">q</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">6</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">p</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">%</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">oldActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">newActive</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">carry</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">text</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">expected</span><span class="p">);</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">newIndex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">newActive</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">expected</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">expected</span><span class="p">;</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">newState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">states</span><span class="p">[</span><span class="n">newIndex</span><span class="p">];</span>
+<span class="w">            </span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="n">nextScanner</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">char</span><span class="p">(</span><span class="sc">&#39;0&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">oldActive</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mi">0</span><span class="p">));</span>
+
+<span class="w">            </span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="kt">char</span><span class="p">(</span><span class="sc">&#39;0&#39;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">q</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">states</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+<span class="w">                 </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;=&#39;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">newState</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">nextScanner</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="sc">&#39;\n&#39;</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div></div></div>
+</div></section>
+<div class="wrap"><nav class="pager"><a href="fcs-13.html">‹ fcs-13</a><a href="fcs-30.html">fcs-30 ›</a></nav></div>
+</main>
+<footer><div class="wrap">
+<p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
+<p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
+</div></footer>
+<script src="../assets/app.js"></script>
+</body>
+</html>
