@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1572 Circle of Cows · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1572 Circle of Cows：周长为 C 的圆上有 N ≤ 1000 个不同位置的点；对每个 k = 1…⌊N/2⌋，选出 k 对两两不共用点的点对，使各对沿圆周距离的最小值最大，输出该最大值。">
+<meta name="description" content="usaco-1572 Circle of Cows：USACO 2026 Second · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,74 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1572</span></p>
 <h1 class="ptitle">Circle of Cows</h1>
 <p class="meta">USACO 2026 Second · 铂金组 · 2026-01 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">周长为 C 的圆上有 N ≤ 1000 个不同位置的点；对每个 k = 1…⌊N/2⌋，选出 k 对两两不共用点的点对，使各对沿圆周距离的最小值最大，输出该最大值。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1572" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1572" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John has $N$ ($2\le N\le 1000$) cows at distinct locations
+$l_1,\dots, l_N$ along a circle of circumference $C$
+($0\le l_1 &lt; l_2 &lt; \dots &lt; l_N &lt;C, N\le C\le 10^9$).
+
+<p>FJ will select $k$ pairs of cows, where $1\le k\le \lfloor N/2\rfloor$, and no
+cow is selected more than once. He wants to select the pairs such that the
+minimum distance between any two cows in the same pair along the circumference
+of the circle is maximized.
+
+<p>For each value of $k$, help FJ determine the maximum possible minimum distance.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $C$.
+
+<p>The second line contains $l_1\dots l_N$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output a single line with $\lfloor N/2\rfloor$ space-separated integers, with the
+answers for $k=1\dots \lfloor N/2\rfloor$ in that order.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 100
+0 25 50 75
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+50 50
+</pre>
+
+<p>For $k = 1$, cow 1 can be paired to cow 3, which is distance $50$ away along the
+circumference of the circle, making the answer $50$.
+
+<p>For $k = 2$, cow 1 can be paired to cow 3, and cow 2 can be paired to cow 4,
+which is distance $50$ away from it along the circumference of the circle,
+making the answer still $50$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 100
+0 1 2 99
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+3 2
+</pre>
+
+<p>For $k = 1$, cow 3 can be paired to cow 4, which is distance $2 + 100 - 99 = 3$
+away from it along the circumference of the circle, making the answer $3$.
+
+<p>For $k = 2$, cow 1 can be paired to cow 3 and cow 2 can be paired to cow 4. Each
+of these pairs contains two cows at a distance of $2$ from each other along the
+circumference of the circle, making the answer $2$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 3-4: $2l_N \le C$</li><li>Inputs 5-6: $N\le 20$</li><li>Inputs 7-14: $N\le 100$</li><li>Inputs 15-22: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">1/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">18.2</span></b><span>采样 1 · 答案错误</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="">18.2</span></b><span>采样 3 · 答案错误</span></li><li><b>85.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.6</b><span>输出速度 tokens/s ↑</span></li><li><b>3573 秒</b><span>延迟 ↓</span></li><li><b>0.17×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更优 1</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1205,7 +1276,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

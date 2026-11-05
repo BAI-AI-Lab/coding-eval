@@ -3,22 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-239 FrontierCS 第 239 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-239 FrontierCS 第 239 题：初始有向图含边 v → v+1（0 ≤ v &lt; n），每次可在已有 a → b、b → c 时添加 a → c；添加若干边使任意 v &lt; u 之间都有至多三条边的路径，添加边数越少得分越高。">
+<title>fcs-239 FrontierCS #239 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-239 FrontierCS #239：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-239</span></p>
-<h1 class="ptitle">FrontierCS 第 239 题</h1>
+<h1 class="ptitle">FrontierCS #239</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">初始有向图含边 v → v+1（0 ≤ v &lt; n），每次可在已有 a → b、b → c 时添加 a → c；添加若干边使任意 v &lt; u 之间都有至多三条边的路径，添加边数越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/239" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/239" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Problem Description:
+You are given a directed graph G on vertices numbered $0$ to $n$. Initially, G contains exactly n edges of the
+form $v → v + 1$. Your task is to add some edges to this graph in such a way that for every two vertices
+$v, u (v &lt; u)$ there exists a directed path from v to u consisting of at most three edges. You can add an edge $a → c$ if and only if there exists such $b$ that edges $a → b$ and $b → c$ are already
+present in $G$.
+
+find the minimum edges you need to add such that  for every two vertices
+$v, u (v &lt; u)$ there exists a directed path from v to u consisting of at most three edges
+
+Input
+Input a single line contains a single integer $n(0\leq n \leq 2^{12})$
+
+Output
+First line contains a single integer $m$
+
+Following $m$ lines, each line contains a three integer $u, c, v$, representing there is an edge from $u$ to $c$, and an edge from $c$ to v, you add an edge from $u$ to $v$
+
+Example 1:
+Input:
+5
+
+Output:
+2
+2 3 4
+1 2 4
+
+Scoring:
+
+The physical objective is number of added shortcut edges m; smaller is better. The physical reference is `a = m_ref`; matching a positive reference earns 60 points.
+
+Define the historical low-score expression (in points):
+
+    P_low = 60*max(0,(3*m_ref-m)/(2*m_ref)).
+
+A valid solution with `m=0` receives 100 points, including a zero-baseline instance. Otherwise, if `P_low&lt;=60`, retain `max(0,P_low)`. For `P_low&gt;60` and a positive physical reference, award:
+
+    r = a / m
+    P = min(100, 60 + ln(r)).
+
+Here `r` is the improvement factor relative to the physical reference, and `ln` is the natural logarithm with coefficient 1. In the uncapped upper branch, `r = exp(P-60)`: each additional point means an `exp(1)`-fold improvement in the physical objective. The factor is computed from the physical objective and its reference, not from a transformed reward or the old point score. Invalid output retains its existing rejection or zero score; the zero-cost exception applies only after validation. Use one score per file. Both reported ratio channels use points divided by 100. Across official files, take the arithmetic mean.
+
+If m_ref=0, a valid zero-edge construction receives 100 and a positive edge count receives 0.
+
+Time limit:
+2 seconds
+
+Memory limit:
+512 MB</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">54.9</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">54.9</span></b><span>采样 1 · 部分分</span></li><li><b>47.5k</b><span>平均输出 token（含思考） ↓</span></li><li><b>26.0</b><span>输出速度 tokens/s ↑</span></li><li><b>1827 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -677,7 +735,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

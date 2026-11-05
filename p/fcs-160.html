@@ -3,22 +3,158 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-160 FrontierCS 第 160 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-160 FrontierCS 第 160 题：交互题：100 颗三种口味的糖依次随机落入 10×10 盒子的空格，每放入一颗后须选择前后左右之一倾斜盒子使糖滑动；最终同口味连通块大小的平方和越大得分越高。">
+<title>fcs-160 FrontierCS #160 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-160 FrontierCS #160：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-160</span></p>
-<h1 class="ptitle">FrontierCS 第 160 题</h1>
+<h1 class="ptitle">FrontierCS #160</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 10 秒 · 0–100 连续分</p>
-<p class="summary">交互题：100 颗三种口味的糖依次随机落入 10×10 盒子的空格，每放入一颗后须选择前后左右之一倾斜盒子使糖滑动；最终同口味连通块大小的平方和越大得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/160" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/160" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Story
+--------
+AtCoder's CEO Takahashi prepares for Halloween tomorrow.
+At AtCoder's Halloween party, Takahashi will dress up in disguise and receive a piece of candy from 100 employees in turn by saying, "trick or treat!"
+He prepares a square box that can contain $10\times 10$ pieces of candy in a grid pattern, and each employee puts a piece of candy in an empty space so that no candies overlap.
+There are $3$ types of candies: strawberry, watermelon, and pumpkin flavors.
+He knows which flavor of candy each employee will put in by preliminary survey, but he doesn't know where each employee will put it.
+Since he is a clean freak, he will move the pieces of candy by tilting the box forward, backward, left, or right, just once for each piece of candy received, and eventually wants to make sure that the same type of candy is clustered together as much as possible.
+Please help him by writing a program to determine the direction to tilt.
+
+Problem Statement
+--------
+There is a box that can contain $10\times 10$ pieces of candy in a grid pattern.
+The box is initially empty, and $100$ pieces of candy will be placed in order.
+There are $3$ flavors of candy, and we know in advance the flavor $f_t (1\leq f_t\leq 3)$ of the $t$-th candy.
+On the other hand, we do not know in advance to which cell each candy will be placed, and it will be chosen uniformly at random among the empty cells.
+You cannot change the order in which the pieces of candy are received.
+
+Each time you receive one piece of candy, you must tilt the box forward, backward, left, or right exactly once.
+When you tilt the box, each piece of candy moves in that direction simultaneously until it reaches the edge or hits another candy.
+For example, tilting the box forward packs the candies toward the front of each column while preserving their order within that column.
+
+Raw task objective
+--------
+The formulas in this section define the raw reward V, not final benchmark points. The Scoring section specifies the per-file award and its aggregation.
+
+We define the connectivity of pieces of candy as follows and consider the connected components.
+&gt; Two pieces of candy are connected if and only if they are of the same flavor and can reach each other through only pieces of candy of the same flavor in the four directions (front, back, left, right).
+
+Let $n_1,\cdots,n_k$ be the list of sizes of connected components in the final state after receiving 100 pieces of candy, and let $d_i$ be the total number of pieces of candy of flavor $i$.
+The raw task reward V is
+
+\\[\mathrm{round}\left(10^6\times\frac{\sum_{i=1}^k n_i^2}{\sum_{i=1}^3 d_i^2}\right)\\]
+
+Your task is to write a program to determine the tilting directions so that you can get as high a score as possible.
+
+
+Input and Output
+--------
+First, the flavor of each piece of candy is given from Standard Input in the following format.
+~~~
+$f_1$ $f_2$ $\cdots$ $f_{100}$
+~~~
+
+Each $f_t$ is an integer value between $1$ and $3$, representing the flavor of the $t$-th piece of candy.
+
+After reading the above information, repeat the following process $100$ times.
+
+In the $t$-th process ($1\leq t\leq 100$), a single integer $p_t$ between $1$ and $101-t$ is given from Standard Input.
+Number the empty cells from $1$ to $101-t$ by scanning rows from front to back and, within each row, from left to right, skipping occupied cells.
+Then the $t$-th piece of candy is placed in the $p_t$-th empty cell.
+
+After reading $p_t$, by representing forward, backward, left, and right by `F`, `B`, `L`, and `R`, respectively, output a single character to Standard Output to indicate which direction to tilt the box.
+
+&lt;font color="red"&gt;**The output must be followed by a new line, and you have to flush Standard Output.**&lt;/font&gt;
+Otherwise, the submission might be judged as &lt;span class='label label-warning' data-toggle='tooltip' data-placement='top' title="Time Limit Exceeded"&gt;TLE&lt;/span&gt;.
+&lt;font color="red"&gt;**Note that $p_{t+1}$ will not be given until you output the $t$-th direction.**&lt;/font&gt;
+Since nothing happens at the 100th tilt, you may skip the output.
+
+#### Example
+
+&lt;table class="table table-bordered"&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;$t$&lt;/th&gt;
+&lt;th&gt;Input&lt;/th&gt;
+&lt;th&gt;Output&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Prior information&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;2 2 1 3 1 2 1 2 1 $\cdots$ 3&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;3&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;R&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;98&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;B&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;$\vdots$&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;1&lt;/pre&gt;&lt;/td&gt;
+&lt;td&gt;&lt;pre&gt;L&lt;/pre&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+&lt;a href="https://img.atcoder.jp/ahc015/b639c75d.html?lang=en&amp;seed=0&amp;output=R%0D%0AB%0D%0AB%0D%0AR%0D%0AF%0D%0AR%0D%0AF%0D%0AR%0D%0AR%0D%0AF%0D%0AB%0D%0AL%0D%0AB%0D%0AL%0D%0AF%0D%0AF%0D%0AB%0D%0AF%0D%0AB%0D%0AL%0D%0AL%0D%0AL%0D%0AL%0D%0AB%0D%0AF%0D%0AF%0D%0AR%0D%0AR%0D%0AF%0D%0AL%0D%0AL%0D%0AB%0D%0AL%0D%0AL%0D%0AL%0D%0AB%0D%0AL%0D%0AR%0D%0AF%0D%0AL%0D%0AB%0D%0AL%0D%0AF%0D%0AF%0D%0AF%0D%0AL%0D%0AL%0D%0AR%0D%0AB%0D%0AB%0D%0AF%0D%0AL%0D%0AF%0D%0AR%0D%0AB%0D%0AL%0D%0AF%0D%0AF%0D%0AR%0D%0AL%0D%0AR%0D%0AL%0D%0AR%0D%0AR%0D%0AB%0D%0AR%0D%0AB%0D%0AR%0D%0AR%0D%0AF%0D%0AB%0D%0AF%0D%0AR%0D%0AR%0D%0AF%0D%0AB%0D%0AF%0D%0AB%0D%0AF%0D%0AR%0D%0AB%0D%0AF%0D%0AF%0D%0AF%0D%0AB%0D%0AB%0D%0AL%0D%0AL%0D%0AR%0D%0AF%0D%0AB%0D%0AL%0D%0AB%0D%0AF%0D%0AB%0D%0AR%0D%0AF%0D%0AF%0D%0AL%0D%0AL%0D%0A"&gt;Show example&lt;/a&gt;
+
+
+Input Generation
+--------
+Let $\mathrm{rand}(L,U)$ be a function that generates a uniform random integer between $L$ and $U$, inclusive.
+Each $f_t$ is generated by $\mathrm{rand}(1,3)$.
+Each $p_t$ is generated by $\mathrm{rand}(1,101-t)$.
+
+
+Tools (Input generator and visualizer)
+--------
+- &lt;a href="https://img.atcoder.jp/ahc015/b639c75d.html?lang=en"&gt;Web version&lt;/a&gt;: This is more powerful than the local version providing animations and manual play.
+- &lt;a href="https://img.atcoder.jp/ahc015/b639c75d.zip"&gt;Local version&lt;/a&gt;: You need a compilation environment of &lt;a href="https://www.rust-lang.org/"&gt;Rust language&lt;/a&gt;.
+	- &lt;a href="https://img.atcoder.jp/ahc015/b639c75d_windows.zip"&gt;Pre-compiled binary for Windows&lt;/a&gt;: If you are not familiar with the Rust language environment, please use this instead.
+
+Please be aware that sharing visualization results or discussing solutions/ideas during the contest is prohibited.
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original maximizing quantity or quality and a for its physical 60-point reference. The improvement factor is r=x/a, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Let V be the raw task reward defined in the problem, and let B and R be the stored baseline and reference rewards. They are calibration values, not assertions of optimality. The stored reward reference R is distinct from the physical reference a used in the logarithm; a is defined by the inverse or stage-specific formula below. If R&lt;=B, set U=1000000, L=100*max(0,(V-B)/(U-B)), and T=B+0.6*(U-B). Otherwise set L=60*max(0,(V-B)/(R-B)) and T=R. For nonzero minimizing objectives, and all maximizing objectives, keep L exactly whenever L&lt;=60. The following describes the upper band and any valid zero-cost optimum.
+
+Let X be the integer sum of squared same-color connected-component sizes, and D the sum of squared total populations of each color. Its physical reference is a=A=T*D/1e6. When L&gt;60, take x=X, a=A, and r=x/a; award min(100,60+ln(r)).
+
+The checker reports points/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">4.1</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">4.1</span></b><span>采样 1 · 部分分</span></li><li><b>23.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>29.8</b><span>输出速度 tokens/s ↑</span></li><li><b>805 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1367,7 +1503,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

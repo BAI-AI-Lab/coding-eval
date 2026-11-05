@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1539 Chip Exchange · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1539 Chip Exchange：持有 A 枚 A 类和 B 枚 B 类筹码，可任意次用 c_B 枚 B 类换 c_A 枚 A 类；求最小的非负整数 x，使得无论再获得的 x 枚筹码各属哪一类，都能最终拥有至少 f_A 枚 A 类，共 T 组。">
+<meta name="description" content="usaco-1539 Chip Exchange：USACO 2026 First · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,82 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1539</span></p>
 <h1 class="ptitle">Chip Exchange</h1>
 <p class="meta">USACO 2026 First · 铜组 · 2026-01 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">持有 A 枚 A 类和 B 枚 B 类筹码，可任意次用 c_B 枚 B 类换 c_A 枚 A 类；求最小的非负整数 x，使得无论再获得的 x 枚筹码各属哪一类，都能最终拥有至少 f_A 枚 A 类，共 T 组。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1539" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1539" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie the cow has in her possession $A$ chips of type A and $B$ chips of type B
+($0\le A,B\le 10^9$). She can perform the following operation as many times as
+she likes:
+
+<p><ul><li>If you have at least $c_B$ chips of type B, exchange $c_B$ chips of type B
+for $c_A$ chips of type A ($1\le c_A,c_B\le 10^9$).</li></ul>
+
+<p>Determine the minimum non-negative integer $x$ such that the following holds:
+after receiving $x$ additional random chips, it is guaranteed that Bessie can end
+up with at least $f_A$ chips of type A ($0\le f_A\le 10^9$).
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$, the number of independent test cases
+($1\le T\le 10^4$).
+
+<p>Then follow $T$ tests, each consisting of five integers $A,B,c_A,c_B,f_A$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the answer for each test on a separate line.
+
+<p><strong>Note: The large size of integers involved in this problem may require the use
+of 64-bit integer data types (e.g., a "long long" in C/C++).</strong>
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+2 3 1 1 6
+2 3 1 1 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+0
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5
+0 0 2 3 5
+0 1 2 3 5
+1 0 2 3 5
+10 10 2 3 5
+0 0 1 1000000000 1000000000
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+9
+8
+7
+0
+1000000000000000000
+</pre>
+
+<p>For the first test, Bessie initially starts with no chips. If she receives any $9$
+additional chips, she can perform the operation to end up with at least $5$
+chips of type A. For example, if she receives $2$ chips of type A and $7$ chips
+of type B, she can perform the operation twice to end up with $6\ge 5$ chips of
+type A. However, if she only receive $8$ chips of type B, she can only end up
+with $4&lt;5$ chips of type A.
+
+<p>For the fourth test, she already has enough chips of type A from the start.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 3: $c_A=c_B=1$</li><li>Inputs 4-5: $x\le 10$ for all cases</li><li>Inputs 6-7: $c_A=2$, $c_B=3$</li><li>Inputs 8-12: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>13.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>31.3</b><span>输出速度 tokens/s ↑</span></li><li><b>447 秒</b><span>延迟 ↓</span></li><li><b>5.22×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不可测</b><span>时间复杂度（相对官方解）</span></li><li><b>27</b><span>Pylint 问题 ↓</span></li><li><b>3.57</b><span>Pylint 得分 ↑</span></li><li><b>7</b><span>圈复杂度 ↓</span></li><li><b>65.1</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -210,7 +289,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

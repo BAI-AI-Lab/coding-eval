@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1499 Friendship Editing · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1499 Friendship Editing：N ≤ 16 个点的无向图，每次操作可加或删一条边；求最少操作数，使任意一条边 (a, b) 对其余每个点 c，a 与 b 中至少一个与 c 相邻。">
+<meta name="description" content="usaco-1499 Friendship Editing：USACO 2025 February · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,75 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1499</span></p>
 <h1 class="ptitle">Friendship Editing</h1>
 <p class="meta">USACO 2025 February · 金组 · 2025-02 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N ≤ 16 个点的无向图，每次操作可加或删一条边；求最少操作数，使任意一条边 (a, b) 对其余每个点 c，a 与 b 中至少一个与 c 相邻。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1499" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1499" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John's $N$ cows are labeled $1$ to $N$ ($2\le N\le 16$). The friendship
+relationships between the cows can be modeled as an undirected graph with $M$
+($0\le M\le N(N-1)/2$) edges. Two cows are friends if and only if there is an
+edge between them in the graph.
+
+<p>In one operation, you can add or remove a single edge from the graph. Count the
+minimum number of operations required to ensure that the following property
+holds: If cows $a$ and $b$ are friends, then for every other cow $c$, at least
+one of $a$ and $b$ is friends with $c$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $M$.
+
+<p>The next $M$ lines each contain a pair of friends $a$ and $b$ ($1\le a&lt;b\le N$).
+No pair of friends appears more than once.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+The number of edges you need to add or remove.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 1
+1 2
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+</pre>
+
+<p>The network violates the property. We can add one of edges $(2,3)$ or $(1,3)$, 
+or remove edge $(1,2)$ to fix this.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 2
+1 2
+2 3
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+</pre>
+
+<p>No changes are necessary.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 4
+1 2
+1 3
+1 4
+2 3
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-13: One input for each $N\in [6, 15]$ in increasing order.</li><li>Inputs 14-18: $N=16$</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>1.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>27.0</b><span>输出速度 tokens/s ↑</span></li><li><b>52 秒</b><span>延迟 ↓</span></li><li><b>0.92×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 2、更优 1</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -595,7 +667,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

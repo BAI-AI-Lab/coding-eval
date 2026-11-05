@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1477 Shock Wave · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1477 Shock Wave：N 块砖各需累计力度至少 p_i；每次击打位置 x 会给每块砖 i 施加 |i−x| 的力度并累加；求使所有砖都达到所需力度的最少击打次数。">
+<meta name="description" content="usaco-1477 Shock Wave：USACO 2025 January · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,91 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1477</span></p>
 <h1 class="ptitle">Shock Wave</h1>
 <p class="meta">USACO 2025 January · 铂金组 · 2025-01 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 块砖各需累计力度至少 p_i；每次击打位置 x 会给每块砖 i 施加 |i−x| 的力度并累加；求使所有砖都达到所需力度的最少击打次数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1477" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1477" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie is experimenting with a powerful hoof implant that has the ability to
+create massive shock waves. She has $N$ ($2 \leq N \leq 10^5$) tiles lined up in
+front of her, which require powers of at least $p_0,p_1,\dots,p_{N-1}$ to break,
+respectively
+($0 \leq p_i \leq 10^{18}$).
+
+<p>Bessie can apply power by punching a specific tile but due to the strange nature
+of her implant, it will not apply any power to the tile she punches. Instead, if
+she chooses to punch tile $x$ once, where $x$ is an integer in $[0,N-1]$, 
+it applies $|i-x|$ power to tile $i$ for all integers $i$ in the range
+$[0,N-1]$. This power is also cumulative, so applying $2$ power twice to a tile
+will apply a total of $4$ power to the tile. 
+
+<p>Please determine the fewest number of punches required to break all the tiles.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$ ($1 \leq T \leq 100$) representing the number of
+test cases. 
+
+<p>Line $2t$ contains a single integer $N$, the number of tiles in test case $t$.
+
+<p>Line $2t+1$ contains $N$ space separated numbers $p_0,p_1, \ldots, p_{N-1}$ representing
+that tile $i$ takes $p_i$ power to be broken.
+
+<p>It is guaranteed that the sum of all $N$ in a single input does not exceed
+$5\cdot 10^5$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+$T$ lines, the $i$th line representing the answer to the $i$th test case.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6
+5
+0 2 4 5 8
+5
+6 5 4 5 6
+5
+1 1 1 1 1
+5
+12 10 8 6 4
+7
+6 1 2 3 5 8 13
+2
+1000000000000000000 1000000000000000000
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2
+3
+2
+4
+4
+2000000000000000000
+</pre>
+
+<p>For the first test, the only way for Bessie to break all the tiles with two
+punches is to punch $0$ twice, applying total powers of $[0,2,4,6,8]$
+respectively.
+
+<p>For the second test, one way for Bessie to break all the tiles with three
+punches is to punch $0$, $2$, and $4$ one time each, applying total powers of
+$[6,5,4,5,6]$ respectively.
+
+<p>For the third test, one way for Bessie to break all the tiles with two punches
+is to punch $0$ and $1$ one time each, applying total powers of $[1,1,3,5,7]$
+respectively.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 2: All $p_i$ are equal.</li><li>Inputs 3-6: $N\le 100$</li><li>Inputs 7-14: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>49.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.8</b><span>输出速度 tokens/s ↑</span></li><li><b>2036 秒</b><span>延迟 ↓</span></li><li><b>0.71×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -2547,7 +2635,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

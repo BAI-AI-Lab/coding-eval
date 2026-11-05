@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1515 Hoof Paper Scissors Minus One · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1515 Hoof Paper Scissors Minus One：已知 N 种符号两两之间的胜、平、负关系；双方各出两个符号，看到全部四个后各留一个对决；对 M 个对手的符号对，分别求能保证己方必胜的有序符号对 (L, R) 个数。">
+<meta name="description" content="usaco-1515 Hoof Paper Scissors Minus One：USACO 2025 US Open · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,93 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1515</span></p>
 <h1 class="ptitle">Hoof Paper Scissors Minus One</h1>
 <p class="meta">USACO 2025 US Open · 铜组 · 2025-03 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 6 秒 · 测试点等分</p>
-<p class="summary">已知 N 种符号两两之间的胜、平、负关系；双方各出两个符号，看到全部四个后各留一个对决；对 M 个对手的符号对，分别求能保证己方必胜的有序符号对 (L, R) 个数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1515" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1515" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p><strong>**Note: The time limit for this problem is 3s, 1.5x the default.**</strong>
+
+<p>In a game of Hoof Paper Scissors, Bessie and Elsie can put out one of $N$
+($1 \leq N \leq 3000$) different hoof symbols labeled $1\dots N$, each
+corresponding to a different material. There is a complicated chart of how the
+different materials interact with one another, and based on that chart, either:
+
+<p><ul><li>One symbol wins and the other loses.</li><li>The symbols draw against each other.</li></ul>
+
+<p>Hoof Paper Scissors Minus One works similarly, except Bessie and Elsie can each
+put out two symbols, one with each hoof. After observing all four symbols that
+they have all put out, they each choose one of their two symbols to play.  The
+outcome is decided based on normal Hoof Paper Scissor conventions.
+
+<p>Given the $M$ ($1 \leq M \leq 3000$) symbol combinations that Elsie plans to
+make across each game, Bessie wants to know how many different symbol
+combinations would result in a guaranteed win against Elsie. A symbol
+combination is defined as an ordered pair $(L,R)$ where $L$ is the symbol the
+cow plays with her left hoof and $R$ is the symbol the cow plays with her right
+hoof. Can you compute this for each game?
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains two space-separated integers $N$ and $M$ representing
+the number of hoof symbols and the number of games that Bessie and Elsie play.
+
+<p>Out of the following $N$ lines of input, the $i$th line consists of $i$
+characters  $a_{i,1}a_{i,2}\ldots a_{i,i}$ where each
+$a_{i,j} \in \{\texttt D,\texttt W,\texttt L\}$. If $a_{i,j} = \texttt D$, then
+symbol $i$ draws against symbol $j$.  If $a_{i,j} = \texttt W$, then symbol $i$
+wins against symbol $j$. If $a_{i,j} = \texttt L$, then symbol $i$ loses against
+symbol $j$. It is guaranteed that $a_{i,i} = \texttt D$.
+
+<p>The next $M$ lines contain two space separated integers $s_1$ and $s_2$ where
+$1 \leq s_1,s_2 \leq N$. This represents Elsie's symbol combination for that
+game.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $M$ lines where the $i$-th line contains the number of symbol
+combinations guaranteeing that Bessie can beat Elsie in the $i$-th game.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 3
+D
+WD
+LWD
+1 2
+2 3
+1 1
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+5
+</pre>
+In this example, this corresponds to the
+original Hoof Paper
+Scissors and we can let Hoof=1, Paper=2, and Scissors=3. Paper beats Hoof,
+Hoof beats Scissors, and Scissors beats Paper. There is no way for Bessie to
+guarantee a win against the combinations of Hoof+Paper or Paper+Scissors.
+However, if Elsie plays Hoof+Hoof, Bessie can counteract with any of the
+following combinations.
+
+<p><ul><li>Paper+Paper</li><li>Paper+Scissors</li><li>Paper+Hoof</li><li>Hoof+Paper</li><li>Scissors+Paper</li></ul>
+
+<p>If Bessie plays any of these combinations, she can guarantee that she wins by
+putting forward Paper.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-6: $N,M\le 100$</li><li>Inputs 7-12: No additional
+constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>4.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>30.3</b><span>输出速度 tokens/s ↑</span></li><li><b>136 秒</b><span>延迟 ↓</span></li><li><b>0.19×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>4</b><span>Pylint 问题 ↓</span></li><li><b>8.33</b><span>Pylint 得分 ↑</span></li><li><b>7</b><span>圈复杂度 ↓</span></li><li><b>76.2</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -184,7 +274,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

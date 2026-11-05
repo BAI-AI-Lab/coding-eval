@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1546 Milk Buckets · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1546 Milk Buckets：N 个数可花 1 代价交换相邻两项，之后按任意顺序反复把相邻两数合并为其平均值直至剩一个；求使最终值达到所有方案中最大值所需的最少交换次数，多组数据。">
+<meta name="description" content="usaco-1546 Milk Buckets：USACO 2026 First · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,109 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1546</span></p>
 <h1 class="ptitle">Milk Buckets</h1>
 <p class="meta">USACO 2026 First · 金组 · 2026-01 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 个数可花 1 代价交换相邻两项，之后按任意顺序反复把相邻两数合并为其平均值直至剩一个；求使最终值达到所有方案中最大值所需的最少交换次数，多组数据。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1546" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1546" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie has challenged Farmer John to a game involving milk buckets! There are
+$N$ $(2 \leq N \leq 2 \cdot 10^5)$ milk buckets lined up in a row. The $i$-th
+bucket from the left initially contains $a_i$ $(0 \leq a_i \leq 10^9)$ gallons
+of milk.
+
+<p>The game consists of two phases:
+
+<p>Phase 1: Farmer John may swap any two adjacent buckets. He may perform as many
+swaps as he likes, but each swap costs 1 coin.
+
+<p>Phase 2: After swapping, Farmer John performs the following operation until only
+one bucket is left: Choose two adjacent buckets with milk amounts $a_i$ and
+$a_{i+1}$, and replace both buckets with one bucket containing
+$\frac{a_i+a_{i+1}}2$ gallons of milk in their place.
+
+<p>Your goal is to determine the minimum number of coins Farmer John must spend in
+the swapping phase to maximize the amount of milk in the final bucket after all
+merges are complete.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains one integer $T$ $(1 \leq T \leq 100)$: the number of
+independent test cases.
+
+<p>Then, for each test case, the first line contains an integer $N$: the number of
+milk buckets. The second line contains $N$ integers $a_1, a_2, \dots, a_N$,
+separated by spaces: the number of gallons of milk in each bucket.
+
+<p>It is guaranteed that the sum of $N$ over all test cases does not exceed
+$5 \cdot 10^5.$
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+For each test case, output the minimum number of coins Farmer John must spend to
+maximize the amount of milk in the final bucket.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+3
+0 0 1
+3
+0 1 0
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+1
+</pre>
+
+<p>For the first test, we do not need to swap any milk buckets in the first phase.
+In the second phase, Farmer John can merge the first two buckets and then merge
+the only two buckets left to achieve a final amount of 0.5. It can be shown that
+this final amount is maximal.
+
+<p>For the second test, we must perform a singular swap of the first two milk
+buckets in the first stage to achieve a final amount of 0.5 in the second stage.
+It can be shown that we cannot achieve a final amount of 0.5 without swaps in
+the first stage.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4
+4
+9 4 9 2
+6
+0 0 2 0 0 0
+3
+2 0 1
+9
+3 3 3 10 3 2 13 14 13
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+2
+0
+3
+</pre>
+
+<p>For the first test, Farmer John can swap the second and the third buckets in the
+first phase. Then, in the second phase, Farmer John can perform the following:
+
+<p><ul><li> $[9,9,4,2]$ -&gt; merge the third and fourth buckets -&gt; </li><li> $[9,9,3]$
+-&gt; merge the second and third buckets -&gt; </li><li> $[9,6]$ -&gt; merge the first
+and second buckets -&gt; </li><li> $[7.5]$ </li></ul>
+
+<p>The final amount of milk is 7.5, which is the maximum possible. It can be shown
+that even with additional swaps, the final amount cannot exceed 7.5, and that
+with fewer swaps, the final amount cannot reach 7.5.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 3-4: $a_i\le 1$ and $N\le 2000$ (sum of $N\le 5000$)</li><li>Inputs 5-6: $a_i\le 1$</li><li>Inputs 7-9: $N\le 2000$ (sum of $N\le 5000$)</li><li>Inputs 10-14: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Charlie Yang
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>13.2k</b><span>平均输出 token（含思考） ↓</span></li><li><b>22.9</b><span>输出速度 tokens/s ↑</span></li><li><b>517 秒</b><span>延迟 ↓</span></li><li><b>1.09×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -798,7 +904,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

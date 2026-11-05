@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1453 It&#x27;s Mooin&#x27; Time · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1453 It&#x27;s Mooin&#x27; Time：给定长为 N 的 M/O 串，翻转第 i 个字符代价为 c_i；对每个 k = 1…⌊N/L⌋，求使串中至少含 k 个等于“M 后接 L−1 个 O”的子串的最小代价（L ≤ 3）。">
+<meta name="description" content="usaco-1453 It&#x27;s Mooin&#x27; Time：USACO 2024 December · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,99 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1453</span></p>
 <h1 class="ptitle">It&#x27;s Mooin&#x27; Time</h1>
 <p class="meta">USACO 2024 December · 铂金组 · 2024-12 · <span class="pill">L4 顶尖</span> · C++17 · 时限 3 秒 · 测试点等分</p>
-<p class="summary">给定长为 N 的 M/O 串，翻转第 i 个字符代价为 c_i；对每个 k = 1…⌊N/L⌋，求使串中至少含 k 个等于“M 后接 L−1 个 O”的子串的最小代价（L ≤ 3）。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1453" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1453" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p><strong>**Note: The time limit for this problem is 3s, 1.5x the default.**</strong>
+
+<p>Bessie has a string of length $N$ ($1\le N\le 3\cdot 10^5$) consisting solely of
+the characters M and O. For each position $i$ of the string, there is a cost
+$c_i$ to change the character at that position to the other character
+($1\le c_i\le 10^8$).
+
+<p>Bessie thinks the string will look better if it contains more moos of length $L$
+($1\le L\le \min(N, 3)$). A moo of length $L$ is an M  followed by $L-1$ Os.
+
+<p>For each positive integer $k$ from $1$ to $\lfloor N/L\rfloor$ inclusive,
+compute the minimum cost to change the string to contain at least $k$ substrings
+equal to a moo of length
+$L$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $L$ and $N$.
+
+<p>The next line contains Bessie's length-$N$ string, consisting solely of Ms and
+Os.
+
+<p>The next line contains space-separated integers $c_1\dots c_N$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $\lfloor N/L\rfloor$ lines, the answer for each $k$ in increasing order.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+1 4
+MOOO
+10 20 30 40
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+20
+50
+90
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 4
+OOOO
+50 40 30 20
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+40
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2 20
+OOOMOMOOOMOOOMMMOMOO
+44743602 39649528 94028117 50811780 97338107 30426846 94909807 22669835 78498782 18004278 16633124 24711234 90542888 88490759 12851185 74589289 54413775 21184626 97688928 10497142
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+0
+0
+0
+12851185
+35521020
+60232254
+99881782
+952304708
+</pre>
+<h4>SAMPLE INPUT:</h4><pre>
+3 20
+OOOMOMOOOMOOOMMMOMOO
+44743602 39649528 94028117 50811780 97338107 30426846 94909807 22669835 78498782 18004278 16633124 24711234 90542888 88490759 12851185 74589289 54413775 21184626 97688928 10497142
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+0
+44743602
+119332891
+207066974
+</pre>
+<h4>SCORING:</h4>
+
+<p><ul><li>Input 5: $L=3, N\le 5000$</li><li>Input 6: $L=1$</li><li>Inputs 7-10: $L=2$</li><li>Inputs 11-18: $L=3$</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>22.3k</b><span>平均输出 token（含思考） ↓</span></li><li><b>22.2</b><span>输出速度 tokens/s ↑</span></li><li><b>914 秒</b><span>延迟 ↓</span></li><li><b>1.03×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -2490,7 +2586,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

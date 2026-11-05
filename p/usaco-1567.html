@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1567 Declining Invitations · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1567 Declining Invitations：N 名选手按排名依次排列，第 i 名满足若干条标准；按标准 1…C 依次从未邀请者中邀请满足该标准的前 fᵢ 名；对每个 i = 0…N−1，求排列 p 中前 i 人退出后被邀请者的名次之和。">
+<meta name="description" content="usaco-1567 Declining Invitations：USACO 2026 Second · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,122 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1567</span></p>
 <h1 class="ptitle">Declining Invitations</h1>
 <p class="meta">USACO 2026 Second · 银组 · 2026-01 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">N 名选手按排名依次排列，第 i 名满足若干条标准；按标准 1…C 依次从未邀请者中邀请满足该标准的前 fᵢ 名；对每个 i = 0…N−1，求排列 p 中前 i 人退出后被邀请者的名次之和。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1567" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1567" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>$N$ contestants participated in a contest, each placing a distinct rank from $1$
+to $N$.  There are $C$ criteria used to invite contestants to participate in the
+final round, and the $i$th-ranked contestant satisfies a specified $n_i$ of them
+($1\le n_i\le C$). 
+
+<p>The invitation process runs as follows. First, the top $f_1$ students who
+satisfy the $1$st criteria will be invited. Then, out of all students who
+haven't yet been invited, the top $f_2$ (or all remaining if there are fewer
+than $f_2$ remaining) students who satisfy the $2$nd criterion will be invited.
+This process repeats, for each $i$ from $1$ to $C$
+($1\le f_i\le N$).
+
+<p>However, some contestants will decline to participate in the final round, in
+which case they will be ignored when determining who to invite. 
+
+<p>You are given a permutation $p_1, p_2, \dots, p_N$ of $1\dots N$. For each $i$
+from $0$ to $N-1$, determine the sum of the ranks of the contestants who will be
+invited if the participants with ranks given by the first $i$ elements of $p$
+decline to attend.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $C$ ($1\le N,C\le 10^5$).
+
+<p>The next line contains $f_1,f_2, \dots, f_C$.
+
+<p>The next line contains $p_1, \dots, p_N$.
+
+<p>The next $N$ lines each contain $n_i$ ($1\le n_i\le C$), followed by $n_i$
+distinct integers in $[1, C]$, representing the criteria that the $i$th-ranked
+contestant satisfies. It is guaranteed that $\sum n_i\le 10^6$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $N$ lines, the sum of ranks of invitees before each declination.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5 1
+3
+5 1 3 2 4
+1 1
+1 1
+1 1
+1 1
+1 1
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+6
+6
+9
+6
+4
+</pre>
+
+<p>There is only one criterion. The top three remaining contestants who have not 
+declined will be invited.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5 4
+1 1 1 1
+1 2 3 4 5
+1 1
+2 1 2
+2 2 3
+2 3 4
+1 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+10
+14
+12
+9
+5
+</pre>
+
+<p>Initially, the $i$th contestant gets invited under criterion $i$ for all
+$1\le i\le 4$.
+
+<p>After the first declination, the $i+1$th contestant gets invited under criterion
+$i$ for all $1\le i\le 4$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6 10
+5 6 4 1 3 3 3 6 5 3
+1 4 6 5 2 3
+1 9
+5 4 3 9 5 10
+10 6 2 10 1 7 8 3 9 4 5
+10 4 5 3 1 2 9 10 6 7 8
+2 3 1
+8 1 9 7 4 3 10 6 2
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+21
+20
+16
+10
+5
+3
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-6: $N, C \le 10^3, \sum n_i \le 10^4$</li><li>Inputs 7-8: $C=1$</li><li>Inputs 9-10: $C=2$</li><li>Inputs 11-16: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>15.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.0</b><span>输出速度 tokens/s ↑</span></li><li><b>538 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>6</b><span>Pylint 问题 ↓</span></li><li><b>9.23</b><span>Pylint 得分 ↑</span></li><li><b>25</b><span>圈复杂度 ↓</span></li><li><b>46.8</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -346,7 +465,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

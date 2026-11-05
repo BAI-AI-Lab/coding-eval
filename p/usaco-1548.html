@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1548 Hoof, Paper, Scissors Triples · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1548 Hoof, Paper, Scissors Triples：N 个人玩三种手势循环相克的猜拳，第 i 人按比例 h_i : p_i : s_i 随机出手；求满足 A 期望胜 B、B 期望胜 C、C 期望胜 A 的三元组 (A, B, C) 个数，循环移位视为相同。">
+<meta name="description" content="usaco-1548 Hoof, Paper, Scissors Triples：USACO 2026 First · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,94 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1548</span></p>
 <h1 class="ptitle">Hoof, Paper, Scissors Triples</h1>
 <p class="meta">USACO 2026 First · 铂金组 · 2026-01 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 个人玩三种手势循环相克的猜拳，第 i 人按比例 h_i : p_i : s_i 随机出手；求满足 A 期望胜 B、B 期望胜 C、C 期望胜 A 的三元组 (A, B, C) 个数，循环移位视为相同。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1548" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1548" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>You have probably heard of the game "Rock, Paper, Scissors". The cows like to
+play a similar game they call "Hoof, Paper, Scissors".
+
+<p>The rules of "Hoof, Paper, Scissors" are simple. Two cows play against each
+other. They both count to three and then each simultaneously makes a gesture
+that represents either a hoof, a piece of paper, or a pair of scissors. Hoof
+beats scissors (since a hoof can smash a pair of scissors), scissors beats paper
+(since scissors can cut paper), and paper beats hoof (since the hoof can get a
+papercut). For example, if the first cow makes a "hoof" gesture and the second a
+"paper" gesture, then the second cow wins. Of course, it is also possible to
+tie, if both cows make the same gesture.
+
+<p>Now there are $N$ ($3\le N\le 2\cdot 10^5$) cows who want to play hoof paper
+scissors, and they each independently have a strategy of drawing from some fixed
+distribution. In particular, the $i$th cow's strategy is to play hoof, paper, or
+scissors with probabilities
+$\left(\frac{h_i}{h_i+p_i+s_i}, \frac{p_i}{h_i+p_i+s_i}, \frac{s_i}{h_i+p_i+s_i} \right)$,
+respectively.
+
+<p>How many distinct triples of cows (A,B,C) are there such that A beats B on
+average, B beats C on average, and C beats A on average? We consider two triples
+the same if one equals the other up to a cyclic shift.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$ ($1\le T\le 5\cdot 10^4$), the number of independent
+tests. Each test is specified in the following format:
+
+<p>The first line contains $N$.
+
+<p>The next $N$ lines each contain three non-negative integers $h_i$, $p_i$, $s_i$
+($0\le h_i,p_i,s_i\le 10^9, h_i+p_i+s_i&gt;0$).
+
+<p>It is guaranteed that the sum of $N$ over all tests does not exceed
+
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the number of triples.
+
+<p><strong>Note: The large size of integers involved in this problem may require the use
+of 64-bit integer data types (e.g., a "long long" in C/C++).</strong>
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+4
+1 0 0
+1 0 0
+0 1 0
+0 0 1
+10
+20410069 21445597 257862632
+114108992 287498302 113278897
+607994331 143503714 631122722
+337497016 270153603 320256324
+633717786 631078144 493265815
+202783212 612643590 560838949
+713379081 42803063 58996167
+293262767 470686180 220651551
+656404313 408797935 345461691
+959196297 827681918 591519393
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2
+32
+</pre>
+
+<p>For the first test, there are two triples: $(1, 3, 4)$ and $(2, 3, 4)$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-3: $N\le 10$</li><li>Inputs 4-9: $N \le 7500$, the sum of $N$ over
+all tests does not exceed $10^4$</li><li>Inputs 10-21: No additional
+constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Richard Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">2/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="">85.7</span></b><span>采样 1 · 超时</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>18.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>26.4</b><span>输出速度 tokens/s ↑</span></li><li><b>568 秒</b><span>延迟 ↓</span></li><li><b>2.30×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更差 1、同阶 2</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1831,7 +1922,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

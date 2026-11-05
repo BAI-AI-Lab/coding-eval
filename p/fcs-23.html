@@ -3,22 +3,372 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-23 FrontierCS 第 23 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-23 FrontierCS 第 23 题：用每条规则两侧长度均 ≤ 3 的 A=B 字符串替换语言编写程序，读入 sSt 形式的串，判断 t 是否为 s 的子串并返回 1 或 0；须满足执行步数、串长和指令条数上限，执行的指令次数越少得分越高。">
+<title>fcs-23 FrontierCS #23 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-23 FrontierCS #23：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-23</span></p>
-<h1 class="ptitle">FrontierCS 第 23 题</h1>
+<h1 class="ptitle">FrontierCS #23</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">用每条规则两侧长度均 ≤ 3 的 A=B 字符串替换语言编写程序，读入 sSt 形式的串，判断 t 是否为 s 的子串并返回 1 或 0；须满足执行步数、串长和指令条数上限，执行的指令次数越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/23" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/23" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain"># A=B
+
+**Input file:** standard input
+**Output file:** standard output
+**Time limit:** 1 second
+**Memory limit:** 512 megabytes
+
+Marisa has learned an interesting language called **A=B**. She finds that this language has the advantages of simple syntax, easy to learn and convenient to code.
+
+Here is the user manual of A=B:
+
+*(Note that it may differ from the original game “A=B”. So please read the statement carefully.)*
+
+---
+
+## Instruction set
+
+A=B’s instruction set includes:
+
+1. `string1=string2`
+   Find the leftmost occurrence of `string1` in the string and replace it with `string2`.
+
+2. `string1=(return)string2`
+   If `string1` is found, replace the entire string with `string2` and end the program immediately.
+
+---
+
+## Program structure
+
+- An A=B program consists of several lines of instructions.
+- Each line must include exactly one equal sign (`=`).
+- Following characters are reserved: `=`, `(`, `)`.
+
+---
+
+## Execution order
+
+1. Read the input string.
+2. Starting from the topmost line, find the first line that can be executed.
+3. If found, execute that line and go to step 2.
+4. If none is found, return the current string as output.
+
+---
+
+Marisa once introduced A=B to Alice. However, “You called this a programming language? You can’t even write a program that can check if string *t* is a substring of string *s*!” said Alice.
+
+Now Marisa comes to you for help. She wants you to design an A=B program for this problem and show A=B’s efficiency.
+
+---
+
+## Requirements
+
+Your program needs to meet the following requirements:
+
+- Read the input string (the input format is `sSt`. `S` is the separator. `s` and `t` are two non-empty strings consisting of characters `a`, `b`, `c`).
+- If `t` is a substring of `s`, the program should return **1** as output, else return **0** as output.
+- The character set that your program can use is `{a–z, A–Z, 0–9, =, (, )}`.
+  - Remember: `=`, `(`, `)` are reserved characters in A=B and you can’t use them in `string1` or `string2`.
+- In the instruction format, the length of `string1` and `string2` should be at most 3.
+- Suppose the length of the input string is `L`, then:
+  - The number of instruction executions can’t exceed `2 * max(2L^2, 50)`.
+  - The length of the string during execution can’t exceed `2 * (2L + 10)`.
+- The number of instructions in your A=B program can’t exceed **1000**.
+
+---
+
+## Input
+
+Input an integer `Tid` (`0 ≤ Tid ≤ 2×10^9`). It is used for generating test sets and may be no use to you.
+
+---
+
+## Output
+
+Output your A=B program containing several lines of instructions.
+
+The number of tests will not exceed 20. In each test, the checker will use `Tid` in the input file to generate several lines of input strings and their corresponding answers.
+Your A=B program is considered correct **iff** for each input string in all tests, your A=B program gives the correct output.
+
+It’s guaranteed that for each input string in all tests, the length `L` satisfies `3 ≤ L ≤ 1000`.
+
+---
+
+## Examples
+
+### Example 1
+**Input**
+```
+
+114514
+
+```
+
+**Output**
+```
+
+514=(return)1
+=514
+
+```
+
+---
+
+### Example 2
+**Input**
+```
+
+1919810
+
+```
+
+**Output**
+```
+
+S=Sakuya
+=(return)0
+
+```
+
+---
+
+### Example 3
+**Input**
+```
+
+caba
+
+```
+
+**Output**
+```
+
+aabc
+
+```
+
+**Input**
+```
+
+cbacab
+
+```
+
+**Output**
+```
+
+aabbcc
+
+```
+
+**Program**
+```
+
+ba=ab
+ca=ac
+cb=bc
+
+```
+
+---
+
+### Example 4
+**Input**
+```
+
+bababb
+
+```
+
+**Output**
+```
+
+b
+
+```
+
+**Input**
+```
+
+aababbaa
+
+```
+
+**Output**
+```
+
+a
+
+```
+
+**Program**
+```
+
+ba=ab
+ab=
+bb=b
+aa=a
+
+```
+
+---
+
+### Example 5
+**Input**
+```
+
+abc
+
+```
+
+**Output**
+```
+
+true
+
+```
+
+**Input**
+```
+
+cabc
+
+```
+
+**Output**
+```
+
+false
+
+```
+
+**Input**
+```
+
+ca
+
+```
+
+**Output**
+```
+
+false
+
+```
+
+**Program**
+```
+
+b=a
+c=a
+aaaa=(return)false
+aaa=(return)true
+=(return)false
+
+```
+
+---
+
+### Example 6
+**Input**
+```
+
+10111+111
+
+```
+
+**Output**
+```
+
+11110
+
+```
+
+**Input**
+```
+
+101+10110
+
+```
+
+**Output**
+```
+
+11011
+
+```
+
+**Program**
+```
+
+A0=0A
+A1=1A
+B0=0B
+B1=1B
+0A=a
+0B=b
+1A=b
+1B=ca
+A=a
+B=b
+ac=b
+bc=ca
+0+=+A
+1+=+B
++=
+0c=1
+1c=c0
+c=1
+a=0
+b=1
+
+```
+
+---
+
+## Note
+
+- The first and second examples show how you should submit your answer.
+- Examples 3–6 provide sample problems and their corresponding A=B programs to help you get familiar with the A=B language. Not all of them satisfy the problem’s constraints.
+
+
+## Scoring
+
+For Tid divisible by 100, the checker validates the submitted program syntax and then accepts it for 100 points without executing generated test strings. No currently released test case uses Tid divisible by 100. The execution-based rules below apply to the other test identifiers.
+
+Let x be E, the number of executed instructions in a test string. C=max(2*l*l,50), where l is the initial string length. The execution limit remains 2*C; program-length and correctness requirements still apply. The physical reference (the 60-point level) is a=C. Define the lower-band continuation:
+
+    L(x) = 60*max(0,(2*C-x)/C).
+
+For positive x and positive physical reference a, define the improvement factor r=a/x. The physical reference has r=1 and earns 60 points. For a valid output on this branch, the points P are:
+
+    P = 100,                          if x=0;
+    P = L(x),                         if L(x)&lt;=60;
+    P = min(100,60+ln(r)),             otherwise.
+
+Here ln is the natural logarithm. In the upper branch before the 100-point cap, r=exp(P-60): each additional point requires an e-fold improvement in the physical objective (division by e). All feasibility, correctness, and hard resource-limit checks remain required; invalid output receives 0.
+
+Score each subcase separately and take their arithmetic mean.
+
+Across test files, use the arithmetic mean of the file scores.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">61.4</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">61.4</span></b><span>采样 1 · 部分分</span></li><li><b>23.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.5</b><span>输出速度 tokens/s ↑</span></li><li><b>1011 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -378,7 +728,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1591 Milk Buckets · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1591 Milk Buckets：N 个容量为 aᵢ 的桶自上而下叠放，顶部每秒注入 1 单位，桶满后下一秒整体倒入下一桶（溢出部分丢失）、最底桶倒入池中；Q 次询问先令 aᵢ = v（持久修改），再求从空开始 t 秒后池中的水量。">
+<meta name="description" content="usaco-1591 Milk Buckets：USACO 2026 Third · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,179 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1591</span></p>
 <h1 class="ptitle">Milk Buckets</h1>
 <p class="meta">USACO 2026 Third · 银组 · 2026-02 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">N 个容量为 aᵢ 的桶自上而下叠放，顶部每秒注入 1 单位，桶满后下一秒整体倒入下一桶（溢出部分丢失）、最底桶倒入池中；Q 次询问先令 aᵢ = v（持久修改），再求从空开始 t 秒后池中的水量。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1591" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1591" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>There are $N$ ($1\le N\le 2\cdot 10^5$) buckets in a stack where the $i$-th
+bucket from the top has capacity $a_i$ gallons ($1\le a_i\le 10^9$). A tap above
+the top bucket sends one gallon of milk per second into the first bucket per
+second. There is also a pool below bucket $N$. 
+
+<p>When a bucket reaches its capacity after $t$ seconds, at the start of the
+$t+1$th second it flips to dump its contents into either the bucket below if it
+is not the last bucket or the pool otherwise (it reverts back to filling at the
+end of the $t+1$th second). A bucket cannot collect milk while it is flipped;
+any milk arriving at the bucket above during this second is lost. Additionally,
+any amount of milk exceeding the  capacity of the bucket below is lost.
+
+<p>Handle $Q$ ($1\le Q\le 3\cdot 10^5$) queries, each specified by three integers
+$i$, $v$, and $t$:
+
+<p><ol><li>First, set $a_i=v$ ($1\le i\le N, 1\le v \le 10^9$).</li><li>Then answer the following question: Suppose that at time $0$, all buckets as
+well as the pool are empty. Determine the number of gallons of milk in the pool
+after $t$ seconds
+($1\le t\le 10^{18}$).</li></ol>
+
+<p><strong>The $a_i=v$ updates persist through later queries.</strong>
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$.
+
+<p>The second line contains $a_1\dots a_N$.
+
+<p>The next line contains $Q$.
+
+<p>Then the following $Q$ lines contain three integers $i$, $v$, and $t$. This
+means that you should set $a_i=v$ and then answer the question for $t$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the answer to each question on a separate line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+1 1 1
+30
+1 1 1
+1 1 2
+1 1 3
+1 1 4
+1 1 5
+1 1 6
+1 1 7
+1 1 8
+1 1 9
+1 1 10
+1 2 1
+1 2 2
+1 2 3
+1 2 4
+1 2 5
+1 2 6
+1 2 7
+1 2 8
+1 2 9
+1 2 10
+2 2 1
+2 2 2
+2 2 3
+2 2 4
+2 2 5
+2 2 6
+2 2 7
+2 2 8
+2 2 9
+2 2 10
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+0
+1
+1
+2
+2
+3
+3
+4
+0
+0
+0
+0
+1
+1
+1
+2
+2
+2
+0
+0
+0
+0
+1
+1
+1
+2
+2
+2
+</pre>
+
+<p>When $a=[1, 1, 1]$,
+
+<p><ul><li>Bucket $1$ flips at times $2,4,6,\dots$</li><li>Bucket $2$ flips at times
+$3,5,7,\dots$</li><li>Bucket $3$ flips at times $4,6,8,\dots$</li></ul>
+
+<p>When $a=[2, 1, 1]$,
+
+<p><ul><li>Bucket $1$ flips at times $3,6,9,\dots$</li><li>Bucket $2$ flips at times
+$4,7,10,\dots$</li><li>Bucket $3$ flips at times $5,8,11,\dots$</li></ul>
+
+<p>When $a=[2, 2, 1]$,
+
+<p><ul><li>Bucket $1$ flips at times $3,6,9,\dots$</li><li>Bucket $2$ flips at times
+$4,7,10,\dots$</li><li>Bucket $3$ flips at times $5,8,11,\dots$</li></ul>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+1 2
+10
+1 1 1
+1 1 2
+1 1 3
+1 1 4
+1 1 5
+1 1 6
+1 1 7
+1 1 8
+1 1 9
+1 1 10
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+0
+0
+2
+2
+2
+2
+4
+4
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+1 1 1
+1
+1 1 1000000000000000000
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+499999999999999999
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-5: $N \le 10, Q\le 100$, and all $t\le 10^4$</li><li>Inputs 6-11: $N\le 10^3, Q\le 10^4$</li><li>Inputs 12-23: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Akshaj Arora
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>12.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>30.9</b><span>输出速度 tokens/s ↑</span></li><li><b>393 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>6</b><span>Pylint 问题 ↓</span></li><li><b>8.95</b><span>Pylint 得分 ↑</span></li><li><b>12</b><span>圈复杂度 ↓</span></li><li><b>49.3</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -271,7 +447,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

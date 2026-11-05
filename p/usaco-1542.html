@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1542 Lineup Queries · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1542 Lineup Queries：队列初始只有元素 0，第 t 时刻先把队首移到位置 ⌊t/2⌋（原位置 1…⌊t/2⌋ 依次前移），再把元素 t 加到队尾；回答 Q 个询问：第 t 时刻后元素 c 所在位置，或位置 x 上的元素（t ≤ 10¹⁸）。">
+<meta name="description" content="usaco-1542 Lineup Queries：USACO 2026 First · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,125 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1542</span></p>
 <h1 class="ptitle">Lineup Queries</h1>
 <p class="meta">USACO 2026 First · 银组 · 2026-01 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">队列初始只有元素 0，第 t 时刻先把队首移到位置 ⌊t/2⌋（原位置 1…⌊t/2⌋ 依次前移），再把元素 t 加到队尾；回答 Q 个询问：第 t 时刻后元素 c 所在位置，或位置 x 上的元素（t ≤ 10¹⁸）。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1542" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1542" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>There is a line of cows, initially (i.e. at time $t = 0$) containing only cow
+$0$ at position $0$ (here, a cow is at position $k$ if there are $k$ cows in
+front of it). At time $t$ for $t=1,2,3,\dots$, the cow at position 0 moves to
+position $\lfloor t/2\rfloor$, every cow in positions
+$1\dots \lfloor t/2\rfloor$ moves forward one position, and cow $t$ joins the
+line at the end of the line (position $t$).
+
+<p>Answer $Q$ ($1\le Q\le 10^5$) independent queries, each of one of the following
+types:
+
+<p><ol><li>At what position is cow $c$ immediately after time $t$
+($0\le c\le t\le 10^{18}$)?</li><li>Which cow is at position $x$ immediately after time $t$
+($0\le x\le t\le 10^{18}$)?</li></ol>
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $Q$, the number of queries.
+
+<p>The next $Q$ lines each contain three integers specifying a query  either of the
+form "1 c t" or "2 x t."
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the answer to each query on a separate line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+1 4 9
+2 2 9
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2
+4
+</pre>
+
+<p>Lineups immediately after various times:
+
+<p><pre>
+t = 0 | 0
+t = 1 | 0 1
+t = 2 | 1 0 2
+t = 3 | 0 1 2 3
+t = 4 | 1 2 0 3 4
+t = 5 | 2 0 1 3 4 5
+t = 6 | 0 1 3 2 4 5 6
+t = 7 | 1 3 2 0 4 5 6 7
+t = 8 | 3 2 0 4 1 5 6 7 8
+t = 9 | 2 0 4 1 3 5 6 7 8 9
+</pre>
+
+<p>Immediately after $t=9$, the location of cow $4$ is $2$, and the cow located at position $2$ is
+$4$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+22
+1 0 9
+1 1 9
+1 2 9
+1 3 9
+1 4 9
+1 5 9
+1 6 9
+1 7 9
+1 8 9
+1 9 9
+2 0 9
+2 1 9
+2 2 9
+2 3 9
+2 4 9
+2 5 9
+2 6 9
+2 7 9
+2 8 9
+2 9 9
+1 0 1000000000000000000
+2 0 1000000000000000000
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+3
+0
+4
+2
+5
+6
+7
+8
+9
+2
+0
+4
+1
+3
+5
+6
+7
+8
+9
+483992463350322770
+148148148148148148
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 3: $Q\le 1000, t\le 100$</li><li>Input 4: $t\le 5000$</li><li>Inputs 5-8: All queries are of type 1.</li><li>Inputs 9-12: All queries are of type 2.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Agastya Goel
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>11.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.3</b><span>输出速度 tokens/s ↑</span></li><li><b>394 秒</b><span>延迟 ↓</span></li><li><b>0.50×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>4</b><span>Pylint 问题 ↓</span></li><li><b>9.09</b><span>Pylint 得分 ↑</span></li><li><b>14</b><span>圈复杂度 ↓</span></li><li><b>54.9</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -227,7 +349,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

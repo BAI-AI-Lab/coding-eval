@@ -3,22 +3,75 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-68 FrontierCS 第 68 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-68 FrontierCS 第 68 题：交互题：n 支笔的墨水量是 0～n−1 的一个排列，每次试写一支笔得知它是否还能写并消耗 1 单位墨水，最后选出剩余墨水之和至少为 n 的两支笔；答对的测试组越多得分越高。">
+<title>fcs-68 FrontierCS #68 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-68 FrontierCS #68：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-68</span></p>
-<h1 class="ptitle">FrontierCS 第 68 题</h1>
+<h1 class="ptitle">FrontierCS #68</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 5 秒 · 0–100 连续分</p>
-<p class="summary">交互题：n 支笔的墨水量是 0～n−1 的一个排列，每次试写一支笔得知它是否还能写并消耗 1 单位墨水，最后选出剩余墨水之和至少为 n 的两支笔；答对的测试组越多得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/68" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/68" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Pen
+
+This is an I/O interactive problem. I/O interaction refers to interactive problems, where the program communicates with a special judge during execution instead of producing all output at once. In these problems, the program sends queries (output) to the judge and must immediately read responses (input) before continuing. The solution must strictly follow the input-output protocol defined in the problem statement, because any extra output, missing flush, or incorrect format can cause a wrong answer. Unlike standard problems, interactive problems require careful handling of I/O, synchronization, and flushing to ensure smooth communication between the contestant’s code and the judge.
+
+There are n pens, numbered from 0 to n − 1.
+Each pen contains a certain amount of ink — let the i-th pen have p_i units of ink.
+You only know that (p_0, p_1, …, p_{n-1}) is a permutation of 0 … n − 1, but you do not know the exact values of p_i.
+
+Your task is to choose two pens such that together they have at least n units of ink remaining.
+
+You cannot directly query the amount of ink in any pen.
+Instead, you can only “try to write” with a pen — then you will learn whether it can still write or not.
+If it can write, it will consume 1 unit of ink.
+
+Note that the requirement refers to the remaining ink in the two chosen pens:
+when you finally select them, their total remaining ink must be at least n.
+
+Input
+
+Each test contains multiple test cases. The first line contains the number of test cases t (1 ≤ t ≤ 1001). The description of the test cases follows.
+
+Each test case contains one integer n (10 ≤ n ≤ 25), the number of pens.
+
+Interaction
+
+To use a pen, output one line. First output 0 followed by a space, then output the number of the pen you want to use. After flushing your output, your program should read a single integer x, x = 0 means that the pen was already empty, x = 1 means the pen still had ink before consuming 1 unit of ink (can be empty now).
+
+If you want to select two pens, output one line. First output 1 followed by a space. Then output the number of those two pens, separated by a space. Note that they cannot be the same pen. After flushing your output, you should start processing the next test case (or end the code if there is no next test case).
+
+## Scoring
+
+Let x be c, the number of correct answers. t is the total number of answers requested. Zero correct answers do not earn 100. The physical reference (the 60-point level) is a=0.6*t. Define the lower-band continuation:
+
+    L(x) = 100*c/t.
+
+For positive x and positive physical reference a, define the improvement factor r=x/a. The physical reference has r=1 and earns 60 points. For a valid output on this branch, the points P are:
+
+    P = L(x),                         if L(x)&lt;=60;
+    P = min(100,60+ln(r)),             otherwise.
+
+Here ln is the natural logarithm. In the upper branch before the 100-point cap, r=exp(P-60): each additional point requires an e-fold improvement in the physical objective (multiplication by e). A zero maximization objective is not a full-score exception. All feasibility, correctness, and hard resource-limit checks remain required; invalid output receives 0.
+
+Across test files, use the arithmetic mean of the file scores.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">60.1</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">60.1</span></b><span>采样 1 · 部分分</span></li><li><b>51.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.4</b><span>输出速度 tokens/s ↑</span></li><li><b>2128 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -771,7 +824,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

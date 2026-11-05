@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1590 Clash! · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1590 Clash!：N 张牌各有费用 aᵢ，手牌恒为 H 张，出牌后从牌堆顶补一张且所出牌放到堆底，资源每秒加 1，手中有标记牌时必须先出标记牌；对 Q 个询问 t（t ≤ 10¹⁸），求 t 秒内最多能打出多少张标记牌。">
+<meta name="description" content="usaco-1590 Clash!：USACO 2026 Third · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,107 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1590</span></p>
 <h1 class="ptitle">Clash!</h1>
 <p class="meta">USACO 2026 Third · 银组 · 2026-02 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">N 张牌各有费用 aᵢ，手牌恒为 H 张，出牌后从牌堆顶补一张且所出牌放到堆底，资源每秒加 1，手中有标记牌时必须先出标记牌；对 Q 个询问 t（t ≤ 10¹⁸），求 t 秒内最多能打出多少张标记牌。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1590" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1590" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John is playing a famous and strategic card game with his dear cow
+Bessie. FJ has $N$ ($2\le N\le 2\cdot 10^5$) cards, conveniently numbered from
+$1$ to $N$. The $i$'th card costs $a_i$ ($1 \leq a_i \leq 10^9$) moolixir if FJ
+wants to play it. 
+
+<p>His hand always consists of $H$ cards at any given time ($1\le H&lt;N$). Initially,
+his hand consists of cards $1$ through $H$. The remaining cards are in a draw
+queue. Every time FJ plays a card in his hand, he will draw its replacement from
+the front of the draw queue to his hand. Then, FJ will put the card he just
+played to the back of the draw queue. Initially, cards $H+1$ through $N$ are
+arranged from the front to the back of the draw queue in that order.
+
+<p>In this game, time is measured in integer seconds. Initially, the game starts at
+time $0$ with FJ having $0$ moolixir. Immediately before each of integer times
+$t=1,2,3,\dots,$  moolixir increases by $1$. At each integer time, FJ may choose
+to play a card in his hand if its cost does not exceed FJ's current moolixir
+count, which subtracts FJ's current moolixir count by the card's cost.
+
+<p>FJ marks a subset of his cards $s_1, s_2, \ldots, s_k$ as win-conditions
+($1\le k\le N$, $1\le s_i\le N$). If FJ has at least one win-condition in his
+hand, the next card he plays <strong>must</strong> be a win-condition.
+
+<p>He asks you $Q$ ($1 \leq Q \leq 2 \cdot 10^5$)  queries. Each query is of the
+following form: what is the maximum number of win-conditions he could have
+placed down within $t$ time ($1 \leq t \leq 10^{18}$)?
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $H$.
+
+<p>The second line contains $N$ integers $a_1, a_2, \ldots, a_N$.
+
+<p>The third line contains an integer $k$, the number of win-conditions.
+
+<p>The fourth line contains $k$ distinct integers
+$s_1, s_2, \ldots, s_k$.
+
+<p>The fifth line contains an integer $Q$.
+
+<p>The following $Q$ lines each contain an integer $t$, the time to answer for each
+query.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+For each query, output the maximum number of win-conditions that FJ could've put
+down within $t$ time. 
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6 3
+2 4 3 5 7 6
+2
+1 4
+6
+1
+2
+3
+7
+10
+1000000000000000
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+1
+1
+2
+2
+142857142857143
+</pre>
+
+<p>In this case, you start with card 1, a win condition on your hand.  You can play
+it after you accumulate 2 elixir in 2 seconds. This means that  just after t=1
+you can play no cards, but after t=2 you can play your first card,  which must
+be your win condition.
+
+<p>After t=3, it is still most optimal to play card 1 and have 1 elixir remaining, 
+so the answer here is still 1.
+
+<p>You then draw card 4, which is also a win condition. You play it immediately
+after  t=7, so you have played 2 win conditions at this time.
+
+<p>You then draw card 5 and have no win conditions in your hand. After t=10, even
+if you play  card 3 with the 3 elixir you have, your number of win conditions
+does not change.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-3: $N,Q\le 100$</li><li>Inputs 4-5: $H=1$</li><li>Inputs 6-11: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Chongtian Ma
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>54.5k</b><span>平均输出 token（含思考） ↓</span></li><li><b>22.9</b><span>输出速度 tokens/s ↑</span></li><li><b>2378 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>5</b><span>Pylint 问题 ↓</span></li><li><b>9.24</b><span>Pylint 得分 ↑</span></li><li><b>13</b><span>圈复杂度 ↓</span></li><li><b>51.2</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -379,7 +483,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1519 Compatible Pairs · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1519 Compatible Pairs：有 N 种 ID，ID 为 dᵢ 的个体有 nᵢ 个；两个不同个体的 ID 之和等于 A 或 B 时可配成一对，每个个体至多属于一对；求最多能同时配成的对数。">
+<meta name="description" content="usaco-1519 Compatible Pairs：USACO 2025 US Open · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,96 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1519</span></p>
 <h1 class="ptitle">Compatible Pairs</h1>
 <p class="meta">USACO 2025 US Open · 银组 · 2025-03 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">有 N 种 ID，ID 为 dᵢ 的个体有 nᵢ 个；两个不同个体的 ID 之和等于 A 或 B 时可配成一对，每个个体至多属于一对；求最多能同时配成的对数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1519" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1519" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Deep in the countryside, Farmer John’s cows aren’t just ordinary farm
+animals—they are part of a clandestine bovine intelligence network. Each cow
+carries an ID number, carefully assigned by the elite cow cryptographers.
+However, due to Farmer John's rather haphazard tagging system, some cows ended
+up with the same ID.
+
+<p>Farmer John noted that there are $N$ ($1\le N\le 2\cdot 10^5$) unique ID
+numbers, and for each unique ID $d_i$ ($0\le d_i\le 10^9$), there are $n_i$
+($1\le n_i\le 10^9$) cows who shared it.
+
+<p>The cows can only communicate in pairs, and their secret encryption method has
+one strict rule: two cows can only exchange information if they are not the same
+cow and the sum of their ID numbers equals either $A$ or $B$
+($0\le A\le B\le 2\cdot 10^9$). A cow can only engage in one conversation at a
+time (i.e., no cow can be part of more than one pair).
+
+<p>Farmer John would like to maximize the number of disjoint communication pairs to
+ensure the best information flow. Can you determine the largest number of
+conversations that can happen at once?
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$, $A$, $B$.
+
+<p>The next $N$ lines each contain $n_i$ and $d_i$. No two $d_i$ are the same. 
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+The maximum number of disjoint communicating pairs that can be formed at the
+same time.
+    <p><strong>Note that the large size of integers involved in this problem may require the
+use of 64-bit integer data types (e.g., a "long long" in C/C++).</strong>
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 4 5
+17 2
+100 0
+10 1
+200 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+118
+</pre>
+A cow with an ID of $0$ can communicate with another cow with an ID of $4$
+because the sum of their IDs is $4$.  Since there are a total of $100$ cows of
+ID $0$ and $200$ cows of ID $4$,  there can be up to $100$ communicating pairs
+with this combination of IDs.
+
+<p>A cow with an ID of $4$ can also communicate with another cow with an ID of $1$
+(sum to $5$). There are $10$ cows of ID $1$ and $100$ remaining unpaired cows of
+ID $4$, allowing for another $10$ pairs.
+
+<p>Finally, a cow with an ID of $2$ can communicate with another cow of the same
+ID.  Since there are a total of $17$ cows of ID $2$, there can be up to $8$ more
+pairs.
+
+<p>In total, there are $100+10+8=118$ communicating pairs. It can be shown that
+this is the maximum possible number of pairs.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 4 5
+100 0
+10 1
+100 3
+20 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+30
+</pre>
+
+<p>Pairing IDs $0$ and $4$ makes $20$ pairs, while pairing IDs $1$ and $3$ makes
+$10$ pairs. It can be shown that this is the optimal pairing, resulting in a
+total of $30$ pairs.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 3-4: $A=B$ </li><li>Inputs 5-7: $N\le 1000$ </li><li>Inputs 8-12: No additional constraints</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>29.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>25.3</b><span>输出速度 tokens/s ↑</span></li><li><b>1148 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>7</b><span>Pylint 问题 ↓</span></li><li><b>9.05</b><span>Pylint 得分 ↑</span></li><li><b>28</b><span>圈复杂度 ↓</span></li><li><b>48.6</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -744,7 +837,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

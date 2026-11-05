@@ -3,22 +3,88 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-85 FrontierCS 第 85 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-85 FrontierCS 第 85 题：交互题：在每点三条边颜色互异、出口接一棵无限深二叉树的结构中，只知初始到出口的距离，可沿指定颜色的边移动或询问当前到出口的距离；须走到出口，距离询问次数越少得分越高。">
+<title>fcs-85 FrontierCS #85 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-85 FrontierCS #85：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-85</span></p>
-<h1 class="ptitle">FrontierCS 第 85 题</h1>
+<h1 class="ptitle">FrontierCS #85</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">交互题：在每点三条边颜色互异、出口接一棵无限深二叉树的结构中，只知初始到出口的距离，可沿指定颜色的边移动或询问当前到出口的距离；须走到出口，距离询问次数越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/85" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/85" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Maze
+Time limit: 2s
+Memory limit: 512MB
+
+3.1 Background
+The subject of this work is SCP-167. It is recommended to review information about SCP-167 before proceeding with the work.
+
+3.2 Description
+SCP-167 can be roughly described as a point connected to an infinitely deep binary tree, as shown in the figure below.
+
+Level 0 o
+|
+Level 1 o
+/
+Level 2 o ...
+/
+Level 3 o ...
+o
+o
+o
+
+We define the point at Level 0 as the exit of SCP-167. To prevent researchers from getting lost inside SCP-167, you need to write a pathfinding system to help SCP-167 researchers find the exit.
+For a researcher lost in SCP-167, because the three edges connected to their current node are highly similar, they cannot tell which edge leads towards the exit.
+In SCP-167, one becomes lost as soon as they cannot determine the absolute position of their current node. At this point, all you know is the relative path between points.
+To easily describe relative paths, we can assume each edge is one of three colors: red, yellow, or blue, and the three edges connected to any single node are all different colors.
+Thus, each move can be represented by a color, indicating the edge of that color.
+Simultaneously, you have a ranging device that can measure the distance between your current node and the exit.
+
+Assume you are lost in SCP-167. You only know the initial distance initialDeep between your current node and the exit, but not the absolute position of this node. Please write a pathfinding system to locate the exit.
+
+3.3 Task Description
+To simulate being lost, we have prepared an interaction library. You will read initialDeep from the standard input, which represents the distance between your initial position and the exit. Here, initialDeep ≤ 10^4. You can perform the following two operations by outputing to the interactor by standard output. After each operation, you need to flush the output and read the returned value of the interactor from the standard input.
+
+"move c"
+
+where c is an integer 0, 1, or 2, which represent red, yellow and blue respectively. You can perform such operation for at most
+10^5
+  times. Once you have reached the exit, you must not move again. The interactor will return 1 if you reach the exit after the move. Otherwise, it will return 0.
+
+"query"
+
+The interactor will return the distance between your current node and the exit. You may make at most 100000 distance queries; exceeding this limit receives zero points. This limit is separate from the limit of 100000 moves. The number of times you make a query will determine your score. Details are shown below.
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original minimizing quantity and a for its physical 60-point reference. The improvement factor is r=a/x, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Q is the number of distance queries. Define the objective x=Q, its physical reference a=A=5000, and the lower-band calculation L=60*5001/(Q+1).
+
+```text
+P = 100,                         if x = 0
+P = L,                           if L &lt;= 60 and x &gt; 0
+P = min(100, 60 + ln(r)),      otherwise
+```
+
+Zero is tested on the valid original count, cost, or error, before the lower-band test. A zero reference anchor has no positive improvement branch; positive objectives keep their lower-band score. The +1 shift is used only in L, not in the logarithm. The checker reports P/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 编译错误</span></li><li><b>39.3k</b><span>平均输出 token（含思考） ↓</span></li><li><b>27.7</b><span>输出速度 tokens/s ↑</span></li><li><b>1422 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -665,7 +731,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

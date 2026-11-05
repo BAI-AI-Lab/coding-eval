@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1596 All Pairs Shortest Paths · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1596 All Pairs Shortest Paths：平面被单位正三角形剖分，每个三角形再由中心连向三顶点分为三块；给定 N 个位于区域内部的点，两点距离为不经过顶点的路径最少穿过的边数，求所有点对距离之和。">
+<meta name="description" content="usaco-1596 All Pairs Shortest Paths：USACO 2026 Third · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,105 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1596</span></p>
 <h1 class="ptitle">All Pairs Shortest Paths</h1>
 <p class="meta">USACO 2026 Third · 铂金组 · 2026-02 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">平面被单位正三角形剖分，每个三角形再由中心连向三顶点分为三块；给定 N 个位于区域内部的点，两点距离为不经过顶点的路径最少穿过的边数，求所有点对距离之和。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1596" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1596" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字，不含图片。</p>
+<div class="stmt">
+<p>You have a bunch of triangular regions that tessellate an infinite 2D plane. 
+The tesselation is defined as follows (see the diagram for a better
+understanding):
+
+<p><ul><li>Recall that Euler's formula states that $e^{ix}=\cos (x)+i\sin (x)$ for real
+$x$. First, draw a vertex at $x+y\exp(\pi i/3)$ on the complex plane for all
+integers $x,y$.
+</li><li>Then for every three vertices from the step above forming an equilateral
+triangle with side length 1, draw the edges forming its border. Additionally,
+draw a vertex at the center of the triangle and edges from the center of the
+triangle to each of  three outer vertices.</li></ul>
+
+<p>You are given $N$ ($2\le N\le 2\cdot 10^5$) input points, each of which lies
+strictly within some region (i.e., not on any vertex or edge). For any pair of
+the input points, define the distance between them to be the smallest number of
+edges crossed when drawing a path from one point to the other that doesn't pass
+through any vertex.
+
+<p>Output the sum of all $N(N-1)/2$ pairwise distances between the input points.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$ ($T\ge 1$), the number of independent tests. Each
+test is specified as follows:
+
+<p>The first line contains $N$.
+
+<p>The next $N$ lines each contain three integers $x$, $y$, and $z$
+($0\le x,y&lt;10^6, 0\le z&lt;12$)  representing a point at
+$x+y\exp(\pi i/3)+ \epsilon\cdot \exp((1+2z)\pi i/12)$ on the complex plane
+($\epsilon$ being a small positive number). 
+
+<p>It is guaranteed that the sum of $N$ over all tests doesn't exceed
+$2\cdot 10^5$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+For each test, output the sum of all $N(N-1)/2$ pairwise distances on a new
+line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6
+2
+0 0 0
+0 0 0
+2
+0 0 0
+1 1 7
+2
+0 0 0
+0 0 6
+3
+0 0 1
+0 0 5
+0 0 9
+2
+0 2 11
+1 1 1
+2
+2 0 11
+1 1 1
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+3
+6
+12
+2
+6
+</pre>
+
+<p>The second test is illustrated below: 
+
+<p><ul><li>The vertex at $x+y\exp(\pi i/3)$ is labeled with $(x,y)$ for each
+$x\in[-1,2], y\in[-1,2]$.</li><li>Dots are drawn at the vertices mentioned above as well as the vertices that
+are the centers of each equilateral triangle.</li><li>The triangular region containing $(x,y,z)=(0,0,0)$ is highlighted in
+green.</li><li>The triangular region containing $(x,y,z)=(1,1,7)$ is highlighted in blue.
+Note that $15\pi/12=225^{\circ}$.</li><li>An example path from the first region to the second crossing three edges is
+drawn.</li></ul>
+
+<p><img src="img/fig_apsp_platinum_season26contest3.png" alt="figure">
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-5: $N\le 10$, $0\le x,y&lt;5$</li><li>Inputs 6-13: $N\le 10$</li><li>Inputs 14-21: $T=1$</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">2/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="">28.6</span></b><span>采样 3 · 答案错误</span></li><li><b>52.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>29.8</b><span>输出速度 tokens/s ↑</span></li><li><b>2067 秒</b><span>延迟 ↓</span></li><li><b>0.31×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更优 1、同阶 1</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -3063,7 +3165,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

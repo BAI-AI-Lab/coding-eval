@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1444 Farmer John&#x27;s Cheese Block · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1444 Farmer John&#x27;s Cheese Block：从 N×N×N 的立方体中依次挖去 Q 个单位小方块；每次挖完后，求一根 1×1×N 的长条（可沿任一坐标轴放置，顶点均为整点）在不与剩余部分重叠的前提下有多少种放法。">
+<meta name="description" content="usaco-1444 Farmer John&#x27;s Cheese Block：USACO 2024 December · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,75 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1444</span></p>
 <h1 class="ptitle">Farmer John&#x27;s Cheese Block</h1>
 <p class="meta">USACO 2024 December · 铜组 · 2024-12 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">从 N×N×N 的立方体中依次挖去 Q 个单位小方块；每次挖完后，求一根 1×1×N 的长条（可沿任一坐标轴放置，顶点均为整点）在不与剩余部分重叠的前提下有多少种放法。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1444" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1444" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字，不含图片。</p>
+<div class="stmt">
+<p>Farmer John has a block of cheese in the shape of a cube. It lies on the
+3-dimensional coordinate plane, extending from $(0,0,0)$ to $(N, N, N)$
+($2 \leq N \leq 1000$). Farmer John will perform a series of $Q$
+($1 \leq Q \leq 2 \cdot 10^5$) update operations to his cheese block.
+
+<p>For each update operation, FJ will carve out the $1$ by $1$ by $1$ block of
+cheese extending from integer coordinates $(x, y, z)$ to $(x+1, y+1, z+1)$,
+where $0\le x,y,z&lt;N$. It is guaranteed that there will exist a $1$ by $1$ by $1$
+block of cheese at the location FJ carves.  Since FJ is playing Moocraft,
+gravity does not cause parts of the cheese to fall if cheese below is carved.
+
+<p>After each update, output the number of distinct configurations that FJ can
+stick a $1$ by $1$ by $N$ brick in the cheese block such that no part of the
+brick overlaps with any remaining cheese. Every vertex of the brick must have
+integer coordinates in the range $[0,N]$ for all three axes. FJ may rotate the
+brick however he wants.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+
+<p>The first line contains $N$ and $Q$.
+
+<p>The following $Q$ lines contain $x$, $y$, and $z$, the coordinates to be carved.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+
+<p>After each update operation, output an integer, the number of configurations.
+
+<p>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2 5
+0 0 0
+1 1 1
+0 1 0
+1 0 0
+1 1 0
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+0
+1
+2
+5
+</pre>
+After the first three updates, the $1\times 2 \times 1$ brick spanning 
+$[0, 1]\times [0, 2]\times [0, 1]$ does not overlap with the remaining cheese,
+so it contributes toward the answer.
+
+<p><img src="img/fig_1_cheese_bronze_dec24.png" alt="figure">
+  
+<p><h4>SCORING:</h4>
+<ul><li>Inputs 2-4: $N\le 10$ and $Q \le 1000$</li><li>Inputs 5-7:
+$N\le 100$ and $Q \le 1000$</li><li>Inputs 8-16: No additional
+constraints</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Chongtian Ma, Alex Liang
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>1.3k</b><span>平均输出 token（含思考） ↓</span></li><li><b>34.4</b><span>输出速度 tokens/s ↑</span></li><li><b>40 秒</b><span>延迟 ↓</span></li><li><b>0.29×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.41</b><span>Pylint 得分 ↑</span></li><li><b>6</b><span>圈复杂度 ↓</span></li><li><b>67.5</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -184,7 +256,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1447 Deforestation · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1447 Deforestation：数轴上有 N 棵树，给出 K 条限制，第 i 条要求闭区间 [lᵢ, rᵢ] 内始终至少保留 tᵢ 棵树，初始已满足全部限制；求在满足所有限制的前提下最多能砍掉多少棵树，共 T 组。">
+<meta name="description" content="usaco-1447 Deforestation：USACO 2024 December · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,93 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1447</span></p>
 <h1 class="ptitle">Deforestation</h1>
 <p class="meta">USACO 2024 December · 银组 · 2024-12 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">数轴上有 N 棵树，给出 K 条限制，第 i 条要求闭区间 [lᵢ, rᵢ] 内始终至少保留 tᵢ 棵树，初始已满足全部限制；求在满足所有限制的前提下最多能砍掉多少棵树，共 T 组。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1447" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1447" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John is expanding his farm! He has identified the perfect location in
+the Red-Black Forest, which consists of $N$ trees ($1 \le N \le 10^5$) on a
+number line, with the $i$-th tree at position $x_i$
+($-10^9 \le x_i \le 10^9$).
+
+<p>Environmental protection laws restrict which trees Farmer John can
+cut down to make space for his farm. There are $K$ restrictions ($1
+\leq K \leq 10^5$) specifying that there must always be at least $t_i$
+trees ($1 \leq t_i \leq N$) in the line segment $[l_i, r_i]$,
+including the endpoints ($-10^9 \le l_i \leq r_i \le 10^9$). It is
+guaranteed that the Red-Black Forest initially satisfies these
+restrictions.
+
+<p>Farmer John wants to make his farm as big as possible. Please help him compute
+the maximum number of trees he can cut down while still satisfying all the
+restrictions!
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+
+<p>Each input consists of $T$ ($1 \le T \le 10$) independent test cases. It is
+guaranteed that the sums of all $N$ and of all $K$ within an input each do not
+exceed $3 \cdot 10^5$.
+
+<p>The first line of input contains $T$. Each test case is then formatted as
+follows:
+
+<p><ul><li>The first line contains integers $N$ and $K$.</li><li>The next line
+contains the $N$ integers $x_1, \dots, x_N$.</li><li>Each of the next $K$ lines
+contains three space-separated integers: $l_i$, $r_i$ and $t_i$.</li></ul>
+
+<p>
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+
+<p>For each test case, output a single line with an integer denoting the maximum
+number of trees Farmer John can cut down.
+
+<p>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+7 1
+8 4 10 1 2 6 7
+2 9 3
+7 2
+8 4 10 1 2 6 7
+2 9 3
+1 10 1
+7 2
+8 4 10 1 2 6 7
+2 9 3
+1 10 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+4
+4
+3
+</pre>
+
+<p>For the first test case, Farmer John can cut down the first $4$ trees, leaving
+trees at $x_i = 2, 6, 7$ to satisfy the restriction.
+
+<p>For the second test case, the additional restriction does not affect which trees
+Farmer John can cut down, so he can cut down the same trees and satisfy both
+restrictions.
+
+<p>For the third test case, Farmer John can only cut down at most $3$ trees because
+there are initially $7$ trees but the second restriction requires him to leave
+at least $4$ trees uncut.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 2: $N, K \le 16$</li><li>Inputs 3-5: $N, K \le 1000$</li><li>Inputs 6-7: $t_i = 1$ for all $i = 1, \dots, K$.</li><li>Inputs 8-11: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Tina Wang, Jiahe Lu, Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>7.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>27.0</b><span>输出速度 tokens/s ↑</span></li><li><b>289 秒</b><span>延迟 ↓</span></li><li><b>0.85×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>11</b><span>Pylint 问题 ↓</span></li><li><b>7.88</b><span>Pylint 得分 ↑</span></li><li><b>5</b><span>圈复杂度 ↓</span></li><li><b>54.0</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -276,7 +366,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

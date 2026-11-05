@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1475 Photo Op · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1475 Photo Op：从 (X, 0) 走到 (0, Y)，第 i 条线段连接 (x_i, 0) 与 (0, y_i) 并自时刻 s_i 起生效；对每个 t = 0…T−1，求不穿过所有 s_i ≤ t 线段的最短欧氏路径长度并向下取整。">
+<meta name="description" content="usaco-1475 Photo Op：USACO 2025 January · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,113 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1475</span></p>
 <h1 class="ptitle">Photo Op</h1>
 <p class="meta">USACO 2025 January · 金组 · 2025-01 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">从 (X, 0) 走到 (0, Y)，第 i 条线段连接 (x_i, 0) 与 (0, y_i) 并自时刻 s_i 起生效；对每个 t = 0…T−1，求不穿过所有 s_i ≤ t 线段的最短欧氏路径长度并向下取整。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1475" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1475" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John's farm is full of lush vegetation and every cow wants a photo of its
+natural beauty. Unfortunately, Bessie still has places to be, but she doesn't
+want to disrupt any  photo ops. 
+
+<p>Bessie is currently standing at $(X,0)$ on the XY-plane and she wants to get to
+$(0,Y)$ ($1\le X,Y\le 10^6$). Unfortunately, $N$ ($1 \leq N \leq 3 \cdot 10^5$)
+other cows have decided to pose on the $X$ axis. More specifically, cow $i$ will
+be positioned at $(x_i,0)$ with a photographer at $(0,y_i)$ where
+$(1 \leq x_i,y_i \leq 10^6)$ ready to take their picture. They will begin posing
+moments before time $s_i$ ($1 \leq s_i &lt; T$) and they will keep posing for a
+very long time (they have to get their picture just right). Here,
+$1\le T\le N+1$.
+
+<p>Bessie knows the schedule for every cow's photo op, and she will take the
+shortest Euclidean distance to get to her destination, without crossing the line
+of sight from any photographer to their respective cow (her path will consist of
+one or more line segments).
+
+<p>If Bessie leaves at time $t$, she will avoid the line of sights for all 
+photographer/cow pairs that started posing at time $s_i \le t$, and let  the
+distance to her final destination be $d_t$. Determine the values of 
+$\lfloor d_t\rfloor$ for each integer $t$ from $0$ to $T-1$ inclusive.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line of input contains $N$ and $T$, representing the number of cows
+posing on the $x$-axis and the timeframe that Bessie could leave at.
+
+<p>The second line of input contains $X$ and $Y$, representing Bessie's starting $X$
+coordinate and her target $Y$ coordinate respectively.
+
+<p>The next $N$ lines contain $s_i$ $x_i$ and $y_i$. It is guaranteed that all
+$x_i$ are distinct from each other and $X$, and all $y_i$ are distinct from each
+other and $Y$. All $s_i$ will be given in increasing order, where
+$s_i \leq s_{i+1}$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Print $T$ lines, with the $t$th (0-indexed) line containing
+$\lfloor d_t\rfloor$.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 5
+6 7
+1 7 5
+2 4 4
+3 1 6
+4 2 9
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+9
+9
+9
+10
+12
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2 3
+10 7
+1 2 10
+1 9 1
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+12
+16
+16
+</pre>
+
+<p>For $t=0$ the answer is $\lfloor \sqrt{149} \rfloor=12$.
+
+<p>For $t=1$ the answer is $\lfloor 14+\sqrt 5\rfloor=16$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5 6
+8 9
+1 3 5
+1 4 1
+3 10 7
+4 9 2
+5 6 6
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+12
+12
+12
+12
+14
+14
+</pre>
+
+<p>For $t=5$ the answer is $\lfloor 1+\sqrt{9^2+7^2}+2\rfloor=14$. Path:
+$(8,0)\to (9,0)\to (0,7)\to (0,9)$
+
+<p><h4>SCORING:</h4>
+<ul><li>Inputs 4-6: $N\le 100$</li><li>Inputs 7-9: $N\le 3000$</li><li>Inputs 10-12: $T\le 10$</li><li>Inputs 13-18: No additional constraints</li></ul>
+
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>58.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.5</b><span>输出速度 tokens/s ↑</span></li><li><b>2218 秒</b><span>延迟 ↓</span></li><li><b>1.09×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -2936,7 +3046,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

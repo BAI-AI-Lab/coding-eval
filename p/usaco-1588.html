@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1588 Strange Function · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1588 Strange Function：f(x)：若 x 含有 0、1 以外的数字，则把每位奇数变 1、偶数变 0；否则返回 x−1；对位数可达 2×10⁵ 的正整数 x，求反复应用 f 直到变为 0 的次数对 10⁹+7 取模的结果，共 T 组。">
+<meta name="description" content="usaco-1588 Strange Function：USACO 2026 Third · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,68 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1588</span></p>
 <h1 class="ptitle">Strange Function</h1>
 <p class="meta">USACO 2026 Third · 铜组 · 2026-02 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">f(x)：若 x 含有 0、1 以外的数字，则把每位奇数变 1、偶数变 0；否则返回 x−1；对位数可达 2×10⁵ 的正整数 x，求反复应用 f 直到变为 0 的次数对 10⁹+7 取模的结果，共 T 组。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1588" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1588" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>For all positive integers $x$, the function $f(x)$ is defined as follows:
+
+<p><ul><li>If $x$ has any digits that aren't $0$ or $1$, for each digit of $x$, set it to
+$1$ if it is odd or $0$ otherwise, and return $x$.</li><li>Otherwise, return $x-1$.</li></ul>
+
+<p>Given a value of $x$ ($1 \leq x &lt; 10^{2\cdot 10^5}$), find how many times $f$
+needs to be applied to $x$ until $x$ reaches $0$. As this number might be very
+large, output its remainder when divided by $10^9+7$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$ ($1\le T\le 10^5$), the number of independent tests.
+
+<p>The next $T$ lines each contain a positive integer $x$ consisting solely of the
+digits 0-9, with no leading zeros.
+
+<p>It is guaranteed that the total number of digits in all input integers does not
+exceed $10^6$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+For each test case, output the remainder of the number of times when divided by
+$10^9+7$ on a separate line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2
+24680
+210
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+4
+</pre>
+
+<p>First test: $x$ becomes zero after one operation.
+
+<p>Second test: $f(x)=10, f^2(x)=9, f^3(x)=1, f^4(x)=0$
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+1
+1234567890123456789012345678901234567890
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+511620083
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 3-5: $T\le 2000$, $x&lt; 10^{9}$</li><li>Inputs 6-7: $x&lt;10^{18}$</li><li>Inputs 8-9: $x&lt;10^{60}$</li><li>Inputs 10-12: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Aidan Bai
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>4.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>32.9</b><span>输出速度 tokens/s ↑</span></li><li><b>144 秒</b><span>延迟 ↓</span></li><li><b>0.26×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不确定</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.09</b><span>Pylint 得分 ↑</span></li><li><b>5</b><span>圈复杂度 ↓</span></li><li><b>78.1</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -167,7 +232,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

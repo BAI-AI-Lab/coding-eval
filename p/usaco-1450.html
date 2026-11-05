@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1450 Interstellar Intervals · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1450 Interstellar Intervals：在 N 个点的数轴上可多次选互不相交的长 2x 区间，将前 x 个点染红、后 x 个点染蓝，其余点为白；给定每点 R/B/X 要求（X 无约束），求满足要求的不同染色结果数模 10⁹+7。">
+<meta name="description" content="usaco-1450 Interstellar Intervals：USACO 2024 December · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,86 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1450</span></p>
 <h1 class="ptitle">Interstellar Intervals</h1>
 <p class="meta">USACO 2024 December · 金组 · 2024-12 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">在 N 个点的数轴上可多次选互不相交的长 2x 区间，将前 x 个点染红、后 x 个点染蓝，其余点为白；给定每点 R/B/X 要求（X 无约束），求满足要求的不同染色结果数模 10⁹+7。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1450" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1450" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>It's the year $3000$, and Bessie became the first cow in space! During her
+journey between the stars, she found a number line with $N$
+($2 \leq N \leq 5 \cdot 10^5$) points, numbered from $1$ to $N$. All points are
+initially colored white. She can perform the following operation any number of
+times.
+
+<p><ul><li>Choose a position $i$ within the number line and a positive integer $x$.
+Then, color all the points in the interval $[i, i + x - 1]$ red and all points
+in $[i + x, i + 2x - 1]$ blue. All chosen intervals must be <strong>disjoint</strong>
+(i.e. no points in $[i, i + 2x - 1]$ can be already colored red or blue). The
+entire interval must also fall within the number line (i.e.
+$1 \leq i \leq i + 2x - 1 \leq N$).</li></ul>
+
+<p>Farmer John gives Bessie a string $s$ of length $N$ consisting of characters
+$R$, $B$, and $X$. The string represents Farmer John's color preferences for
+each point: $s_i=R$ means the $i$'th point must be colored red, $s_i = B$ means
+the $i$'th point must be colored blue, and $s_i = X$ means there is <strong>no
+constraint</strong> on the color for the $i$'th point.
+
+<p>Help Bessie count the number of distinct ways for the number line to be colored
+while satisfying Farmer John's preferences. Two colorings are different if there
+is at least one corresponding point with a different color. Because the answer
+may be large, output it modulo $10^9+7$. 
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains an integer $N$.
+
+<p>The following line contains string $s$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the number of distinct ways for the number line to be colored while
+satisfying Farmer John's preferences modulo
+$10^9+7$.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6
+RXXXXB
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+5
+</pre>
+Bessie can choose $i=1,x=1$ (i.e. color point $1$ red and point $2$ blue) and
+$i=3,x=2$ (i.e. color points $3,4$ red and points $5,6$ blue) to produce the
+coloring $RBRRBB$. 
+
+<p>The other colorings are $RRBBRB$, $RBWWRB$, $RRRBBB$, and
+$RBRBRB$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6
+XXRBXX
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+6
+</pre>
+The six colorings are $WWRBWW$, $WWRBRB$, $WRRBBW$, $RBRBWW$, $RBRBRB$, and $RRRBBB$.
+<h4>SAMPLE INPUT:</h4><pre>
+12
+XBXXXXRXRBXX
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+18
+</pre>
+<h4>SCORING:</h4>
+<ul><li>Input 4: $N\le 500$</li><li>Inputs 5-6: $N\le 10^4$</li><li>Inputs 7-13: All but at most $100$ characters in $s$ are
+$X$.</li><li>Inputs 14-23: No additional constraints</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Chongtian Ma, Alex Liang
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>36.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.8</b><span>输出速度 tokens/s ↑</span></li><li><b>1591 秒</b><span>延迟 ↓</span></li><li><b>0.94×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -1206,7 +1289,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

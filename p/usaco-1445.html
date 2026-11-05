@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1445 It&#x27;s Mooin&#x27; Time · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1445 It&#x27;s Mooin&#x27; Time：长 N 的小写字符串中，形如 abb（a≠b）的长 3 子串称为 moo；在至多修改一个字符的前提下，求所有出现次数能达到至少 F 的 moo，输出其个数及按字典序排列的列表。">
+<meta name="description" content="usaco-1445 It&#x27;s Mooin&#x27; Time：USACO 2024 December · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,114 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1445</span></p>
 <h1 class="ptitle">It&#x27;s Mooin&#x27; Time</h1>
 <p class="meta">USACO 2024 December · 铜组 · 2024-12 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">长 N 的小写字符串中，形如 abb（a≠b）的长 3 子串称为 moo；在至多修改一个字符的前提下，求所有出现次数能达到至少 F 的 moo，输出其个数及按字典序排列的列表。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1445" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1445" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John is trying to describe his favorite USACO contest to Elsie, but she
+is having trouble understanding why he likes it so much. He says "My favorite
+part of the contest was when Bessie said 'It's Mooin' Time' and mooed all over
+the contest."
+
+<p>Elsie still doesn't understand so Farmer John downloads the contest as a text
+file and  tries to explain what he means. The contest is defined as a string of
+lowercase letters of length $N$ ($3 \leq N \leq 20\,000$). A moo is generally
+defined as the substring $c_ic_jc_j$ where some character $c_i$ followed
+directly by $2$ occurrences of some  character $c_j$ where $c_i \neq c_j$.
+According to Farmer John, Bessie moos a lot, so if some moo appears at least $F$
+($1\le F\le N$) times in the contest, that might be from Bessie.  
+
+<p>However, Farmer John's download might have been corrupted, and the text file
+might have up to one character that differs from the original file. Print all
+possible moos that  Bessie could have made taking the potential error into
+account, sorted in alphabetical order.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $F$, representing the length of the string and
+the frequency threshold for a moo by Bessie. 
+
+<p>The second line contains a string of lowercase letters of length $N$,
+representing the contest.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Print out the number of possible moos that Bessie makes, followed by a
+lexicographically sorted list of the moos. Each moo should appear on a separate
+line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+10 2
+zzmoozzmoo
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+moo
+</pre>
+In this case, no character change affects the answer. The only moo Bessie made
+was "moo".
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+17 2
+momoobaaaaaqqqcqq
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+3
+aqq
+baa
+cqq
+</pre>
+In this case, the $a$ at position $8$ (zero-indexed) could have been corrupted from a $b$ which
+would have resulted in "baa" being a moo that Bessie made twice. Alternatively,
+the $q$ at position $11$ could have been corrupted from a $c$ which would have
+resulted in "cqq" being a possible moo that Bessie made. "aqq" can be made by
+swapping the $c$ with an $a$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 1
+ooo
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+25
+aoo
+boo
+coo
+doo
+eoo
+foo
+goo
+hoo
+ioo
+joo
+koo
+loo
+moo
+noo
+poo
+qoo
+roo
+soo
+too
+uoo
+voo
+woo
+xoo
+yoo
+zoo
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-8: $N \le 100$ </li><li>Inputs 9-13: No additional constraints.
+</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>11.2k</b><span>平均输出 token（含思考） ↓</span></li><li><b>33.3</b><span>输出速度 tokens/s ↑</span></li><li><b>337 秒</b><span>延迟 ↓</span></li><li><b>0.02×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更优</b><span>时间复杂度（相对官方解）</span></li><li><b>5</b><span>Pylint 问题 ↓</span></li><li><b>9.04</b><span>Pylint 得分 ↑</span></li><li><b>23</b><span>圈复杂度 ↓</span></li><li><b>57.5</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -293,7 +404,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

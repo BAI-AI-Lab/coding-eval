@@ -3,22 +3,87 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-13 FrontierCS 第 13 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-13 FrontierCS 第 13 题：交互题：机器人从第一象限内某点出发，每轮你先把一个格子涂黑，机器人再走到八邻域中的一格，踩到黑格即爆炸；须在 3000 轮内令其爆炸，所用轮数越少得分越高。">
+<title>fcs-13 FrontierCS #13 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-13 FrontierCS #13：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-13</span></p>
-<h1 class="ptitle">FrontierCS 第 13 题</h1>
+<h1 class="ptitle">FrontierCS #13</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">交互题：机器人从第一象限内某点出发，每轮你先把一个格子涂黑，机器人再走到八邻域中的一格，踩到黑格即爆炸；须在 3000 轮内令其爆炸，所用轮数越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/13" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/13" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Time limit: 2 seconds
+Memory limit: 1024 megabytes
+This is an interactive problem.
+A mischievous robot is navigating an infinitely large 2D grid. However, its movement is confined to the first quadrant, meaning its coordinates (x, y) must always satisfy x &gt; 0 and y &gt; 0. Initially, the robot is located at grid coordinates (s_x, s_y). All grid cells are initially white.
+Set T = 3000. The game proceeds in discrete time steps. In each time step, the following sequence occurs:
+1. Your Move: You choose integer coordinates (x_m, y_m) such that 1 &lt;= x_m &lt;= T and 1 &lt;= y_m &lt;= T. You then mark this cell black. A cell, once marked black, remains black for the rest of the game. You can mark any cell within the range, including the cell where the robot is currently located.
+2. Robot’s Move: The robot, currently at position (r_x, r_y), observes the grid (including the cell you just marked black). It knows the locations of all currently black cells. It then moves to a new position (n_x, n_y). The new position (n_x, n_y) must be one of the 8 cells immediately adjacent (horizontally, vertically, or diagonally) to (r_x, r_y). That is, |n_x - r_x| &lt;= 1 and |n_y - r_y| &lt;= 1, and (n_x, n_y) ̸= (r_x, r_y). Additionally, the robot must stay within the first quadrant, so n_x &gt; 0 and n_y &gt; 0. The interactor (controlling the robot) will choose one valid move for the robot. The robot’s strategy is unknown to you.
+3. Outcome Check: After the robot moves to (n_x, n_y), the system checks if the cell (n_x, n_y) is black.
+ • If (n_x, n_y) is black, the robot explodes.
+ • If (n_x, n_y) is white, the game continues to the next time step, with the robot now at (n_x, n_y).
+Your goal is to make the robot explode within as less steps as possiable. Answers exceeding 3000 steps are considered as incorrect answers.
+
+Input
+The first line of input contains two integers sx and sy (1 &lt;= s_x, s_y &lt;= 20), the initial coordinates of the robot.
+
+Interaction Protocol
+The interaction proceeds in turns for at most T turns. In each turn t (from t = 1 to T):
+1. Your program must print one line containing two space-separated integers x_m and y_m, representing the coordinates of the cell you choose to mark black in this turn. Remember to flush the output stream.
+2. The interactor reads your chosen coordinates (x_m, y_m).
+3. The interactor determines the robot’s next move to (n_x, n_y) based on its current position and the set of all black cells (including the one just marked at (x_m, y_m) ).
+4. The interactor checks if the cell (n_x, n_y) is black.
+ • If it is black (robot explodes), the interactor will print a single line containing '0 0' and terminate. Your program should then read these values and terminate successfully.
+ • If it is white, the interactor will print a single line containing two space-separated integers n_x and n_y, the new coordinates of the robot. Your program should read these coordinates to know the robot’s current position for the next turn.
+If the robot has not exploded after you have made T moves, your program should terminate. Your solution will be judged as incorrect in this case (or if you exceed the turn limit or make an invalid move). To flush your output, you can use fflush(stdout) (if you use printf) or cout.flush() (if you use cout).
+
+Example
+standard input
+5 5
+5 4
+5 3
+5 2
+5 1
+0 0
+standard output
+6 1
+4 1
+6 2
+4 2
+5 2
+
+## Scoring
+
+Let x be q, the number of turns used. R is the comparison turn count stored with the test, R&lt;3000. The first turn is numbered 1. The physical reference (the 60-point level) is a=R. Define the lower-band continuation:
+
+    L(x) = 60*max(0,(3000-x)/(3000-R)).
+
+For positive x and positive physical reference a, define the improvement factor r=a/x. The physical reference has r=1 and earns 60 points. For a valid output on this branch, the points P are:
+
+    P = 100,                          if x=0;
+    P = L(x),                         if L(x)&lt;=60;
+    P = min(100,60+ln(r)),             otherwise.
+
+Here ln is the natural logarithm. In the upper branch before the 100-point cap, r=exp(P-60): each additional point requires an e-fold improvement in the physical objective (division by e). If a=0, the zero-cost rule still applies; positive x uses L(x). All feasibility, correctness, and hard resource-limit checks remain required; invalid output receives 0.
+
+Across test files, use the arithmetic mean of the file scores.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">49.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">49.0</span></b><span>采样 1 · 部分分</span></li><li><b>52.3k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.2</b><span>输出速度 tokens/s ↑</span></li><li><b>2167 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -945,7 +1010,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

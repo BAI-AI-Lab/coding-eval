@@ -3,22 +3,78 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-132 FrontierCS 第 132 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-132 FrontierCS 第 132 题：交互题：1000 个位置中藏有两个目标（可重合），每个机器人侦察一组位置并回报其中是否有目标，至多 75 个机器人且须一次性同时派出；须确定两个目标的位置，派出的机器人越少得分越高。">
+<title>fcs-132 FrontierCS #132 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-132 FrontierCS #132：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-132</span></p>
-<h1 class="ptitle">FrontierCS 第 132 题</h1>
+<h1 class="ptitle">FrontierCS #132</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 0.25 秒 · 0–100 连续分</p>
-<p class="summary">交互题：1000 个位置中藏有两个目标（可重合），每个机器人侦察一组位置并回报其中是否有目标，至多 75 个机器人且须一次性同时派出；须确定两个目标的位置，派出的机器人越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/132" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/132" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">time limit per test: 0.25 second
+memory limit per test: 512 megabytes
+This is an interactive problem.
+You have 𝑅 vacuum cleaner robots left over from your trade with your fellow contestants. You want to use these robots to locate the two chairmen. You can instruct each robot to scout several of 1000 positions where the chairmen could be located.
+Each robot can only detect whether or not there is at least one chairman at its scouted positions. Every robot needs a full hour to scout its positions before returning with its result to you. Because this will drain the robot’s battery, you can send out each robot only once.
+You want to know the positions of the chairmen after at most 𝐻 hours. In particular, you might be forced to send out several robots at once without waiting for the previous robots to return. You can assume that the two chairmen stay at the same positions all the time.
+Write a program which plans this scouting mission and determines where the two chairmen are located.
+
+
+Input
+The first line consists of 2 integers R and H (R=75,H=1), indicating the number of vacuum cleaner robots and the number of hours.
+
+Interaction
+To send a robot to scout the positions, print on a single line "? k, 𝑃[0],…,𝑃[𝑘 − 1]" (where 𝑘 is the length of the array 𝑃). The positions 𝑃[𝑖] must be pairwise distinct integers between 1 and 1000. You can 'send' at most 𝑅 times per testcase.
+To get the answers of robot that sent before, print on a single line '@', then you will receive an integer L and a array (with length L) with exactly one entry for each robot sent out one hour ago (by a 'send' after the previous 'get' to wait or after the beginning of the program). The entry at index 𝑖 is 1 if the (𝑖 +1)-th of these robots has detected at least one chairman at its scouted positions, and 0 otherwise. You can 'get' at most 𝐻 times per testcase.
+Once you have figured out the positions, print '!' followed by 2 integers a and b (1 ≤ 𝑎,𝑏 ≤ 1000, 𝑎 = 𝑏 is allowed), representing the positions of the two chairmen.
+After printing a query do not forget to output the end of line and flush the output. Use fflush(stdout) or cout.flush() to flush.
+
+Example
+Consider a testcase with 𝑅 = 75 and 𝐻 = 20 where the chairmen are located at positions 13 and 37.
+First, the grader calls your function scout as scout(75,20). Then, an interaction between your program and the grader could look as follows:
+Your program | read | Explanation
+? 3 42 13 37 | none | send a robot to positions 13, 37 and 42
+? 2 47 11    | none |send a robot to positions 13, 37 and 42
+@            | 2 1 0|wait an hour for the return of two robots; only the first robot has detected a chairman
+? 1 42       | none |send a robot to position 42
+@            | 1 0  |wait an hour; there is no chairman at position 42 you are convinced that the chairmen are located
+! 13 37      | none |you are convinced that the chairmen are located at positions 13 and 37
+
+Returning the pair {37,13} would be accepted as well.
+Note that the above queries are of course not sufficient to determine the positions of the chairmen with certainty: For example, both being at position 37 or one chairman being at position 13 while the other is at position 100 would also be consistent with all answers to wait, so the grader could also have rejected this solution.
+Moreover, the grader is adaptive, i.e. the positions of the chairmen may depend on the behavior of your program in the current as well as in earlier runs.
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original minimizing quantity and a for its physical 60-point reference. The improvement factor is r=a/x, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Q is the number of robots sent. Define h=(820-20*Q)/300 for Q&lt;=30, (580-12*Q)/300 for 30&lt;Q&lt;=35, (440-8*Q)/300 for 35&lt;Q&lt;=40, (280-4*Q)/300 for 40&lt;Q&lt;=60, and 2/15 for 60&lt;Q&lt;=75. Define the objective x=Q, its physical reference a=A=26, and the lower-band calculation L=60*h.
+
+```text
+P = 100,                         if x = 0
+P = L,                           if L &lt;= 60 and x &gt; 0
+P = min(100, 60 + ln(r)),      otherwise
+```
+
+Zero is tested on the valid original count, cost, or error, before the lower-band test. A zero reference anchor has no positive improvement branch; positive objectives keep their lower-band score. The checker reports P/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">32.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">32.0</span></b><span>采样 1 · 部分分</span></li><li><b>56.5k</b><span>平均输出 token（含思考） ↓</span></li><li><b>27.4</b><span>输出速度 tokens/s ↑</span></li><li><b>2061 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -478,7 +534,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

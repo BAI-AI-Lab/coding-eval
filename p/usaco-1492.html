@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1492 Making Mexes · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1492 Making Mexes：给定长 N 的非负整数数组，每次操作可把任一元素改为任意非负整数；对每个 i = 0…N，求使数组的 mex 恰为 i 的最少操作次数。">
+<meta name="description" content="usaco-1492 Making Mexes：USACO 2025 February · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,63 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1492</span></p>
 <h1 class="ptitle">Making Mexes</h1>
 <p class="meta">USACO 2025 February · 铜组 · 2025-02 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">给定长 N 的非负整数数组，每次操作可把任一元素改为任意非负整数；对每个 i = 0…N，求使数组的 mex 恰为 i 的最少操作次数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1492" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1492" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>You are given an array $a$ of $N$ non-negative integers $a_1, a_2, \dots, a_N$
+($1\le N\le 2\cdot 10^5, 0\le a_i\le N$). In one operation, you can change any
+element of $a$ to any non-negative integer.
+
+<p>The <em>mex</em> of an array is the minimum non-negative integer that it does not
+contain. For each $i$ in the range $0$ to $N$ inclusive, compute the minimum
+number of operations you need  in order to make the mex of $a$ equal $i$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$.
+
+<p>The next line contains $a_1,a_2,\dots, a_N$.
+
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+For each $i$ in the range $0$ to $N$, output the minimum number of operations
+for $i$ on a new line. Note that it is always possible to make the mex of $a$
+equal to any $i$ in the range $0$ to $N$.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4
+2 2 2 0
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+0
+3
+1
+2
+</pre>
+
+<p><ul><li>To make the mex of $a$ equal to $0$, we can change $a_4$ to $3$ (or any
+positive integer). In the resulting array, $[2, 2, 2, 3]$, $0$ is the smallest
+non-negative integer that the array does not contain, so $0$ is the mex of the
+array.</li><li>To make the mex of $a$ equal to $1$, we don't need to make any changes since
+$1$ is already the smallest non-negative integer that $a = [2, 2, 2, 0]$ does
+not contain.</li><li>To make the mex of $a$ equal to $2$, we need to change the first three
+elements of $a$. For example, we can change $a$ to be $[3, 1, 1, 0]$.</li></ul>
+
+<p><h4>SCORING:</h4>
+<ul><li>Inputs 2-6: $N\le 10^3$</li><li>Inputs 7-11: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>3.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>31.3</b><span>输出速度 tokens/s ↑</span></li><li><b>101 秒</b><span>延迟 ↓</span></li><li><b>0.63×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>8.82</b><span>Pylint 得分 ↑</span></li><li><b>4</b><span>圈复杂度 ↓</span></li><li><b>58.7</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -112,7 +172,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

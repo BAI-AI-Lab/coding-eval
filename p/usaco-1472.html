@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1472 Table Recovery · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1472 Table Recovery：N×N 加法表第 r 行第 c 列为 r + c，先任意交换行、再任意交换列、最后任意次交换两种数值的全部出现；给定最终表格，求只做完行列交换后的表格中字典序最小的一种。">
+<meta name="description" content="usaco-1472 Table Recovery：USACO 2025 January · 银组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,138 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1472</span></p>
 <h1 class="ptitle">Table Recovery</h1>
 <p class="meta">USACO 2025 January · 银组 · 2025-01 · <span class="pill">L2 中等</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">N×N 加法表第 r 行第 c 列为 r + c，先任意交换行、再任意交换列、最后任意次交换两种数值的全部出现；给定最终表格，求只做完行列交换后的表格中字典序最小的一种。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1472" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1472" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie has an $N\times N$ ($1\le N\le 1000$) addition table where the integer in
+the cell at row $r$ and column $c$ is $r+c$, for all $1\le r,c\le N$. For
+example, for $N=3$, the table would look like this:
+
+<p><pre>
+2 3 4
+3 4 5
+4 5 6
+</pre>
+
+<p>Unfortunately, Elsie got ahold of the table and permuted it by performing the
+following three types of operations as many times as she wanted.
+
+<p><ol><li>Swap two rows</li><li>Swap two columns</li><li>Select two values $a$ and $b$ that are both present in the table, then
+simultaneously change every occurrence of $a$ to $b$ and every occurrence of $b$
+to $a$.</li></ol>
+
+<p>Elsie will always perform operations in increasing order of type; that is, she
+performs as many operations as she likes (possibly none) first of type $1$, then
+of type $2$, and finally of type $3$.
+
+<p>Help Bessie recover a possible state of the table after Elsie finished applying
+all of her operations of types $1$ and $2$, but before applying any operations
+of type $3$. There may be multiple possible answers, in which case you should
+output the lexicographically smallest one.
+
+<p>To compare two tables lexicographically, compare the first entries at which they
+differ, when reading both tables in the natural order (rows from top to bottom,
+left to right within a row).
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$.
+
+<p>The next $N$ lines each contain $N$ integers, representing Bessie's addition
+table after Elsie has permuted it.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+The lexicographically minimum possible state of the table after all operations
+of types 1 and 2, but before any operations of type 3. It is guaranteed that the
+answer exists.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+1
+2
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2
+</pre>
+
+<p>Regardless of what operations Elsie performs, the table won't change.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+3 4 2
+5 2 3
+6 3 5
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+4 2 3
+5 3 4
+6 4 5
+</pre>
+
+<p>Here is a possible sequence of operations Elsie might have performed.
+
+<p><pre>
+2 3 4
+3 4 5
+4 5 6
+-&gt; (op 1: swap columns 2 and 3)
+2 4 3
+3 5 4
+4 6 5
+-&gt; (op 1: swap columns 1 and 2)
+4 2 3
+5 3 4
+6 4 5
+-&gt; (op 3: swap values 2 and 3)
+4 3 2
+5 2 4
+6 4 5
+-&gt; (op 3: swap values 3 and 4)
+3 4 2
+5 2 3
+6 3 5
+</pre>
+
+<p>Note: the following is also a possible state of the table after operations of
+types 1 and 2, but it is not the lexicographically smallest because the second
+entry of the first row is larger than in the correct answer.
+
+<p><pre>
+4 6 5
+3 5 4
+2 4 3
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+6
+8 10 5 6 7 4
+12 11 10 4 8 2
+5 4 6 7 9 8
+10 2 4 8 5 12
+6 8 7 9 3 5
+4 12 8 5 6 10
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+7 5 8 9 10 6
+4 2 5 6 7 3
+8 6 9 10 11 7
+5 3 6 7 8 4
+9 7 10 11 12 8
+6 4 7 8 9 5
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-5: $N\le 6$</li><li>Inputs 6-7: $N\le 8$</li><li>Inputs 8-11: $N\le 100$</li><li>Inputs 12-15: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>8.4k</b><span>平均输出 token（含思考） ↓</span></li><li><b>30.2</b><span>输出速度 tokens/s ↑</span></li><li><b>279 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>无官方解</b><span>时间复杂度（相对官方解）</span></li><li><b>5</b><span>Pylint 问题 ↓</span></li><li><b>8.94</b><span>Pylint 得分 ↑</span></li><li><b>18</b><span>圈复杂度 ↓</span></li><li><b>62.5</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -318,7 +453,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

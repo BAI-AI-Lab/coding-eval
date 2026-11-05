@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1523 OohMoo Milk · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1523 OohMoo Milk：N 个瓶子初始量 m_i，共 D 天，每天甲给 A 个不同瓶子各加 1，随后乙从 B &lt; A 个不同非空瓶子各减 1；终局收益为各瓶量平方和，求双方最优对抗下的收益模 10⁹+7。">
+<meta name="description" content="usaco-1523 OohMoo Milk：USACO 2025 US Open · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,101 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1523</span></p>
 <h1 class="ptitle">OohMoo Milk</h1>
 <p class="meta">USACO 2025 US Open · 金组 · 2025-03 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 个瓶子初始量 m_i，共 D 天，每天甲给 A 个不同瓶子各加 1，随后乙从 B &lt; A 个不同非空瓶子各减 1；终局收益为各瓶量平方和，求双方最优对抗下的收益模 10⁹+7。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1523" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1523" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John is trying to make his world's famous OohMoo Milk to sell for a
+profit. He has $N$ $(1 \leq N \leq 10^5)$ bottles that he is trying to fill.
+Each bottle initially contains some amount of milk $m_i$
+$(0 \leq m_i \leq 10^9)$. Every day, he takes $A$ $(1 \le A \le N)$ bottles and
+fills each bottle with one unit of milk. 
+
+<p>Unfortunately, Farmer Nhoj, Farmer John's competitor in the business of OohMoo
+Milk,  knows about Farmer John's production processes and has a plan to curtail
+his business.  Every day, after Farmer John fills his $A$ bottles, Farmer Nhoj
+will sneakily steal one unit of milk from each of $B$ $(0 \le B &lt; A)$ different
+nonempty bottles. To remain sneaky, Farmer Nhoj chooses $B$ so that it is
+strictly less than $A$, so that it is less likely for Farmer John to discover
+him.
+
+<p>After $D$ ($1 \leq D \leq 10^9$) days, Farmer John will sell his OohMoo Milk. If
+a bottle has $M$ units of milk, it will sell for $M^2$ moonies. 
+
+<p>Let $P$ be the unique profit such that FJ can guarantee that he makes at least
+$P$ profit  regardless of how FN behaves, and FN can guarantee that FJ makes at
+most $P$ profit regardless of how  FJ behaves. Output the value of $P$ modulo
+$10^9+7$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line of the input contains $N$ and $D$, where $N$ is the number of
+bottles and $D$ is the number of days that take place.
+
+<p>The second line of the input contains $A$ and $B$ representing the number of
+units of milk that Farmer John fills and Farmer Nhoj steals respectively.
+
+<p>The third line of the input contains $N$ space-separated integers $m_i$
+representing the initial amount of milk in each bottle.
+
+<p>
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the value of $P$ modulo $10^9+7$.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5 4
+4 2
+4 10 8 10 10
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+546
+</pre>
+
+<p>On the first day, Farmer John could add milk to the second, third,
+fourth, and fifth bottles. Then, Farmer Nhoj could remove milk from the
+second and fourth bottles. 
+
+<p>Thus, the new amount of milk in each bottle is
+$$[4, 10, 8, 10, 10] \to [4, 11, 9, 11, 11] \to [4, 10, 9, 10, 11].$$
+
+<p>After four days, the amount of milk in each bottle could be
+$$[4, 10, 8, 10, 10] \to [4, 10, 9, 10, 11] \to [4, 10, 10, 11, 11] \to [4, 11, 11, 11, 11] \to [4, 11, 11, 12, 12].$$
+
+<p>The total amount of moonies Farmer John would make in this situation is $4^2+11^2+11^2+12^2+12^2 = 546$. It can be shown that this is the value
+of $P$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+10 5
+5 1
+1 2 3 4 5 6 7 8 9 10
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+777
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5 1000000000
+3 1
+0 1 2 3 4
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+10
+</pre>
+
+<p>Make sure you output $P$ modulo $10^9+7$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 4-6: $N,D\le 1000$. </li><li>Inputs 7-10: $D\le 10^6$. </li><li>Inputs 11-20: No additional constraints. </li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>13.6k</b><span>平均输出 token（含思考） ↓</span></li><li><b>25.6</b><span>输出速度 tokens/s ↑</span></li><li><b>450 秒</b><span>延迟 ↓</span></li><li><b>—</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -848,7 +946,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

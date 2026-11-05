@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1545 COW Traversals · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1545 COW Traversals：N 个点各有出边指向 a_i；M 个夜晚依次令点 c_i 设类型为 C、O 或 W 的派对（覆盖旧类型并持续），未设派对的点沿出边找到第一个设派对的点；每晚输出到达三类派对的点数。">
+<meta name="description" content="usaco-1545 COW Traversals：USACO 2026 First · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,91 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1545</span></p>
 <h1 class="ptitle">COW Traversals</h1>
 <p class="meta">USACO 2026 First · 金组 · 2026-01 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 个点各有出边指向 a_i；M 个夜晚依次令点 c_i 设类型为 C、O 或 W 的派对（覆盖旧类型并持续），未设派对的点沿出边找到第一个设派对的点；每晚输出到达三类派对的点数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1545" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1545" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>There are $N$ ($1\le N\le 2\cdot 10^5$) cows labeled $1\dots N$ on Farmer John's farm, where each
+cow lives in its own barn. Each cow $i$ has a best friend $a_i$
+($1\le a_i\le N$). Cows can be best friends with themselves, and multiple cows
+can have the same best friend. The cows love to party, so they have decided to
+throw a party for $M$ ($1\le M\le 2\cdot 10^5$) consecutive nights.
+
+<p>On night $i$, cow $c_i$ will decide to throw a party of type $t_i$ at its barn,
+where $t_i\in \texttt{"COW"}$. This party will exist for all future nights as
+well, until cow $c_i$ decides to throw a party of a different type.
+
+<p>Every night, each cow will attempt to go to a party. If a cow is not hosting a
+party, they will check their best friend's barn, and if there is no party there,
+will follow their best friend to wherever they are going (who might also follow
+their best friend and so on). It is possible that a cow might never find a party
+and will then give up for the night.
+
+<p>Compute for each night, the number of cows that end up at a party of type $C$,
+$O$, and $W$ respectively.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$, the number of cows.
+
+<p>The second line contains $a_1,\dots, a_N$, where $a_i$ is cow $i$'s best friend.
+
+<p>The third line contains $M$, the number of nights.
+
+<p>The next $M$ lines each contain an integer $c_i$ ($1\le c_i\le N$) and a
+character $v_i$, representing the cow that is throwing the party and the party
+type respectively.
+
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $M$ lines, where the $i$th consists of $3$ space-separated integers, the
+number of cows going to parties of type $C$, $O$, and $W$ on the $i$th night,
+respectively.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5
+2 3 4 5 4
+4
+2 C
+4 C
+4 W
+2 O
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2 0 0
+5 0 0
+2 0 3
+0 2 3
+</pre>
+
+<p>On night $1$, there is only one party of type $C$ at barn $2$, which only cows
+$1$ and $2$ attend.
+
+<p>On night $2$, there is a new party of type $C$ at barn $4$, which cows $3$, $4$,
+and $5$ can now reach.
+
+<p>On night $3$, the party at barn $4$ is changed to type $W$, affecting cows $3$,
+$4$ and $5$.
+
+<p>On night $4$, the party at barn $2$ is changed to type $O$, affecting cows $1$
+and $2$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 2: $N, M\leq 100$</li><li>Inputs 3-4: $N, M\leq 4000$</li><li>Inputs
+5-9: $\{a_i\}$ is a permutation of $\{1,\dots, N\}$</li><li>Inputs 10-21: No
+additional constraints</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>20.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.1</b><span>输出速度 tokens/s ↑</span></li><li><b>798 秒</b><span>延迟 ↓</span></li><li><b>1.82×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -3219,7 +3307,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

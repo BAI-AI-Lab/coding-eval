@@ -3,22 +3,97 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-222 FrontierCS 第 222 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-222 FrontierCS 第 222 题：交互题：10⁶ 个点的有向图中每点出度为 1 且恰有一个长度 ≥ 3 的环，所有边都指向环上的点；每次询问从 v 出发走 x 步到达的点，须求出环长，询问次数越少得分越高。">
+<title>fcs-222 FrontierCS #222 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-222 FrontierCS #222：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-222</span></p>
-<h1 class="ptitle">FrontierCS 第 222 题</h1>
+<h1 class="ptitle">FrontierCS #222</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 5 秒 · 0–100 连续分</p>
-<p class="summary">交互题：10⁶ 个点的有向图中每点出度为 1 且恰有一个长度 ≥ 3 的环，所有边都指向环上的点；每次询问从 v 出发走 x 步到达的点，须求出环长，询问次数越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/222" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/222" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Problem: Hedgehog Graph
+
+Time limit: 5 seconds
+
+Memory limit: 1024 megabytes
+
+This is an interactive problem.
+
+A hedgehog graph is a directed graph where each vertex has exactly one outgoing edge and contains exactly one directed cycle of length at least 3 (the graph does not contain a loop or cycle of length 2).
+For every edge e = u -&gt; v in the hedgehog graph, v belongs to the aforementioned single directed cycle.
+
+For a vertex v, if there exists an edge v -&gt; w we denote the vertex w = next(v) as the next vertex. This vertex exists and is unique.
+
+Kipa has n hedgehog graphs with 10^6 vertices. Each vertex is numbered from 1 to 10^6.
+Kipa is not given the graph directly. Instead, Kipa can ask queries to explore the graph.
+
+Your task is to help Kipa determine the length of the directed cycle for each hedgehog graph.
+
+Interaction Protocol
+
+First, your program must read from the standard input one line with the positive integer n, the number of graphs to process. n will be at most 10.
+
+For each graph, the program can ask the following query at most 2500 times:
+   ? v x
+   Given a vertex v and a positive integer x, the jury starts at v, moves to the next vertex x times, and returns the index of the resulting vertex.
+   (1 &lt;= v &lt;= 10^6, 1 &lt;= x &lt;= 5 * 10^18)
+
+Once you have determined the length of the cycle s, output:
+   ! s
+
+After that, read a single integer which is either:
+   1, if the answer is correct. You should immediately start processing the next graph, or finish your program with the exit code 0 if all n graphs are processed.
+   -1, if the answer is incorrect. In this case, you should finish your program with exit code 0, in which case you will receive a Wrong Answer verdict.
+
+Failure to handle this properly may result in unexpected behavior. You must flush your output after every interaction.
+
+The interactor is adaptive. The interactor does not necessarily start with a fixed graph at the beginning of the interaction. It only guarantees that there exists at least one hedgehog graph that satisfies all the provided responses and the input specification.
+
+Example Input:
+1
+3
+7
+10
+1
+
+Example Output:
+? 1 2
+? 2 5
+? 10 11
+! 11
+
+Scoring
+
+The physical objective is per-graph query count Q_j; smaller is better. The physical reference is `a = 500`; matching a positive reference earns 60 points.
+
+Define the historical low-score expression (in points):
+
+    P_low = 60*max(0,(2500-Q_j)/2000)^2.
+
+A valid solution with `Q_j=0` receives 100 points, including a zero-baseline instance. Otherwise, if `P_low&lt;=60`, retain `max(0,P_low)`. For `P_low&gt;60` and a positive physical reference, award:
+
+    r = a / Q_j
+    P = min(100, 60 + ln(r)).
+
+Here `r` is the improvement factor relative to the physical reference, and `ln` is the natural logarithm with coefficient 1. In the uncapped upper branch, `r = exp(P-60)`: each additional point means an `exp(1)`-fold improvement in the physical objective. The factor is computed from the physical objective and its reference, not from a transformed reward or the old point score. Invalid output retains its existing rejection or zero score; the zero-cost exception applies only after validation. Apply this mapping to each internal case, then average the points. Both reported ratio channels use points divided by 100. Across official files, take the arithmetic mean.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">9.3</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">9.3</span></b><span>采样 1 · 部分分</span></li><li><b>56.8k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.6</b><span>输出速度 tokens/s ↑</span></li><li><b>1988 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -424,7 +499,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

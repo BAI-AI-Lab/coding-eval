@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1478 Watering the Plants · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1478 Watering the Plants：N 株植物各需至少 w_i 单位水，第 i 条渠道花费 c_i·k 给植物 i 和 i+1 各供 k 单位水；对每个 2 ≤ i ≤ N，求只用前 i−1 条渠道满足前 i 株植物需求的最小费用。">
+<meta name="description" content="usaco-1478 Watering the Plants：USACO 2025 January · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,90 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1478</span></p>
 <h1 class="ptitle">Watering the Plants</h1>
 <p class="meta">USACO 2025 January · 铂金组 · 2025-01 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">N 株植物各需至少 w_i 单位水，第 i 条渠道花费 c_i·k 给植物 i 和 i+1 各供 k 单位水；对每个 2 ≤ i ≤ N，求只用前 i−1 条渠道满足前 i 株植物需求的最小费用。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1478" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1478" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie's garden has $N$ plants labeled $1$ through $N$
+($2\leq N\leq 5\cdot 10^5$) from left to right. Bessie knows that plant $i$
+requires at least $w_i$ ($0\leq w_i \leq 10^6$) units of water.
+
+<p>Bessie has a very peculiar irrigation system with $N-1$ canals, numbered $1$
+through $N-1$.  Each canal $i$ has an associated unit cost $c_i$
+($1\le c_i\le 10^6$), such that Bessie can pay $c_i k$ to provide plants $i$ and
+$i+1$ each with $k$ units of water, where $k$ is a non-negative integer.
+
+<p>Bessie is busy and may not have time to use all the canals. For each
+$2\leq i \leq N$ compute the minimum cost required to water plants $1$ through
+$i$ <strong>using only the first $i-1$ canals</strong>.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains a single positive integer $N$.
+
+<p>The second line contains $N$ space-separated integers $w_1, \ldots, w_N$.
+
+<p>The third line contains $N-1$ space-separated integers $c_1, \ldots, c_{N-1}$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $N-1$ newline-separated integers. The $(i-1)$th integer should contain
+the minimum cost to water the first $i$ plants using the first $i-1$ canals.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+39 69 33
+30 29
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2070
+2127
+</pre>
+
+<p>The minimum cost to water the first $2$ plants using the first canal is to pay
+$30 \cdot 69 = 2070$ by using the first canal $69$ times.
+
+<p>The minimum cost to water the first $3$ plants is to use the first canal $39$
+times and the second canal $33$ times, paying
+$39 \cdot 30 + 29 \cdot 33 = 2127$.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+33 82 36
+19 1
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1558
+676
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+8
+35 89 44 1 35 3 62 50
+7 86 94 62 63 9 49
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+623
+4099
+4114
+6269
+6272
+6827
+8827
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 4: $N \leq 200$, and all $w_i \leq 200$.</li><li>Inputs 5-6: All $w_i \leq 200$.</li><li>Inputs 7-10: $N \leq 5000$.</li><li>Inputs 11-14: All $w_i$ and $c_i$ are generated independently and uniformly
+at random.</li><li>Inputs 15-19: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>24.6k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.8</b><span>输出速度 tokens/s ↑</span></li><li><b>976 秒</b><span>延迟 ↓</span></li><li><b>1.59×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -3099,7 +3186,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

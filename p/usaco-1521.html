@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1521 Moo Decomposition · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1521 Moo Decomposition：仅含 M、O 的串 S 由长 N 的串 T 重复 L ≤ 10¹⁸ 次拼成；求将 S 划分为若干子序列、每个都是一个 M 后接恰好 K 个 O 的方案数模 10⁹+7。">
+<meta name="description" content="usaco-1521 Moo Decomposition：USACO 2025 US Open · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,85 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1521</span></p>
 <h1 class="ptitle">Moo Decomposition</h1>
 <p class="meta">USACO 2025 US Open · 金组 · 2025-03 · <span class="pill">L3 困难</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">仅含 M、O 的串 S 由长 N 的串 T 重复 L ≤ 10¹⁸ 次拼成；求将 S 划分为若干子序列、每个都是一个 M 后接恰好 K 个 O 的方案数模 10⁹+7。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1521" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1521" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>You have a long string $S$ of Ms and Os and an integer $K \geq 1$. Count the
+number of ways of ways to decompose $S$ into subsequences such that each
+subsequence is MOOOO....O with exactly $K$ Os, modulo $10^9+7$.
+
+<p>Since the string is very long, you are not given it explicitly. Instead, you are
+given an integer $L$ ($1 \leq L \leq 10^{18}$), and a string $T$ of length $N$
+($1 \leq N \leq 10^6$). The string $S$ is the concatenation of $L$ copies of the
+string $T$. 
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $K$, $N$, and $L$.
+
+<p>The second line contains the string $T$ of length $N$. Every character is either
+an M or an O.
+
+<p>It is guaranteed that the number of decompositions of $S$ is nonzero.
+
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output the number of decompositions of string $S$, modulo $10^9+7$. 
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2 6 1
+MOOMOO
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+1
+</pre>
+
+<p>The only way to decompose $S$ into MOOs is to let the first three characters form a MOO and
+the last three characters form another MOO.
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+2 6 1
+MMOOOO
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+6
+</pre>
+
+<p>There are six distinct ways to decompose the string into subsequences (uppercase
+letters form one MOO, lowercase letters form another):
+
+<p><ul><li>MmOOoo</li><li>MmOoOo</li><li>MmOooO</li><li>MmoOOo</li><li>MmoOoO</li><li>MmooOO</li></ul>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+1 4 2
+MMOO
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+4
+</pre>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+1 4 100
+MMOO
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+976371285
+</pre>
+
+<p>Make sure to take the answer modulo $10^9+7$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 5-7: $K=1$, $L = 1$</li><li>Inputs 8-10: $K=2$, $N\leq 1000$, $L = 1$</li><li>Inputs 11-13: $K=1$</li><li>Inputs 14-19: $L = 1$</li><li>Inputs 20-25: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Dhruv Rohatgi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>7.5k</b><span>平均输出 token（含思考） ↓</span></li><li><b>21.4</b><span>输出速度 tokens/s ↑</span></li><li><b>292 秒</b><span>延迟 ↓</span></li><li><b>0.08×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>不确定 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -577,7 +659,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

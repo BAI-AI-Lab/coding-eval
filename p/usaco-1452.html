@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1452 All Pairs Similarity · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1452 All Pairs Similarity：给定 N ≤ 5×10⁵ 个长度为 K ≤ 20 的非零位串；对每个位串，求它与全部 N 个位串（含自身）的 Jaccard 相似度（交集 1 的个数除以并集 1 的个数）之和，模 10⁹+7 输出。">
+<meta name="description" content="usaco-1452 All Pairs Similarity：USACO 2024 December · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,79 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1452</span></p>
 <h1 class="ptitle">All Pairs Similarity</h1>
 <p class="meta">USACO 2024 December · 铂金组 · 2024-12 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">给定 N ≤ 5×10⁵ 个长度为 K ≤ 20 的非零位串；对每个位串，求它与全部 N 个位串（含自身）的 Jaccard 相似度（交集 1 的个数除以并集 1 的个数）之和，模 10⁹+7 输出。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1452" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1452" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p><strong>**Note: The memory limit for this problem is 512MB, twice the default.**</strong>
+
+<p>Farmer John's $N$ ($1\le N\le 5\cdot 10^5$) cows are each assigned a  bitstring
+of length $K$ that is not all zero ($1\le K\le 20$). Different cows may be
+assigned the same bitstring.
+
+<p>The Jaccard similarity of two bitstrings is defined as the number of set bits in
+their bitwise intersection divided by the number of set bits in their bitwise union.
+For example, the Jaccard similarity of the bitstrings $\texttt{11001}$ and
+$\texttt{11010}$ would be $2/4$.
+
+<p>For each cow, output the sum of her bitstring's Jaccard similarity with each of
+the $N$ cows' bitstrings including her own, modulo $10^9+7$. Specifically, if
+the sum is equal to a rational number $a/b$ where $a$ and $b$ are integers
+sharing no common factors, output the unique integer $x$ in the range
+$[0,10^9+7)$ such that $bx-a$ is divisible by $10^9+7$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $N$ and $K$.
+
+<p>The next $N$ lines each contain an integer $i\in (0,2^K)$, representing a cow
+associated with the length-$K$ binary representation of $i$.
+
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+Output the sum modulo $10^9+7$ for each cow on a separate line.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4 2
+1
+1
+2
+3
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+500000006
+500000006
+500000005
+500000006
+</pre>
+
+<p>The cows are associated with the following bitstrings:
+$[\texttt{01}, \texttt{01}, \texttt{10}, \texttt{11}]$.
+
+<p>For the first cow, the sum is
+$\text{sim}(1,1)+\text{sim}(1,1)+\text{sim}(1,2)+\text{sim}(1,3)=1+1+0+1/2\equiv 500000006\pmod{10^9+7}$.
+
+<p>The second cow's bitstring is the same as the first cow's, so her sum is the
+same as above.
+
+<p>For the third cow, the sum is
+
+<p>$\text{sim}(2,1)+\text{sim}(2,1)+\text{sim}(2,2)+\text{sim}(2,3)=0+0+1+1/2\equiv 500000005\pmod{10^9+7}$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-15: There will be two test cases for each of
+$K\in \{10,15,16,17,18,19,20\}$.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>15.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>24.3</b><span>输出速度 tokens/s ↑</span></li><li><b>676 秒</b><span>延迟 ↓</span></li><li><b>1.67×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更差 1、同阶 2</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1512,7 +1588,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

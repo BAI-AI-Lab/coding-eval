@@ -3,22 +3,82 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-121 FrontierCS 第 121 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-121 FrontierCS 第 121 题：给定 m 个长度为 n、由 A、C、G、T 和通配符 ? 组成的串，求一个均匀随机的 DNA 序列能与其中至少一个串匹配的概率；输出值的相对误差越小得分越高。">
+<title>fcs-121 FrontierCS #121 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-121 FrontierCS #121：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-121</span></p>
-<h1 class="ptitle">FrontierCS 第 121 题</h1>
+<h1 class="ptitle">FrontierCS #121</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">给定 m 个长度为 n、由 A、C、G、T 和通配符 ? 组成的串，求一个均匀随机的 DNA 序列能与其中至少一个串匹配的概率；输出值的相对误差越小得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/121" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/121" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">DNA Matching
+
+Time Limit: 2 s
+Memory Limit: 512 MB
+
+A string s is called a “DNA sequence” if and only if s consists only of the characters A, C, G, T.
+
+You are given m strings s1, s2, ..., sm, each of length n, and each of them consists only of the characters A, C, G, T, ?.
+
+For a DNA sequence t of length n, we call t valid if and only if there exists an index i (1 ≤ i ≤ m) and a way to replace each ? in si by one of A,C,G,T, so that after replacement the resulting string s_i' is exactly equal to t.
+
+You need to compute the probability that a randomly chosen DNA sequence t (of length n, where each of the 4^n possible DNA sequences is equally likely) is valid.
+
+Input Format
+The first line contains two positive integers n, m.
+Then follow m lines, each line contains a string si of length n. It is guaranteed that each si only uses characters from A, C, G, T, ?.
+
+Output Format
+Output one real number — the probability. Make sure the number is precise enough.
+
+Sample 1
+input
+3 1
+AC?
+output
+0.0625
+
+Sample 2
+input
+6 2
+AC??A?
+A??A?T
+output
+0.0302734375
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original minimizing quantity and a for its physical 60-point reference. The improvement factor is r=a/x, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+p is the output probability and p_ref is the stored reference probability. When p_ref is nonzero, E=abs(p/p_ref-1). Define the objective x=E, its physical reference a=A=0.04, and the lower-band calculation L=100*max(0,1-10*E).
+
+If p_ref=0, output p=0 receives 100 and every nonzero p receives zero; the following rule applies only when p_ref is nonzero.
+
+```text
+P = 100,                         if x &lt;= 1e-9
+P = L,                           if L &lt;= 60 and x &gt; 1e-9
+P = min(100, 60 + ln(r)),      otherwise
+```
+
+Relative error at most 1e-9 is treated as zero before the lower-band test. This numerical tolerance avoids requiring the exact rounding of the stored floating-point reference. For example, the stored value 0.0052510053510665894 and the rounded output 0.005251005351 both receive 100 points. The tolerance is relative, so outputting zero for a small nonzero reference does not receive full credit. Errors above this tolerance retain the scoring curve above. The checker reports P/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">19.9</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">19.9</span></b><span>采样 1 · 部分分</span></li><li><b>19.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>31.7</b><span>输出速度 tokens/s ↑</span></li><li><b>629 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1249,7 +1309,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

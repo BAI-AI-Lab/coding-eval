@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1473 Median Heap · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1473 Median Heap：堆形二叉树（i 的父亲为 ⌊i/2⌋，N 为奇数）节点有值 a_i 与改值代价 c_i；从 N 到 1 倒序，若节点值不是它与两个孩子的中位数就与取中位数的孩子交换；对每个询问 m 求使根最终为 m 的最小改值代价。">
+<meta name="description" content="usaco-1473 Median Heap：USACO 2025 January · 金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,101 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1473</span></p>
 <h1 class="ptitle">Median Heap</h1>
 <p class="meta">USACO 2025 January · 金组 · 2025-01 · <span class="pill">L3 困难</span> · C++17 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">堆形二叉树（i 的父亲为 ⌊i/2⌋，N 为奇数）节点有值 a_i 与改值代价 c_i；从 N 到 1 倒序，若节点值不是它与两个孩子的中位数就与取中位数的孩子交换；对每个询问 m 求使根最终为 m 的最小改值代价。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1473" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1473" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p><strong>**Note: The time limit for this problem is 4s, twice the default.**</strong>
+
+<p>Farmer John has a binary tree with $N$ nodes  where the nodes are numbered from
+$1$ to $N$ ($1 \leq N &lt; 2\cdot 10^5$ and $N$ is odd). For $i&gt;1$, the parent of
+node $i$  is $\lfloor i/2\rfloor$. Each node has an initial integer value $a_i$,
+and a cost $c_i$ to change the initial value to any other integer value
+($0\le a_i,c_i\le 10^9$).
+
+<p>He has been tasked by the Federal Bovine Intermediary (FBI) with finding an
+approximate median value within this tree, and has devised a clever algorithm to
+do so.
+
+<p>He starts at the last node $N$ and works his way backward. At every step of the
+algorithm, if a node would not be the median of it and its two children, he
+swaps the values of the current node and the child value that would be the
+median. At the end of this algorithm, the value at node $1$ (the root) is the
+median approximation.
+
+<p>The FBI has also given Farmer John a list of $Q$ $(1 \leq Q \leq 2\cdot 10^5)$
+independent queries each specified by a target value $m$ ($0\le m\le 10^9$). For
+each query, FJ will first change some of the node's initial values, and then
+execute the median approximation algorithm. For each query, determine the
+minimum possible total cost for FJ to make the output of the algorithm equal to
+$m$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line of input contains $N$.
+
+<p>The next $N$ lines each contain two integers $a_i$ and $c_i$.
+
+<p>The next line contains $Q$.
+
+<p>The next $Q$ lines each contain a target value $m$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output $Q$ lines, the minimum possible total cost for each target value $m$.
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+5
+10 10000
+30 1000
+20 100
+50 10
+40 1
+11
+55
+50
+45
+40
+35
+30
+25
+20
+15
+10
+5
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+111
+101
+101
+100
+100
+100
+100
+0
+11
+11
+111
+</pre>
+
+<p>To make the median approximation equal $40$, FJ can change the value at node 3
+to $60$. This costs $c_3=100$.
+
+<p>To make the median approximation equal $45$, FJ can change the value at node 3
+to $60$ and the value at node 5 to $45$. This costs $c_3+c_5=100+1=101$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-4: $N,Q\le 50$</li><li>Inputs 5-7: $N,Q\le 1000$</li><li>Inputs 8-16: No additional constraints</li></ul>
+
+
+<p>
+
+<p>Problem credits: Suhas Nagar and Benjamin Qi
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>21.4k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.2</b><span>输出速度 tokens/s ↑</span></li><li><b>900 秒</b><span>延迟 ↓</span></li><li><b>0.15×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>更优 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -1521,7 +1619,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

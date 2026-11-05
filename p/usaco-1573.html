@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1573 Cow Circle · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1573 Cow Circle：长为 M 的环形轨道上 N 个点各按给定概率选择顺时针或逆时针以单位速度运动，相遇即同时反向；求 K ≤ 10¹⁸ 分钟后 1 号点位于每个位置 0…M−1 的概率，模 10⁹+7。">
+<meta name="description" content="usaco-1573 Cow Circle：USACO 2026 Second · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,103 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1573</span></p>
 <h1 class="ptitle">Cow Circle</h1>
 <p class="meta">USACO 2026 Second · 铂金组 · 2026-01 · <span class="pill">L4 顶尖</span> · C++17 · 时限 6 秒 · 测试点等分</p>
-<p class="summary">长为 M 的环形轨道上 N 个点各按给定概率选择顺时针或逆时针以单位速度运动，相遇即同时反向；求 K ≤ 10¹⁸ 分钟后 1 号点位于每个位置 0…M−1 的概率，模 10⁹+7。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1573" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1573" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p><strong>**Note: The time limit for this problem is 6s, thrice the default. The memory
+limit for this problem is 512MB, twice the default.**</strong>
+
+<p>Farmer John has $N$ ($1 \leq N \leq 5000$) cows standing around a circular track
+divided into $M$ ($1 \leq M \leq 10^6$) equally spaced positions, numbered $0$
+to $M-1$ clockwise. Cow $i$ is initially at position $x_i$, where
+$0 = x_1 &lt; x_2 &lt; \dots &lt; x_N &lt; M$.
+
+<p>For each $1 \leq i \leq N$, cow $i$ will independently and randomly choose
+either to face clockwise or counterclockwise with some probability specific to that cow. Once a cow
+has chosen her initial direction, she begins moving continuously in that
+direction at a constant speed of one position per minute. Whenever two cows meet
+(i.e., they occupy the same space), they bounce off of each other: immediately
+reversing their directions and continuing to move at the same speed in that
+direction.
+
+<p>Farmer John is wondering where cow $1$ will end up. For each $0 \leq i &lt; M$,
+find the probability that cow $1$ is at position $i$ after $K$
+($1 \leq K \leq 10^{18}$) minutes.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains $T$ ($1 \leq T \leq 100$), the number of independent
+test cases. Each test case is specified as follows:
+
+<p>The first line of each test case contains $N$ ($1 \leq N \leq 5000$), $M$
+($1 \leq M \leq 10^6$), and $K$ ($1 \leq K \leq 10^{18}$). 
+
+<p>The second line contains $N$ integers $p_1, \dots, p_N$
+($0 \leq p_i &lt; 10^9 + 7$) where if $\frac{a_i}{b_i}$ is the probability cow $i$
+goes clockwise, then $p_i \cdot b_i \equiv a_i \pmod{10^9+7}$. 
+
+<p>The third and final line contains $N$ integers $x_1, x_2, \dots, x_N$.
+
+<p>It is guaranteed that the sum of $N^2$ over all test cases is $\leq 5000^2$ and
+the sum of $M$ over all testcases is $\leq 10^6$.
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Output a new line for each test case. The line for each test case should be
+formatted as follows:
+
+<p>For every $0 \leq i &lt; M$, let $\frac{p_i}{q_i}$ be the probability cow $1$ is in
+position $i$ at the end of $K$ minutes. Output $M$ space-separated integers
+$p_iq_i^{-1} \pmod{10^9 + 7}$ (where
+$p_iq_i^{-1} \cdot q_i \equiv p_i \pmod{10^9+7}$).
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3
+2 2 1
+500000004 500000004 
+0 1
+3 3 1
+500000004 500000004 500000004
+0 1 2
+5 10 13
+500000004 1 500000004 0 500000004
+0 3 4 7 9
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+500000004 500000004
+500000004 250000002 250000002
+0 0 0 125000001 375000003 0 125000001 375000003 0 0
+</pre>
+
+<p>For the first test case, both cows have a $\frac{1}{2}$ chance of going in
+either direction. If both pick the same direction, they will end up swapping
+positions (so cow $1$ ends up at $1$). Otherwise, they will bounce off in the
+middle and return to their original positions. Therefore, there is a
+$\frac{1}{2}$ chance for cow $1$ to end up at $0$ and a $\frac{1}{2}$ chance for
+cow $1$ to end up at
+$1$.
+
+<p>For the second test case, all cows again have a $\frac{1}{2}$ chance of going in
+either direction. For  each combination of directions, here is where cow $1$
+ends up at.
+<ul><li> CW, CW, CW: $1$ </li><li> CW, CW, CCW: $1$ </li><li> CCW, CCW, CCW: $2$
+</li><li> CCW, CW, CCW: $2$ </li><li> CW, CCW, CW: $0$ </li><li> CW, CCW,
+CCW: $0$ </li><li> CCW, CW, CW: $0$ </li><li> CCW, CCW, CW: $0$ </li></ul>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Input 2: $K \leq 100, N \leq 10$.</li><li>Input 3: $N \leq 10$.</li><li>Inputs 4-7: $\sum N^3 \leq 500^3$.</li><li>Inputs 8-11: $K &lt; \frac{M}{2}$.</li><li> Inputs 12-15: No additional constraints. </li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Sujay Konda
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:11"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>105.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>23.0</b><span>输出速度 tokens/s ↑</span></li><li><b>4446 秒</b><span>延迟 ↓</span></li><li><b>1.17×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶 3</b><span>时间复杂度（相对官方解）</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -3953,7 +4053,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

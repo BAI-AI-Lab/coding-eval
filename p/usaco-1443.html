@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1443 Roundabout Rounding · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1443 Roundabout Rounding：按题定规则把 x 舍入到 10ᵇ（看从右数第 b 位是否 ≥ 5）；P 为满足 10ᴾ ≥ x 的最小整数，T 组询问，求 [2, N] 中直接舍入到 10ᴾ 与依次舍入到 10¹,…,10ᴾ 结果不同的 x 个数。">
+<meta name="description" content="usaco-1443 Roundabout Rounding：USACO 2024 December · 铜组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,99 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1443</span></p>
 <h1 class="ptitle">Roundabout Rounding</h1>
 <p class="meta">USACO 2024 December · 铜组 · 2024-12 · <span class="pill">L1 基础</span> · Python 3.11 · 时限 4 秒 · 测试点等分</p>
-<p class="summary">按题定规则把 x 舍入到 10ᵇ（看从右数第 b 位是否 ≥ 5）；P 为满足 10ᴾ ≥ x 的最小整数，T 组询问，求 [2, N] 中直接舍入到 10ᴾ 与依次舍入到 10¹,…,10ᴾ 结果不同的 x 个数。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1443" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1443" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Bessie the cow is back in school!  She has started doing her math homework  in
+which she is tasked to round positive integers to powers of $10$.
+
+<p>To round a positive integer $a$ to the nearest $10^b$, where $b$ is a positive
+integer, Bessie first locates the $b$'th digit from the right. Let $x$ denote
+this digit.
+
+<p>If $x \geq 5$, Bessie adds $10^b$ to $a$.
+
+<p>Then, Bessie sets all the digits including and to the right of the $b$'th digit
+from the right to be $0$.
+
+<p>For instance, if Bessie wanted to round $456$ to the nearest $10^2$ (hundred),
+Bessie would first locate the $2$nd digit from the right which is $5$. This
+means $x = 5$. Then since $x \geq 5$, Bessie adds $100$ to $a$. Finally, Bessie
+sets all the digits in $a$ to the right of and including the $2$nd digit from
+the right to be $0$, resulting in $500$. 
+
+<p>However, if Bessie were to round $446$ to the nearest $10^2$, she would end up
+with $400$.
+
+<p>After looking at Bessie's homework, Elsie thinks she has invented a new type of
+rounding: chain rounding. To chain round to the nearest $10^b$, Elsie will first
+round to the nearest $10^1$, then the nearest $10^2$, and so on until the
+nearest $10^b$. 
+
+<p>Bessie thinks Elsie is wrong, but is too busy with math homework to confirm her
+suspicions. She tasks you to count how many integers $x$ at least $2$ and at
+most $N$ ($1 \leq N \leq 10^{9}$) exist such that rounding $x$ to the nearest
+$10^P$ is different than chain rounding to the nearest $10^P$, where $P$ is the
+smallest integer such that $10^P \geq x$.
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+
+<p>You have to answer multiple test cases.
+
+<p>The first line of input contains a single integer $T$ ($1 \leq T \leq 10^5$)
+denoting the number of test cases. $T$ test cases follow.
+
+<p>The first and only line of input in every test case contains a single integer
+$N$. All $N$ within the same input file are guaranteed to be distinct.
+
+<p>
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+
+<p>Output $T$ lines, the $i$'th line containing the answer to the $i$'th test case.
+Each line should be an integer denoting how many integers at least $2$ and at
+most $N$ exist that are different when using the two rounding methods.
+
+<p>
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+4
+1
+100
+4567
+3366
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+0
+5
+183
+60
+</pre>
+
+<p>Consider the second test case in the sample. $48$ should be counted because $48$
+chain rounded to the nearest $10^2$ is $100$ ($48\to 50\to 100$), but $48$
+rounded to the nearest $10^2$ is
+$0$.
+
+<p>In the third test case, two integers counted are $48$ and $480$. $48$ chain 
+rounds to $100$ instead of to $0$ and $480$ chain rounds to $1000$ instead of
+$0$.  However, $67$ is not counted since it chain rounds to $100$ which is $67$
+rounded to the nearest $10^2$.
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 2-4: $N\le 10^3$</li><li>Inputs 5-7: $N\le 10^6$</li><li>Inputs 8-13: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Weiming Zhou
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small" style="--rows:13"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">auto（max）</div></div>
 <p class="verdict ok">1/1</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b>5.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>32.7</b><span>输出速度 tokens/s ↑</span></li><li><b>158 秒</b><span>延迟 ↓</span></li><li><b>0.20×</b><span>CPU 时间 / 官方解 ↓</span></li><li><b>同阶</b><span>时间复杂度（相对官方解）</span></li><li><b>2</b><span>Pylint 问题 ↓</span></li><li><b>9.26</b><span>Pylint 得分 ↑</span></li><li><b>6</b><span>圈复杂度 ↓</span></li><li><b>66.9</b><span>可维护性指数 ↑</span></li></ul></div><div class="model"><div><span class="dot ds"></span><h3><span class="long">DeepSeek Flash V4.1-1017</span><span class="short">DeepSeek</span></h3><div class="id">auto（high）</div></div>
@@ -171,7 +267,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

@@ -3,22 +3,141 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-304 FrontierCS 第 304 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-304 FrontierCS 第 304 题：给定带点权 r 的连通无向图和步数 K，从点 1 出发每分钟必须走一条边，共走 K 步且须访问所有点；每个点贡献 r 乘以首次到达时间，总和越大得分越高。">
+<title>fcs-304 FrontierCS #304 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-304 FrontierCS #304：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-304</span></p>
-<h1 class="ptitle">FrontierCS 第 304 题</h1>
+<h1 class="ptitle">FrontierCS #304</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 2 秒 · 0–100 连续分</p>
-<p class="summary">给定带点权 r 的连通无向图和步数 K，从点 1 出发每分钟必须走一条边，共走 K 步且须访问所有点；每个点贡献 r 乘以首次到达时间，总和越大得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/304" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/304" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain"># Forest Mycelium Delay Tour (Optimization Challenge)
+
+## Problem
+Vasya is mapping a forest trail network with **mushroom clearings**.
+
+The forest is modeled as an undirected connected graph with `N` clearings (vertices) and `M` trails (edges).
+At clearing `i`, mushrooms grow at a constant rate `r[i]` grams per minute, starting from **0 grams at time 0**.
+
+- Vasya starts at clearing `1` at time `t = 0`.
+- Each minute, Vasya **must** traverse exactly one trail to an adjacent clearing (no waiting).
+- When Vasya **first arrives** at a clearing `i` at time `t`, he instantly collects **all mushrooms grown there so far**, equal to `r[i] * t` grams.
+- After the first collection at clearing `i`, that clearing becomes barren and yields **0** on future visits.
+- Vasya will walk for exactly `K` minutes (i.e., traverse exactly `K` edges), ending anywhere.
+- To be feasible, his walk must visit **every clearing at least once** during times `0..K`.
+
+Your goal is to output a feasible walk that **maximizes the total collected mushroom weight**.
+
+This is an open-ended optimization task: many solutions are valid, and they receive different scores.
+
+## Input
+```
+N M K
+r1 r2 ... rN
+u1 v1
+u2 v2
+...
+uM vM
+```
+
+- `1 ≤ N ≤ 20000`
+- `N-1 ≤ M ≤ 60000`
+- `2·(N-1) ≤ K ≤ 200000`
+- `1 ≤ r[i] ≤ 10^6`
+- `1 ≤ uj, vj ≤ N`, `uj != vj`
+- The graph is connected.
+- Multiple edges may appear; self-loops do not appear.
+
+The constraints guarantee that a walk of length `K` visiting all vertices exists.
+
+## Output
+Output exactly `K` integers:
+```
+x1 x2 ... xK
+```
+where `xt` is the clearing Vasya is at **after** minute `t` (after the `t`-th move).
+
+Feasibility requirements:
+- Vasya starts at clearing `1` at time `0`.
+- For each `t = 1..K`, the move from the previous clearing to `xt` must follow an existing trail (edge).
+- Every clearing `1..N` must appear at least once among the visited clearings at times `0..K` (including the start at time 0).
+
+If the output is infeasible, the solution receives **0 score for that test**.
+
+## Objective
+Let `pos(t)` be Vasya’s clearing at time `t` (`pos(0)=1`, `pos(t)=xt` for `t≥1`).
+
+For each clearing `i`, define its first-visit time:
+- `T[i] = min { t ∈ [0..K] | pos(t) = i }`
+
+Total collected weight:
+\[
+V = \sum_{i=1}^{N} r[i] \cdot T[i]
+\]
+(Notice `T[1]=0`, so clearing 1 contributes `0`.)
+
+You must **maximize** `V`.
+
+## Scoring
+
+The physical objective is weighted walk reward V=computeValue(walk); larger is better. The physical reference is `a = 2.5*B`; matching a positive reference earns 60 points.
+
+Define the historical low-score expression (in points):
+
+    P_low = 100*max(0,1-B/V) if V&gt;0; 0 otherwise.
+
+If `P_low&lt;=60`, retain `max(0,P_low)`. For `P_low&gt;60` and a positive physical reference and objective, award:
+
+    r = V / a
+    P = min(100, 60 + ln(r)).
+
+Here `r` is the improvement factor relative to the physical reference, and `ln` is the natural logarithm with coefficient 1. In the uncapped upper branch, `r = exp(P-60)`: each additional point means an `exp(1)`-fold improvement in the physical objective. The factor is computed from the physical objective and its reference, not from a transformed reward or the old point score. Invalid output retains its existing rejection or zero score; the zero-cost exception applies only after validation. Use one score per file. Both reported ratio channels use points divided by 100. Across official files, take the arithmetic mean.
+
+B is the reward of the deterministic baseline walk. If B=0 and V&gt;0, no positive 60-point physical reference exists; retain the existing 100 branch.
+
+## Constraints
+- Time limit: 2 seconds
+- Memory limit: 256 MB
+
+## Example
+Sample input:
+```
+4 4 6
+5 1 4 10
+1 2
+2 3
+3 4
+1 4
+```
+
+One valid sample output:
+```
+2 3 2 1 4 3
+```
+
+Explanation (high level):
+- Path: time 0 at 1, time 1 at 2, time 2 at 3, time 3 at 2, time 4 at 1, time 5 at 4, time 6 at 3.
+- First-visit times: `T[1]=0, T[2]=1, T[3]=2, T[4]=5`.
+- Objective value: `V = 5·0 + 1·1 + 4·2 + 10·5 = 59`.
+- The judge also computes the baseline value `B` for this test, then computes S=100*max(0,1-B/V) when V&gt;0 and applies the piecewise scoring formula above.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ">58.5</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="">58.5</span></b><span>采样 1 · 部分分</span></li><li><b>41.9k</b><span>平均输出 token（含思考） ↓</span></li><li><b>26.8</b><span>输出速度 tokens/s ↑</span></li><li><b>1567 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1974,7 +2093,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

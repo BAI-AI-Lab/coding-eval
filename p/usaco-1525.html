@@ -4,9 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>usaco-1525 Lazy Sort · 代码能力阶梯评测</title>
-<meta name="description" content="usaco-1525 Lazy Sort：对数组 A 反复从前往后执行“若 a_i &gt; a_{i+1} 则 a_i 移一个单位给 a_{i+1}”直至稳定；已知 Q 个位置（含首尾）的值，求补全其余非负整数使结果等于 sorted(A) 的方案数模 10⁹+7。">
+<meta name="description" content="usaco-1525 Lazy Sort：USACO 2025 US Open · 铂金组，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
@@ -15,10 +22,80 @@
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">usaco-1525</span></p>
 <h1 class="ptitle">Lazy Sort</h1>
 <p class="meta">USACO 2025 US Open · 铂金组 · 2025-03 · <span class="pill">L4 顶尖</span> · C++17 · 时限 2 秒 · 测试点等分</p>
-<p class="summary">对数组 A 反复从前往后执行“若 a_i &gt; a_{i+1} 则 a_i 移一个单位给 a_{i+1}”直至稳定；已知 Q 个位置（含首尾）的值，求补全其余非负整数使结果等于 sorted(A) 的方案数模 10⁹+7。</p>
-<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1525" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://usaco.org/index.php?page=viewproblem2&cpid=1525" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：USACO 官网。模型收到的是同一份题面的文字。</p>
+<div class="stmt">
+<p>Farmer John has $N$ cows ($2 \leq N \leq 5\cdot 10^6$) and is attempting to get
+them to sort a non-negative integer array $A$ of length $N$ by  relying on their
+laziness. He has a lot of heavy boxes so he lines the cows up one behind 
+another, where cow $i+1$ is behind cow $i$, and gives $a_i$ boxes to cow $i$
+($0\le a_i$). 
+
+<p>Cows are inherently lazy so they always look to pass their work off to someone
+else. From cow $1$ to $N-1$ in order, each cow looks to the cow behind them. If
+cow $i$ has strictly more boxes than cow $i+1$, cow $i$ thinks this is "unfair"
+and gives one of its boxes to cow $i+1$. This process repeats until every cow is
+satisfied.
+
+<p>Farmer John will then note the number of boxes $b_i$ that each cow $i$ is
+holding and create an array $B$ out of these values. If $B = sorted(A)$, then
+Farmer John will be happy. Unfortunately, Farmer John forgot all but $Q$ values
+($2 \leq Q \leq \min(N, 100)$) in $A$. Luckily, those values include the number
+of boxes he was going to give to the first and last cow. Each value that FJ
+remembers is given in the form $c_i \; v_i$ representing that $a_{c_i}=v_i$
+($1 \leq c_i \leq N$, $1\le v_i\le 10^9$). Determine the number of different
+ways the missing values can be filled in so that he will be happy mod $10^9+7$. 
+
+<p><h4>INPUT FORMAT (input arrives from the terminal / stdin):</h4>
+The first line contains two space-separated integers $N$ and $Q$ representing
+the number of cows and queries respectively.
+
+<p>The next $Q$ lines contain two space separated integers $c_i \; v_i$
+representing that cow $c_i$ initially holds $v_i$ boxes. It is guaranteed that
+$c_1 = 1$, $c_Q = N$, and $c_i &lt; c_{i+1}$ (the order of the cows is strictly
+increasing).
+
+
+<p><h4>OUTPUT FORMAT (print output to the terminal / stdout):</h4>
+Print the number of different ways modulo $10^9+7$ that values $a_i$ can be
+assigned such that Farmer John will be happy after the cows perform the lazy
+sort. It is guaranteed that there will be at least one valid assignment. 
+
+
+<p><h4>SAMPLE INPUT:</h4><pre>
+3 2
+1 3
+3 2
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+2
+</pre>
+In this example, FJ remembers the values at the ends of the array. The arrays
+$[3,2,2]$ and $[3,3,2]$ are the valid arrays that will make FJ happy at the end
+of the lazy sorting.
+<h4>SAMPLE INPUT:</h4><pre>
+6 3
+1 1
+3 3
+6 5
+</pre><h4>SAMPLE OUTPUT:</h4> <pre>
+89
+</pre>
+
+<p><h4>SCORING:</h4>
+
+<p><ul><li>Inputs 3-4: $N,v_i\le 100$</li><li>Inputs 5-6: $N\le 100$ and $v_i \leq 10^6$</li><li>Inputs 7-9: $N \leq 2\cdot 10^5$ and $v_i \le 10^6$</li><li>Inputs 10-12: $N \leq 2\cdot 10^5$</li><li>Inputs 13-15: No additional constraints.</li></ul>
+
+<p>
+
+<p>
+
+<p>Problem credits: Suhas Nagar
+</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:9"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict ok">3/3</p><p class="cap">解出的采样 ↑</p><ul class="specs"><li><b><span class="ok">100</span></b><span>采样 1 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 2 · 解出</span></li><li><b><span class="ok">100</span></b><span>采样 3 · 解出</span></li><li><b>28.1k</b><span>平均输出 token（含思考） ↓</span></li><li><b>25.5</b><span>输出速度 tokens/s ↑</span></li><li><b>1267 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1558,7 +1635,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

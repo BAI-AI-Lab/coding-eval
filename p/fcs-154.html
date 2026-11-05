@@ -3,22 +3,163 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-154 FrontierCS 第 154 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-154 FrontierCS 第 154 题：交互题：30×30 房间中有若干会移动的宠物和 5～10 名人员，300 回合内每人可移动、原地不动或在相邻格立隔板；最终每人所在可达区域越大且其中宠物越少得分越高。">
+<title>fcs-154 FrontierCS #154 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-154 FrontierCS #154：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-154</span></p>
-<h1 class="ptitle">FrontierCS 第 154 题</h1>
+<h1 class="ptitle">FrontierCS #154</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 10 秒 · 0–100 连续分</p>
-<p class="summary">交互题：30×30 房间中有若干会移动的宠物和 5～10 名人员，300 回合内每人可移动、原地不动或在相邻格立隔板；最终每人所在可达区域越大且其中宠物越少得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/154" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/154" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Story
+--------
+AtCoder's CEO, Takahashi, loves animals and has a number of pets running free in the AtCoder office.
+AtCoder's employees have trouble with the pets interrupting their work, so they have decided to place partitions in the office to create a space where pets cannot come in.
+Please create as large a space as possible.
+
+Problem Statement
+--------
+There are $N$ pets and $M$ people in a room with a floor of $30 \times 30$ squares.
+All squares are initially passable, and outside of the $30 \times 30$ squares are impassable.
+Let $(x, y)$ be the coordinates of the square in row $x$ from the top ($1\leq x\leq 30$) and column $y$ from the left ($1\leq y\leq 30$).
+Repeat the following process for $300$ turns.
+
+First, you choose each person's action from the following three types, and perform each action simultaneously.
+
+- Do nothing and stay in the current position.
+- Choose a square adjacent to the current position and make it impassable. You cannot choose a square that contains pets or humans at the start of this turn. &lt;b&gt;You cannot choose a square whose adjacent square contains a pet, either.&lt;/b&gt; If you choose a square that is already impassable, nothing happens.
+- Move to an adjacent passable square. It is not possible to move to a square that becomes impassable by another person's action in this turn.
+
+After all the people have completed their actions for that turn, each pet moves independently.
+Rules for pet movement depend on the type of pet, and some pets may move multiple squares in a single turn.
+Details are described later.
+
+Squares containing humans or pets are also passable, and each square can contain any number of humans and pets.
+
+
+Raw task objective
+--------
+The formulas in this section define the raw reward V, not final benchmark points. The Scoring section specifies the per-file award and its aggregation.
+
+At the end of $300$ turn, for each $i=1,\cdots,M$, let $R_i$ be the set of squares reachable from the final position of person $i$ through only passable squares, and $n_i$ be the number of pets whose final position is in $R_i$.
+Then, person $i$ obtains satisfaction of $s_i=\frac{|R_i|}{900}\times 2^{-n_i}$.
+The raw task reward V is $\mathrm{round}\left(10^8\times\frac{1}{M}\sum_{i=1}^M s_i\right)$.
+
+
+Note that if your program terminates abnormally, it may be judged as &lt;span class='label label-warning' data-toggle='tooltip' data-placement='top' title="Wrong Answer"&gt;WA&lt;/span&gt; instead of &lt;span class='label label-warning' data-toggle='tooltip' data-placement='top' title="Runtime Error"&gt;RE&lt;/span&gt;.
+
+#### About execution time
+Execution time may vary slightly from run to run.
+Please measure the execution time in your program to terminate the process, or have enough margin in the execution time.
+
+
+Input and Output
+--------
+First, the initial position and type of each pet, and the initial position of each person are given from Standard Input in the following format
+~~~
+$N$
+$px_1$ $py_1$ $pt_1$
+$\vdots$
+$px_N$ $py_N$ $pt_N$
+$M$
+$hx_1$ $hy_1$
+$\vdots$
+$hx_M$ $hy_M$
+~~~
+$N$ is an integer between $10$ and $20$ representing the number of pets.
+$(px_i,py_i)$ represents the coordinates of the initial position of the $i$-th pet, and $pt_i$ is an integer between $1$ and $5$ representing the type of the $i$-th pet.
+$M$ is an integer between $5$ and $10$ representing the number of humans.
+$(hx_i,hy_i)$ represents the coordinates of the initial position of the $i$-th human.
+The initial positions of all pets and humans are guaranteed to be distinct.
+
+After reading the above information, repeat the following process $300$ turns.
+
+First, output a string of length $M$ where the $i$-th character represents the action of the $i$th person as follows on a single line to Standard Output.
+&lt;font color="red"&gt;**After the output, you have to flush Standard Output.**&lt;/font&gt; Otherwise, the submission might be judged as &lt;span class='label label-warning' data-toggle='tooltip' data-placement='top' tit
+le="Time Limit Exceeded"&gt;TLE&lt;/span&gt; .
+
+- `.`: Do nothing and stay in the current position.
+- `u`, `d`, `l`, `r`: Let $(x,y)$ be the current position. Make the square $(x-1,y)$, $(x+1,y)$, $(x,y-1)$, or $(x,y+1)$ impassable, respectively.
+- `U`, `D`, `L`, `R`: Let $(x,y)$ be the current position. Move to the the square $(x-1,y)$, $(x+1,y)$, $(x,y-1)$, or $(x,y+1)$, respectively.
+
+After the output, $N$ strings are given to Standard Input in a single line, separated by spaces.
+The $i$-th string represents movement of the $i$-th pet in that turn.
+If the pet does not move, the string is `.`.
+If it does move, the string is a sequence of characters `U`, `D`, `L`, and `R` representing the movement of one square up, down, left, and right, respectively.
+
+&lt;a href="https://img.atcoder.jp/ahc008/f828b9475ffb41d54f05619db6ccbd4f.html?lang=en&amp;show=example"&gt;Show example&lt;/a&gt;
+
+
+Pets Movement Rules
+--------
+We define a basic move as follows: move to a square chosen at random among the adjacent passable squares. From the condition of the squares that can be made impassable, such squares always exist.
+
+Each pet $i$ performs the following moves depending on $pt_i$, an integer value between $1$ and $5$ representing its type.
+
+1. Cow: Perform one basic move.
+2. Pig: Perform two basic moves.
+3. Rabbit: Perform three basic moves.
+4. Dog: Move toward a target person as follows. The first turn starts with no target. If it has no target, the target person is in the current position, or there exists no path to the target person, then it selects one person uniformly at random among those reachable from the current position, excluding those in the current position. If there is no such person, reset to no target and perform one basic move. Otherwise, move to an adjacent passable square that shortens the shortest distance to the target person (if there are multiple such squares, choose one of them uniformly at random), and then perform one basic move. If it reaches the destination after the first or the second move, reset to no target.
+5. Cat: Move toward a target square as follows. The first turn starts with no target. If it has no target or there exists no path to the target square, then it selects one square uniformly at random among those reachable from the current position, excluding the current position. If there exists no such square, do nothing. Otherwise, move to an adjacent passable square that shortens the shortest distance to the target square (if there are multiple such squares, choose one of them uniformly at random), and then perform one basic move. If it reaches the destination after the first or the second move, reset to no target.
+
+
+Input Generation
+--------
+Let $\mathrm{rand}(L,U)$ be a function that generates a uniform random integer between $L$ and $U$, inclusive.
+
+We generate the number of pets by $N=\mathrm{rand}(10, 20)$.
+The initial position of each pet is chosen uniformly at random from the coordinates that have not been chosen yet.
+We generate the type of each pet by $pt_i=\mathrm{rand}(1, 5)$.
+
+We generate the number of humans by $M=\mathrm{rand}(5, 10)$.
+The initial position of each human is chosen uniformly at random from the coordinates that have not been chosen yet.
+
+
+Tools
+--------
+- &lt;a href="https://img.atcoder.jp/ahc008/tools_v3.zip"&gt;Local tester&lt;/a&gt;: You need a compilation environment of &lt;a href="https://www.rust-lang.org/"&gt;Rust language&lt;/a&gt;.
+	- For those who are not familiar with the Rust language environment, we have prepared a pre-compiled binary for Windows. &lt;a href="https://img.atcoder.jp/ahc008/tools_x86_64-pc-windows-gnu_v3.zip"&gt;tools_x86_64-pc-windows-gnu.zip&lt;/a&gt;
+	- &lt;font color="red"&gt;The first version contained a bug in the cat's movement, which has been fixed at 130 minutes after the contest started. Please re-download it.&lt;/font&gt;
+	- We have added more examples in README. If you don't know how to use the tools, please refer to README. Also, as stated in the rules, you are free to share information on how to run the provided tools.
+- &lt;a href="https://img.atcoder.jp/ahc008/f828b9475ffb41d54f05619db6ccbd4f.html?lang=en"&gt;Web visualizer&lt;/a&gt;: By pasting the output generated by the local tester into the Output field, you can display the animation of the execution result.
+
+&lt;font color="red"&gt;You are allowed to share output images (png or gif) of the provided visualizer for seed=0 on twitter during the contest.&lt;/font&gt; You have to use the specified hashtag and public account. You can only share visualization results and scores for seed=0. Do not share scores for other seeds or mention solutions or discussions. &lt;a href="https://twitter.com/search?q=%23AHC008%20%23visualizer&amp;src=typed_query&amp;f=live"&gt;List of shared images.&lt;/a&gt;
+
+#### Specification of input/output files used by the tools
+Input files for the local tester consist of the prior information (the initial position and type of each pet, and the initial position of each person) followed by a random seed value to generate pet movements.
+Since the pet's movement depends on human actions, the input file contains only the random seed value and not specific movements.
+The local tester writes outputs from your program directly to the output file.
+Your program may output comment lines starting with `#`.
+The web version of the visualizer displays the comment lines at the time they are output, which may be useful for debugging and analysis.
+Since the judge program ignores all comment lines, you can submit a program that outputs comment lines as is.
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original maximizing quantity or quality and a for its physical 60-point reference. The improvement factor is r=x/a, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Let V be the raw task reward defined in the problem, and let B and R be the stored baseline and reference rewards. They are calibration values, not assertions of optimality. The stored reward reference R is distinct from the physical reference a used in the logarithm; a is defined by the inverse or stage-specific formula below. Set L=60*max(0,(V-B)/(R-B)), with R&gt;B, and T=R. For nonzero minimizing objectives, and all maximizing objectives, keep L exactly whenever L&lt;=60. The following describes the upper band and any valid zero-cost optimum.
+
+Let X be the unrounded mean, over humans, of (reachable area/900)*2^(-number of reachable pets). Its physical reference is a=A=R/1e8. When L&gt;60, take x=X, a=A, and r=x/a; award min(100,60+ln(r)).
+
+The checker reports points/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 答案错误</span></li><li><b>33.2k</b><span>平均输出 token（含思考） ↓</span></li><li><b>25.3</b><span>输出速度 tokens/s ↑</span></li><li><b>1314 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -2040,7 +2181,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

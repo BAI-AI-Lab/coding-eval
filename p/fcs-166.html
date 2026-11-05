@@ -3,22 +3,155 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-166 FrontierCS 第 166 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-166 FrontierCS 第 166 题：N×N 网格各格有高度且总和为 0，自卸车从左上角出发，可装土、卸土或移动，移动代价随载土量增加；在 100000 步内尽量把各格高度变为 0，未归零的格子计入罚分，总代价越小得分越高。">
+<title>fcs-166 FrontierCS #166 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-166 FrontierCS #166：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-166</span></p>
-<h1 class="ptitle">FrontierCS 第 166 题</h1>
+<h1 class="ptitle">FrontierCS #166</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 10 秒 · 0–100 连续分</p>
-<p class="summary">N×N 网格各格有高度且总和为 0，自卸车从左上角出发，可装土、卸土或移动，移动代价随载土量增加；在 100000 步内尽量把各格高度变为 0，未归零的格子计入罚分，总代价越小得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/166" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/166" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Story
+--------
+AtCoder frequently hosts onsite contests and has decided to build its own contest venue.
+The planned construction site is in a mountain area, and the ground must first be leveled.
+Leveling will involve using a dump truck, which incurs costs for loading, unloading, and transporting soil.
+Determine the method to level the ground with as little cost as possible.
+
+Problem Statement
+--------
+There is an $N \times N$ grid of land.
+Let $(0,0)$ be the coordinates of the top-left square and $(i,j)$ be the coordinates of the square located $i$ squares down and $j$ squares to the right from there.
+
+The height $h_{i,j}$ of each square $(i,j)$ is given as input.
+The total height of all squares is exactly $0$.
+
+Initially, the dump truck is at the square $(0,0)$ with an empty load.
+In each turn, you can perform one of the following three operations:
+
+- Specify an integer $d$ satisfying $0&lt;d\leq 10^6$ to load $d$ units of soil from the current square onto the dump truck. This operation decreases the height of the current square by $d$ and increases the amount of soil loaded onto the dump truck by $d$. The height can become negative. This operation incurs a cost of $d$.
+- Specify an integer $d$ satisfying $0&lt;d\leq 10^6$ to unload $d$ units of soil from the dump truck to the current square. This operation increases the height of the current square by $d$ and decreases the amount of soil loaded onto the dump truck by $d$. The value of $d$ must not exceed the amount of soil currently loaded onto the dump truck. This operation incurs a cost of $d$.
+- Move the dump truck to an adjacent square (up, down, left, or right). The dump truck cannot move outside the $N \times N$ grid. If the dump truck has $d$ units of soil loaded, this operation incurs a cost of $100+d$.
+
+You can perform a maximum of $100000$ turns of operation.
+Your task is to determine the sequence of operations that minimizes the cost to make the height of every square $0$.
+
+Raw task objective
+--------
+The formulas in this section define the raw reward V, not final benchmark points. The Scoring section specifies the per-file award and its aggregation.
+
+Let $\mathrm{cost}$ be the total cost of the output operation sequence.
+Let $\mathrm{base}$ be the sum of $|h_{i,j}|$ for all $(i,j)$.
+Let $h_{i,j}'$ be the final height of square $(i,j)$.
+Define $\mathrm{diff}$ as the sum of $100|h_{i,j}'|+10000$ for all $(i,j)$ such that $h_{i,j}' \neq 0$.
+The raw task reward V is defined as follows.
+
+\\[
+\mathrm{round}\left(10^9\times \frac{\mathrm{base}}{\mathrm{cost}+\mathrm{diff}}\right)
+\\]
+
+
+Input
+--------
+Input is given from Standard Input in the following format:
+~~~
+$N$
+$h_{0,0}$ $\cdots$ $h_{0,N-1}$
+$\vdots$
+$h_{N-1,0}$ $\cdots$ $h_{N-1,N-1}$
+~~~
+In all test cases, $N$ is fixed at $20$.
+The initial height $h_{i,j}$ of square $(i,j)$ is an integer that satisfies $-100 \leq h_{i,j} \leq 100$, and the total sum of all heights is guaranteed to be $0$.
+
+
+Output
+--------
+Let $T$ be the number of operation turns.
+The operation in the $t$-th turn is represented by the string $s_t$ as follows:
+
+- The operation to load $d$ units of soil from the current square onto the dump truck: `+d`
+- The operation to unload $d$ units of soil from the dump truck to the current square: `-d`
+- The operation to move the dump truck to an adjacent square: `U`, `D`, `L`, and `R` for up, down, left, and right, respectively.
+
+Then, output to Standard Output in the following format:
+~~~
+$s_0$
+$\vdots$
+$s_{T-1}$
+~~~
+
+
+&lt;a href="https://img.atcoder.jp/ahc034/vImT4eac.html?lang=en&amp;seed=0&amp;output=sample"&gt;Show example&lt;/a&gt;
+
+
+Input Generation
+--------
+&lt;details&gt;
+&lt;p&gt;
+You are not required to understand this.
+We recommend changing the seed value in the web visualizer to observe what kind of inputs are generated.
+&lt;/p&gt;
+&lt;p&gt;
+Let $\mathrm{rand}(L,U)$ be a function that generates a uniform random integer between $L$ and $U$, inclusive.
+Let $\mathrm{noise}(y,x,\mathrm{seed})$ be a function that generates two-dimensional &lt;a href="https://en.wikipedia.org/wiki/Perlin_noise"&gt;Perlin noise&lt;/a&gt; scaled to the range between $-1$ and $1$ based on a random seed value $\mathrm{seed}$.
+&lt;/p&gt;
+&lt;p&gt;
+First, generate a seed value for Perlin noise generation as $\mathrm{seed}=\mathrm{rand}(0,2^{32}-1)$.
+&lt;/p&gt;
+&lt;p&gt;
+Next, for each $(i,j)$, generate $h_{i,j}=\mathrm{round}(\mathrm{noise}(i/10,j/10,\mathrm{seed})\times 50)$.
+If $h_{i,j}=0$ for all $(i,j)$, then regenerate $\mathrm{seed}$.
+&lt;/p&gt;
+&lt;p&gt;
+Let $S$ be the sum of $h_{i,j}$.
+To make $S=0$, perform the following transformation.
+&lt;/p&gt;
+&lt;p&gt;
+Shuffle all coordinates $(0,0),(0,1),\cdots,(N-1,N-1)$ in a uniformly random order, and let the $k$-th coordinate be $(i_k,j_k)$.
+If $S&gt;0$, then for each $k=0,1,\cdots,S-1$, decrease $h_{i_{k\% N^2},j_{k\% N^2}}$ by $1$.
+If $S&lt;0$, then for each $k=0,1,\cdots,-S-1$, increase $h_{i_{k\% N^2},j_{k\% N^2}}$ by $1$.
+&lt;/p&gt;
+&lt;/details&gt;
+
+Tools (Input generator and visualizer)
+--------
+- &lt;a href="https://img.atcoder.jp/ahc034/vImT4eac.html?lang=en"&gt;Web version&lt;/a&gt;: This is more powerful than the local version providing animations.
+- &lt;a href="https://img.atcoder.jp/ahc034/vImT4eac.zip"&gt;Local version&lt;/a&gt;: You need a compilation environment of &lt;a href="https://www.rust-lang.org/"&gt;Rust language&lt;/a&gt;.
+	- &lt;a href="https://img.atcoder.jp/ahc034/vImT4eac_windows.zip"&gt;Pre-compiled binary for Windows&lt;/a&gt;: If you are not familiar with the Rust language environment, please use this instead.
+
+Please be aware that sharing visualization results or discussing solutions/ideas during the contest is prohibited.
+
+{sample example}
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original minimizing quantity and a for its physical 60-point reference. The improvement factor is r=a/x, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Let V be the raw task reward defined in the problem, and let B and R be the stored baseline and reference rewards. They are calibration values, not assertions of optimality. The stored reward reference R is distinct from the physical reference a used in the logarithm; a is defined by the inverse or stage-specific formula below. Set L=60*max(0,(V-B)/(R-B)), with R&gt;B, and T=R. For nonzero minimizing objectives, and all maximizing objectives, keep L exactly whenever L&lt;=60. The following describes the upper band and any valid zero-cost optimum.
+
+Here E is the operation cost plus sum(10000+100*abs(h)) over cells whose final height h is nonzero; K is the sum of absolute initial cell heights. For E&gt;0, the raw reward is V=round(1e9*K/E); for E=0 the raw reward is set to zero, but the valid zero-cost award below takes priority. Use physical reference a=A=1e9*K/R. A valid E=0 earns 100 before testing L. For E&gt;0 and L&gt;60, take x=E, a=A, and r=a/x; award min(100,60+ln(r)). A nonpositive anchor has no defined positive-cost logarithmic comparison, so retain the existing nonzero-cost branch.
+
+The stored reference reward is rounded. Its physical anchor is chosen by analytically inverting the unrounded reward at the center R (or T for a special branch). The lower-band condition keeps every result with the original 60-point reward at exactly 60. A rounded reward is not evidence of zero physical error or cost.
+
+The checker reports points/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 运行错误</span></li><li><b>30.0k</b><span>平均输出 token（含思考） ↓</span></li><li><b>30.5</b><span>输出速度 tokens/s ↑</span></li><li><b>986 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -2049,7 +2182,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>

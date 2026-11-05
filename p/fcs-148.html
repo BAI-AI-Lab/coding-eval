@@ -3,22 +3,111 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fcs-148 FrontierCS 第 148 题 · 代码能力阶梯评测</title>
-<meta name="description" content="fcs-148 FrontierCS 第 148 题：在被 1×1、1×2、2×1 瓷砖铺满的 50×50 网格上，从给定格出发沿四方向行走且每块瓷砖至多踏入一次；输出路径，经过格子的权值之和越大得分越高。">
+<title>fcs-148 FrontierCS #148 · 代码能力阶梯评测</title>
+<meta name="description" content="fcs-148 FrontierCS #148：FrontierCS 算法赛道 v1.1，题面、各模型的得分与代码">
 <link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css">
+<link rel="stylesheet" href="../assets/style.css"><link rel="stylesheet" href="../assets/code.css"><link rel="stylesheet" href="../assets/katex/katex.min.css">
+<script defer src="../assets/katex/katex.min.js"></script>
+<script defer src="../assets/katex/contrib/auto-render.min.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function () {
+  var el = document.querySelector(".stmt");
+  if (el && window.renderMathInElement) renderMathInElement(el, {delimiters: [{left: "$$", right: "$$", display: true},
+    {left: "$", right: "$", display: false}, {left: "\\(", right: "\\)", display: false}], throwOnError: false});
+});</script>
 </head>
 <body>
 <nav class="nav"><div class="nav-in"><a class="brand" href="../index.html"><span class="hide-sm">BAI AI Lab </span>代码评测</a><ul><li><a href="../index.html">概览</a></li><li><a href="../problems.html">题目</a></li><li><a href="../method.html">原理</a></li><li><a href="../results.html">结果</a></li><li><a href="../custom.html">自定义评测</a></li><li><a href="../report-2026-11-03.pdf">报告</a></li></ul></div></nav>
 <main>
 <section class="section tight"><div class="wrap">
 <p class="crumb"><a href="../problems.html">题目</a> › <span class="mono">fcs-148</span></p>
-<h1 class="ptitle">FrontierCS 第 148 题</h1>
+<h1 class="ptitle">FrontierCS #148</h1>
 <p class="meta">FrontierCS 算法赛道 v1.1 · 2026-05 · <span class="pill">L5 开放式</span> · C++17 · 时限 10 秒 · 0–100 连续分</p>
-<p class="summary">在被 1×1、1×2、2×1 瓷砖铺满的 50×50 网格上，从给定格出发沿四方向行走且每块瓷砖至多踏入一次；输出路径，经过格子的权值之和越大得分越高。</p>
-<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/148" target="_blank" rel="noopener">查看原题</a></p>
+<p><a class="btn" href="https://github.com/FrontierCS/Frontier-CS/tree/12ab26840cff15f1d0ab09004dafd07f92c14b60/algorithmic/problems/148" target="_blank" rel="noopener">查看原题</a><a class="more jump" href="#results">跳到结果</a></p>
 </div></section>
-<section class="section alt"><div class="wrap">
+<section class="section tight stmt-sec"><div class="wrap">
+<h2>题面</h2>
+<p class="note">来源：FrontierCS 官方 statement.txt，与模型收到的题面相同。</p>
+<div class="stmt plain">Problem Statement
+--------
+There is a floor consisting of $50\times 50$ squares.
+The floor is covered with rectangular tiles without any gaps.
+Each tile has a size of either $1\times 1$, $1\times 2$, or $2\times 1$ squares.
+Let $(0, 0)$ denote the top-left square, and $(i, j)$ denote the square at the $i$-th row from the top and $j$-th column from the left.
+Takahashi starts from $(si, sj)$ and walks along a path satisfying the following conditions.
+
+- From $(i, j)$, he can move to $(i-1,j)$, $(i+1,j)$, $(i,j-1)$, or $(i,j+1)$ in one step.
+- He can step on the same tile only once. The tile at the initial position is assumed to have already been stepped on.
+
+Each square has an integer value, and the score of a path is the sum of the values of the visited squares, including the square at the initial position.
+Your goal is to find a path with as high a score as possible.
+
+Moving between two squares of the same tile is invalid, as is returning to a tile after leaving it.
+
+Raw task objective
+--------
+The formulas in this section define the raw reward V, not final benchmark points. The Scoring section specifies the per-file award and its aggregation.
+
+The raw task reward V is the sum of the visited-square values, including the starting square.
+If the output does not satisfy the conditions, it is judged as `WA`.
+
+
+Input
+--------
+Input is given from Standard Input in the following format:
+
+~~~
+$si$ $sj$
+$t_{0,0}$ $t_{0,1}$ $\ldots$ $t_{0,49}$
+$\vdots$
+$t_{49,0}$ $t_{49,1}$ $\ldots$ $t_{49,49}$
+$p_{0,0}$ $p_{0,1}$ $\ldots$ $p_{0,49}$
+$\vdots$
+$p_{49,0}$ $p_{49,1}$ $\ldots$ $p_{49,49}$
+~~~
+
+- $(si,sj)$ denotes the initial position and satisfies $0\leq si,sj\leq 49$.
+- $t_{i,j}$ is an integer representing the tile placed on $(i,j)$. $(i,j)$ and $(i',j')$ are covered by the same tile if and only if $t_{i,j}=t_{i',j'}$ holds. Let the total number of tiles be $M$, then $0\leq t_{i,j}\leq M-1$ is satisfied.
+- $p_{i,j}$ is an integer value satisfying $0\leq p_{i,j}\leq 99$ which represents the score obtained when visiting $(i,j)$.
+
+Output
+--------
+Let `U`, `D`, `L`, and `R` represent the movement from $(i,j)$ to $(i-1,j)$, $(i+1,j)$, $(i,j-1)$, and $(i,j+1)$, respectively.
+Output a string representing a path in one line.
+
+Input Generation
+--------
+#### Generation of $si,sj$
+Generate an integer between $0$ and $49$ uniformly at random.
+
+#### Generation of $t_{i,j}$
+We start from an initial configuration where tiles of size $1\times 1$ are placed on all squares.
+We shuffle the 50x50 squares in random order and perform the following process for each square in order.
+
+- If the tile placed on the current square is $1\times 1$, we randomly select one of the adjacent squares whose tile is $1\times 1$ and connect the two tiles into one tile. If there are no such adjacent squares, we do nothing.
+- If the tile placed on the current square is not $1\times 1$, we do nothing.
+
+#### Generation of $p_{i,j}$
+Generate an integer between $0$ and $99$ uniformly at random independently for each square.
+
+Tools
+--------
+- &lt;a href="https://img.atcoder.jp/ahc002/8c847d8177acc2dd417be4327252e39e.zip"&gt;Inputs&lt;/a&gt;: A set of 100 inputs (seed 0-99) for local testing, including the sample input (seed 0). These inputs are different from the actual test case.
+- &lt;a href="https://img.atcoder.jp/ahc002/e5b2b399792299b5b35543c219e89601.html"&gt;Visualizer on the web&lt;/a&gt;
+- &lt;a href="https://img.atcoder.jp/ahc002/c993bb7f09d9f8857fc90951fc6af11d.zip"&gt;Input generator and visualizer&lt;/a&gt;: If you want to use more inputs, or if you want to visualize your output locally, you can use this program. You need a compilation environment of &lt;a href="https://www.rust-lang.org/ja"&gt;Rust language&lt;/a&gt;.
+
+{sample example}
+
+## Scoring
+
+All feasibility and interaction limits apply before scoring; invalid output receives zero. Points are averaged over test files. For the logarithmic branch, write x for the original maximizing quantity or quality and a for its physical 60-point reference. The improvement factor is r=x/a, and the upper-band award is P=min(100,60+ln(r)). Here ln is natural: r=1 corresponds to 60 points, and on the uncapped logarithmic upper band, r=exp(P-60). Each additional point multiplies the physical improvement factor by e (divides a minimizing objective by e or multiplies a maximizing objective by e, as applicable). The lower-band, zero-objective, and completion rules below still apply.
+
+Let V be the raw task reward defined in the problem, and let B and R be the stored baseline and reference rewards. They are calibration values, not assertions of optimality. The stored reward reference R is distinct from the physical reference a used in the logarithm; a is defined by the inverse or stage-specific formula below. Set L=60*max(0,(V-B)/(R-B)), with R&gt;B, and T=R. For nonzero minimizing objectives, and all maximizing objectives, keep L exactly whenever L&lt;=60. The following describes the upper band and any valid zero-cost optimum.
+
+The original objective is the task reward V itself, including any task-defined composite weighting, rather than the calibrated improvement (V-B)/(R-B). When L&gt;60, take x=V, a=T, and r=x/a; award min(100,60+ln(r)). V=0 is not a perfect solution and receives no special full-score award.
+
+The checker reports points/100.</div>
+</div></section>
+<section class="section alt" id="results"><div class="wrap">
 <h2>结果</h2>
 <div class="compare small four" style="--rows:7"><div class="model"><div><span class="dot kimi"></span><h3><span class="long">Kimi K3.1 Pro</span><span class="short">Kimi</span></h3><div class="id">max</div></div>
 <p class="verdict bad">0.0</p><p class="cap">平均得分 ↑</p><ul class="specs"><li><b><span class="bad">0.0</span></b><span>采样 1 · 答案错误</span></li><li><b>20.7k</b><span>平均输出 token（含思考） ↓</span></li><li><b>28.6</b><span>输出速度 tokens/s ↑</span></li><li><b>725 秒</b><span>延迟 ↓</span></li></ul></div><div class="model"><div><span class="dot kimih"></span><h3><span class="long">Kimi K3.1 Pro（high）</span><span class="short">Kimi high</span></h3><div class="id">high</div></div>
@@ -1767,7 +1856,7 @@
 </main>
 <footer><div class="wrap">
 <p>BAI AI Lab 代码能力阶梯评测 · 数据截至 2026-11-03</p>
-<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面与测试数据的版权归原作者，本站只给出概述与原题链接；运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
+<p>题目来自 USACO、EGOI 2026 与 FrontierCS，题面版权归原作者，本站转载官方英文原文并附原题链接；测试数据不公开。运行与判分用 <a href="https://github.com/BAI-AI-Lab/codingBench">codingBench</a>。</p>
 <p>全部数据：<a href="../data/ladder.json">data/ladder.json</a> · 上一版评测：<a href="../archive/2026-10-23/index.html">LiveCodeBench 最新 35 题（2026-10-23）</a></p>
 <p>如有任何问题，联系 <a href="https://alberthx86.github.io/" target="_blank" rel="noopener">Albert Huang</a>。</p>
 </div></footer>
